@@ -43,14 +43,17 @@ class GenerateBlueprintFilamentResources extends Command
 
         $yamlFile = base_path('draft.yaml');
         $yamlContents = $this->yaml->parseFile($yamlFile);
-        $this->info(json_encode($yamlContents, 128));
 
         if (!isset($yamlContents['models'])) {
             return 1;
         }
 
         foreach ($yamlContents['models'] as $modelName => $modelProperties) {
-            $args = [$modelName => true, '--view' => true, '--generate' => true];
+            $args = [
+                'name' => $modelName,
+                '--view' => true,
+                '--generate' => true
+            ];
             if (in_array('softDeletes', $modelProperties)) {
                 $args['--soft-deletes'] = true;
             }
