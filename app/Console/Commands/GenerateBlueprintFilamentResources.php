@@ -50,11 +50,11 @@ class GenerateBlueprintFilamentResources extends Command
         }
 
         foreach ($yamlContents['models'] as $modelName => $modelProperties) {
-            $args = ['--view' => true, '--generate' => true];
+            $args = [$modelName => true, '--view' => true, '--generate' => true];
             if (in_array('softDeletes', $modelProperties)) {
                 $args['--soft-deletes'] = true;
             }
-            $this->call("make:filament-resource {$modelName}", $args);
+            $this->call('make:filament-resource', $args);
         }
 
     }
