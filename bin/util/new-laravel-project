@@ -19,9 +19,12 @@ regularDependencies=(
 devDependencies=(
   "laravel/breeze"
   "symplify/easy-coding-standard:\"^11.0\""
+  "laravel-shift/blueprint"
+  "jasonmccreary/laravel-test-assertions"
 )
 
 if [ ! -f ./artisan ]; then
+  cp .env.local .env
   docker-compose run --rm app \
     bash -c "\
     shopt -s dotglob && \
