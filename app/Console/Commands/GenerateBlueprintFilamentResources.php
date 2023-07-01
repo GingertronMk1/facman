@@ -37,8 +37,8 @@ class GenerateBlueprintFilamentResources extends Command
          * Gonna blueprint build and migrate,
          * then handle the filamenting
          */
-        // $this->call('blueprint:build', ['--overwrite-migrations']);
-        // $this->call('migrate', ['--force']);
+        $this->call('blueprint:build', ['--overwrite-migrations' => true]);
+        $this->call('migrate', ['--force' => true]);
 
 
         $yamlFile = base_path('draft.yaml');
@@ -50,11 +50,11 @@ class GenerateBlueprintFilamentResources extends Command
         }
 
         foreach ($yamlContents['models'] as $modelName => $modelProperties) {
-            $args = ['--generate'];
+            $args = ['--view' => true, '--generate' => true];
             if (in_array('softDeletes', $modelProperties)) {
-                $args[] = ['--soft-deletes'];
+                $args['--soft-deletes'] = true;
             }
-            $this->call('make:filament-resource', $args);
+            $this->call("make:filament-resource {$modelName}", $args);
         }
 
     }
