@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+docker-compose down -v
+
+docker-compose build
+
+docker-compose run --rm app composer install
+
+docker-compose run --rm node npm install
+
+docker-compose up -d --remove-orphans
+
+./bin/app/xdebug-off

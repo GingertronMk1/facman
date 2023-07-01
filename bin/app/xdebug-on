@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+./bin/app/exec mv -v /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.disabled /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+docker-compose restart app

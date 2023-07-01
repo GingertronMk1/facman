@@ -1,0 +1,83 @@
+version: "3"
+
+services:
+  app:
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: ./docker/local/app.dockerfile
+    volumes:
+      - "./:/var/www"
+      - "./docker/local/php/local.ini:/usr/local/etc/php/conf.d/local.ini"
+    networks:
+      - app-network
+    environment:
+      XDEBUG_MODE: develop,coverage,debug,profile
+      XDEBUG_CONFIG: client_host=host.docker.internal client_port=9003
+
+  node:
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: ./docker/local/node.dockerfile
+    volumes:
+      - "./:/app"
+    command: tail -f /dev/null
+    ports:
+      - "5173:5173"
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-15}-alpine
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
+
+
+  nginx:
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: ./docker/local/nginx.dockerfile
+    volumes:
+      - "./:/var/www:delegated"
+      - "./docker/local/nginx/conf.d/:/etc/nginx/conf.d/:delegated"
+    depends_on:
+      - "app"
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - app-network
+
+  adminer:
+    platform: linux/x86_64
+    image: adminer:4-standalone
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+    volumes:
+      - './docker/local/adminer/credentials.php:/var/www/html/plugins-enabled/credentials.php'
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: |
+          tables-filter
+          tinymce
+          edit-foreign
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_DATABASE: ${POSTGRES_DB}
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

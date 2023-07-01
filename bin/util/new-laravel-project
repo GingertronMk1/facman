@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+PROJECTNAME=$(basename $(pwd))
+
+while getopts project: flag
+do
+  case "${flag}" in
+    project) PROJECTNAME="${OPTARG};;"
+  esac
+done
+
+echo "Creating ${PROJECTNAME}"
+
+regularDependencies=(
+  "filament/filament:\"^2.0\""
+  "livewire/livewire:\"^2.0\""
+)
+
+devDependencies=(
+  "laravel/breeze"
+  "symplify/easy-coding-standard:\"^11.0\""
+)
+
+if [ ! -f ./artisan ]; then
+  docker-compose run --rm app \
+    bash -c "\
+    shopt -s dotglob && \
+    composer create-project laravel/laravel "${PROJECTNAME}" "$@" && \
+    mv "${PROJECTNAME}"/* . && \
+    rm -rf "${PROJECTNAME}" && \
+    composer require ${regularDependencies[*]} \
+    && \
+    composer require ${devDependencies[*]} --dev \
+    && \
+    echo "" >> .env
+    cat .env.local >> .env \
+    "
+  ./bin/util/install
+else
+  echo "A Laravel project already exists in here"
+fi
