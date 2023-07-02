@@ -12,7 +12,7 @@ class GenerateBlueprintFilamentResources extends Command
      *
      * @var string
      */
-    protected $signature = 'app:generate-blueprint-filament-resources';
+    protected $signature = 'app:generate-blueprint-filament-resources {--fresh}';
 
     /**
      * The console command description.
@@ -33,6 +33,9 @@ class GenerateBlueprintFilamentResources extends Command
      */
     public function handle()
     {
+        if ($this->option('fresh')) {
+            $this->call('migrate:fresh', ['--force' => true]);
+        }
         /**
          * Gonna blueprint build and migrate,
          * then handle the filamenting
