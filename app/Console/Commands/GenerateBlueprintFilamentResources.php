@@ -33,7 +33,8 @@ class GenerateBlueprintFilamentResources extends Command
      */
     public function handle()
     {
-        if ($this->option('fresh')) {
+        $fresh = $this->option('fresh');
+        if ($fresh) {
             $this->call('migrate:fresh', ['--force' => true]);
         }
         /**
@@ -55,7 +56,8 @@ class GenerateBlueprintFilamentResources extends Command
             $args = [
                 'name' => $modelName,
                 '--view' => true,
-                '--generate' => true
+                '--generate' => true,
+                '--force' => true
             ];
             if (in_array('softDeletes', $modelProperties)) {
                 $args['--soft-deletes'] = true;
@@ -63,5 +65,17 @@ class GenerateBlueprintFilamentResources extends Command
             $this->call('make:filament-resource', $args);
         }
 
+
+        if ($fresh) {
+            $this->call(
+                'make:filament-user',
+                [
+                    '--name' => 'Admin',
+                    '--email' => 'admin@facman.test',
+                    '--password' => '123456789',
+                    '--no-interaction' => true
+                ]
+            );
+        }
     }
 }
