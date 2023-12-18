@@ -26,8 +26,9 @@ final class MakeEntity extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $className = $input->getArgument('classname');
         // retrieve the argument value using getArgument()
-        $output->writeln('Username: '.$input->getArgument('classname'));
+        $output->writeln("Generating `{$className}`");
         return Command::SUCCESS;
     }
     
