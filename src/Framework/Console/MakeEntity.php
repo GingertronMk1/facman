@@ -44,7 +44,11 @@ final class MakeEntity extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('className', InputArgument::REQUIRED, 'The name of the class')
+            ->addArgument(
+                'className',
+                InputArgument::REQUIRED,
+                'The name of the class'
+            )
             ->addOption(
                 'dry-run',
                 null,
@@ -64,7 +68,7 @@ final class MakeEntity extends Command
             $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
             $dirName = $this->kernel->getProjectDir()."/src/{$place}";
             $io->section($dirName);
-            $nameSpace = 'App\\' . str_replace('/', '\\', $place);
+            $nameSpace = 'App\\'.str_replace('/', '\\', $place);
             $io->text("Namespace is '{$nameSpace}'");
             if (!$dryRun) {
                 if (!is_dir($dirName)) {
