@@ -1,7 +1,20 @@
 version: '3'
 
 services:
-###> doctrine/doctrine-bundle ###
+  nginx:
+    build:
+      context: .
+      dockerfile: _docker/nginx.dockerfile
+    volumes:
+      - "./:/var/www:delegated"
+      - "./_docker/nginx/conf.d/:/etc/nginx/conf.d/:delegated"
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - facman-network
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     environment:
@@ -9,13 +22,21 @@ services:
       # You should definitely change the password in production
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+    networks:
+      - facman-network
+    ports:
+      - "5432:5432"
+  app:
+    build:
+      context: .
+      dockerfile: _docker/app.dockerfile
     volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+      - '.:/var/www:delegated'
+    networks:
+      - facman-network
 
-volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+networks:
+  facman-network:
+    driver: bridge
+      
