@@ -20,15 +20,56 @@ final class MakeEntity extends Command
     private const CLASSNAME_PLACEHOLDER = '<className>';
     private const THINGS_AND_PLACES = [
         'Application' => [
-            self::CLASSNAME_PLACEHOLDER . 'FinderInterface',
+            self::CLASSNAME_PLACEHOLDER . 'FinderInterface' => <<<PHP
+<?php
+
+namespace <nameSpace>;
+
+interface <fullClass> {
+}
+
+PHP
         ],
         'Domain' => [
-            self::CLASSNAME_PLACEHOLDER . 'Id',
-            self::CLASSNAME_PLACEHOLDER . 'RepositoryInterface'
+            self::CLASSNAME_PLACEHOLDER . 'Id' => <<<PHP
+<?php
+
+namespace <nameSpace>;
+
+final class <fullClass> {
+}
+
+PHP,
+            self::CLASSNAME_PLACEHOLDER . 'RepositoryInterface' => <<<PHP
+<?php
+
+namespace <nameSpace>;
+
+interface <fullClass> {
+}
+
+PHP,
+
         ],
         'Infrastructure' => [
-            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Repository',
-            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Finder',
+            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Repository' => <<<PHP
+<?php
+
+namespace <nameSpace>;
+
+final class <fullClass> implements Interface {
+}
+
+PHP,
+            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Finder' => <<<PHP
+<?php
+
+namespace <nameSpace>;
+
+final class <fullClass> implements Interface {
+}
+
+PHP,
         ]
     ];
 
@@ -44,7 +85,7 @@ final class MakeEntity extends Command
         $className = $input->getArgument('classname');
         // retrieve the argument value using getArgument()
         foreach(self::THINGS_AND_PLACES as $place => $things) {
-            foreach ($things as $thing) {
+            foreach ($things as $thing => $content) {
                 $dir = "src/{$place}/{$className}";
                 $fileName = str_replace(
                     self::CLASSNAME_PLACEHOLDER,
@@ -53,15 +94,19 @@ final class MakeEntity extends Command
                 );
                 $fullPath = "{$dir}/{$fileName}.php";
                 $output->writeln("Making `{$fullPath}`");
+                $properClassName = preg_replace('/\bsrc\b/', 'App', $dir);
+                $properClassName = preg_replace('/\//', '\\', $properClassName);
+                $content = preg_replace('/<fullClass>/', $fileName, $content);
+                $content = preg_replace('/<nameSpace>/', $properClassName, $content);
+
                 if (!is_dir($dir)) {
                     mkdir($dir, recursive: true);
                 }
                 if (!file_exists($fullPath)) {
                     $fp = fopen($fullPath, 'w');
-                    fwrite($fp, "<?php\n\n");
+                    fwrite($fp, $content);
                     fclose($fp);
                 }
-                touch($fullPath);
                 $output->writeln("Made `{$fullPath}`");
             }
         }
