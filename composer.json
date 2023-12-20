@@ -88,6 +88,9 @@
         ],
         "ecs": [
             "./vendor/bin/ecs --fix"
+        ],
+        "deptrac": [
+            "./vendor/bin/deptrac analyse --config-file=config/deptrac.yaml"
         ]
     },
     "conflict": {
