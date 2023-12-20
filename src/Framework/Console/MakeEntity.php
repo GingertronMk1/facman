@@ -57,6 +57,9 @@ final class MakeEntity extends Command
         ],
     ];
 
+    private bool $dryRun = false;
+    private SymfonyStyle $io;
+
     public function __construct(
         private readonly KernelInterface $kernel,
         private readonly Environment $twig
@@ -83,52 +86,76 @@ final class MakeEntity extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $this->io = new SymfonyStyle($input, $output);
+        $this->dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
         $className = $input->getArgument(self::ARG_CLASSNAME);
-        $dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
-        $io->note($dryRun ? 'Dry Run' : 'Not a Dry Run');
+        $this->io->note($this->dryRun ? 'Dry Run' : 'Not a Dry Run');
         foreach (self::PLACES_AND_THINGS as $place => $things) {
-            $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
-            $dirName = $this->kernel->getProjectDir()."/src/{$place}";
-            $io->section($dirName);
-            $nameSpace = 'App\\'.str_replace('/', '\\', $place);
-            $io->text("Namespace is '{$nameSpace}'");
-            if (!$dryRun) {
-                if (!is_dir($dirName)) {
-                    $io->text("Making {$dirName}");
-                    mkdir($dirName, recursive: true);
-                } else {
-                    $io->text("{$dirName} already exists");
-                }
-            } else {
-                $io->text("Not making {$dirName}");
-            }
-            foreach ($things as $thing => $attrs) {
-                $thing = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $thing);
-                $qualifiedFileName = "{$dirName}/{$thing}.php";
-                $kind = $attrs['kind'] ?? 'class';
-                $content = $this->twig->render(
-                    'util/make-entity.php.twig',
-                    [
-                        'nameSpace' => $nameSpace,
-                        'className' => $thing,
-                        'kind' => $kind,
-                    ]);
-                $io->text($content);
-                if (!$dryRun) {
-                    $io->text("Making {$qualifiedFileName}");
-                    touch($qualifiedFileName);
-                    $fp = fopen($qualifiedFileName, 'w');
-                    fwrite(
-                        $fp,
-                        $content
-                    );
-                } else {
-                    $io->text("Not actually making {$qualifiedFileName}");
-                }
-            }
+            $this->generatePlace($className, $place, $things);
         }
 
         return self::SUCCESS;
+    }
+
+    private function generatePlace(
+        string $className,
+        string $place,
+        array $things
+    ): void {
+        $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
+        $dirName = $this->kernel->getProjectDir()."/src/{$place}";
+        $this->io->section($dirName);
+        $nameSpace = 'App\\'.str_replace('/', '\\', $place);
+        $this->io->text("Namespace is '{$nameSpace}'");
+        if (!$this->dryRun) {
+            if (!is_dir($dirName)) {
+                $this->io->text("Making {$dirName}");
+                mkdir($dirName, recursive: true);
+            } else {
+                $this->io->text("{$dirName} already exists");
+            }
+        } else {
+            $this->io->text("Not making {$dirName}");
+        }
+        foreach ($things as $thing => $attrs) {
+            $this->generateThing(
+                $thing,
+                $attrs,
+                $className,
+                $dirName,
+                $nameSpace
+            );
+        }
+    }
+
+    private function generateThing(
+        string $thing,
+        array $attrs,
+        string $className,
+        string $dirName,
+        string $nameSpace,
+    ): void {
+        $thing = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $thing);
+        $qualifiedFileName = "{$dirName}/{$thing}.php";
+        $kind = $attrs['kind'] ?? 'class';
+        $content = $this->twig->render(
+            'util/make-entity.php.twig',
+            [
+                'nameSpace' => $nameSpace,
+                'className' => $thing,
+                'kind' => $kind,
+            ]);
+        $this->io->text($content);
+        if (!$this->dryRun) {
+            $this->io->text("Making {$qualifiedFileName}");
+            touch($qualifiedFileName);
+            $fp = fopen($qualifiedFileName, 'w');
+            fwrite(
+                $fp,
+                $content
+            );
+        } else {
+            $this->io->text("Not actually making {$qualifiedFileName}");
+        }
     }
 }
