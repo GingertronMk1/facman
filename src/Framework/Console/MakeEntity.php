@@ -45,13 +45,24 @@ final class MakeEntity extends Command
         // retrieve the argument value using getArgument()
         foreach(self::THINGS_AND_PLACES as $place => $things) {
             foreach ($things as $thing) {
+                $dir = "src/{$place}/{$className}";
                 $fileName = str_replace(
                     self::CLASSNAME_PLACEHOLDER,
                     $className,
                     $thing
-                ) . '.php';
-                $dir = "src/{$place}/{$className}";
-                $output->writeln("Making `{$dir}/{$fileName}.php`");
+                );
+                $fullPath = "{$dir}/{$fileName}.php";
+                $output->writeln("Making `{$fullPath}`");
+                if (!is_dir($dir)) {
+                    mkdir($dir, recursive: true);
+                }
+                if (!file_exists($fullPath)) {
+                    $fp = fopen($fullPath, 'w');
+                    fwrite($fp, "<?php\n\n");
+                    fclose($fp);
+                }
+                touch($fullPath);
+                $output->writeln("Made `{$fullPath}`");
             }
         }
         return Command::SUCCESS;
