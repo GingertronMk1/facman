@@ -87,7 +87,7 @@
             "@auto-scripts"
         ],
         "ecs": [
-            "./vendor/bin/ecs --fix"
+            "./vendor/bin/ecs --config=config/ecs.php --fix"
         ],
         "deptrac": [
             "./vendor/bin/deptrac analyse --config-file=config/deptrac.yaml"
