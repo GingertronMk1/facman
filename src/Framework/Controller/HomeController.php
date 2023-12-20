@@ -15,5 +15,4 @@ final class HomeController extends AbstractController
     {
         return new Response('11');
     }
-    
 }
