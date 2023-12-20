@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Twig\Environment;
 
 #[AsCommand(
     name: 'app:make-entity',
@@ -19,24 +20,47 @@ use Symfony\Component\HttpKernel\KernelInterface;
 )]
 final class MakeEntity extends Command
 {
+    private const ARG_CLASSNAME = 'className';
+    private const OPT_DRY_RUN = 'dry-run';
+
     private const CLASSNAME_PLACEHOLDER = '<className>';
+
     private const PLACES_AND_THINGS = [
         'Domain/'.self::CLASSNAME_PLACEHOLDER => [
-            self::CLASSNAME_PLACEHOLDER.'Entity',
-            self::CLASSNAME_PLACEHOLDER.'FinderInterface',
+            self::CLASSNAME_PLACEHOLDER.'Entity' => [
+                'kind' => 'class'
+            ],
+            self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
+                'kind' => 'interface'
+            ],
         ],
         'Application/'.self::CLASSNAME_PLACEHOLDER => [
-            self::CLASSNAME_PLACEHOLDER.'Model',
-            self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',
+            self::CLASSNAME_PLACEHOLDER.'Model' => [
+                'kind' => 'class'
+            ],
+            self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
+                'kind' => 'interface'
+            ],
         ],
         'Infrastructure/'.self::CLASSNAME_PLACEHOLDER => [
-            self::CLASSNAME_PLACEHOLDER.'Repository',
-            self::CLASSNAME_PLACEHOLDER.'Finder',
+            'Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
+                'kind' => 'class'
+            ],
+            'Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
+                'kind' => 'class'
+            ],
         ],
-        'Framework/Controller' => [self::CLASSNAME_PLACEHOLDER.'Controller'],
+        'Framework/Controller' => [
+            self::CLASSNAME_PLACEHOLDER.'Controller' => [
+                'kind' => 'class'
+            ],
+        ],
     ];
 
-    public function __construct(private readonly KernelInterface $kernel)
+    public function __construct(
+        private readonly KernelInterface $kernel,
+        private readonly Environment $twig
+    )
     {
         parent::__construct();
     }
@@ -45,12 +69,12 @@ final class MakeEntity extends Command
     {
         $this
             ->addArgument(
-                'className',
+                self::ARG_CLASSNAME,
                 InputArgument::REQUIRED,
                 'The name of the class'
             )
             ->addOption(
-                'dry-run',
+                self::OPT_DRY_RUN,
                 null,
                 InputOption::VALUE_NONE,
                 'Add to not actually write any files'
@@ -61,8 +85,8 @@ final class MakeEntity extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $className = $input->getArgument('className');
-        $dryRun = (bool) $input->getOption('dry-run');
+        $className = $input->getArgument(self::ARG_CLASSNAME);
+        $dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
         echo $dryRun ? 'dry run' : 'not dry run';
         foreach (self::PLACES_AND_THINGS as $place => $things) {
             $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
@@ -80,28 +104,26 @@ final class MakeEntity extends Command
             } else {
                 $io->text("Not making {$dirName}");
             }
-            foreach ($things as $thing) {
+            foreach ($things as $thing => $attrs) {
                 $thing = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $thing);
                 $qualifiedFileName = "{$dirName}/{$thing}.php";
+                $kind = $attrs['kind'] ?? 'class';
+                $content = $this->twig->render(
+                        'util/make-entity.php.twig',
+                        [
+                            'nameSpace' => $nameSpace,
+                            'className' => $thing,
+                            'kind' => $kind
+                        ]) ;
+                $io->text($content);
                 if (!$dryRun) {
                     $io->text("Making {$qualifiedFileName}");
                     touch($qualifiedFileName);
                     $fp = fopen($qualifiedFileName, 'w');
-                    $kind = str_ends_with($thing, 'Interface') ? 'interface' : 'class';
-                    fwrite($fp, <<<PHP
-<?php
-
-declare(strict_types=1);
-
-namespace {$nameSpace};
-
-{$kind} {$thing}
-{
-    
-}
-
-PHP
-                    );
+                    fwrite(
+                        $fp,
+                        $content
+);
                 } else {
                     $io->text("Not actually making {$qualifiedFileName}");
                 }
