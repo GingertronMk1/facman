@@ -86,7 +86,7 @@ final class MakeEntity extends Command
         $io = new SymfonyStyle($input, $output);
         $className = $input->getArgument(self::ARG_CLASSNAME);
         $dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
-        echo $dryRun ? 'dry run' : 'not dry run';
+        $io->note($dryRun ? 'Dry Run' : 'Not a Dry Run');
         foreach (self::PLACES_AND_THINGS as $place => $things) {
             $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
             $dirName = $this->kernel->getProjectDir()."/src/{$place}";
