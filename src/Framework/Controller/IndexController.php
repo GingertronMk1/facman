@@ -8,11 +8,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class HomeController extends AbstractController
+final class IndexController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(): Response
     {
-        return new Response('11');
+        return $this->render('pages/index/index.html.twig');
     }
 }
