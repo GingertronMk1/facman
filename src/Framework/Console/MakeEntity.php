@@ -82,6 +82,22 @@ final class MakeEntity extends Command
                 if (!$dryRun) {
                     $io->text("Making {$qualifiedFileName}");
                     touch($qualifiedFileName);
+                    $fp = fopen($qualifiedFileName, 'w');
+                    $kind = str_ends_with($thing, 'Interface') ? 'interface' : 'class';
+                    fwrite($fp, <<<PHP
+<?php
+
+declare(strict_types=1);
+
+namespace {$nameSpace};
+
+{$kind} {$thing}
+{
+    
+}
+
+PHP
+                    );
                 } else {
                     $io->text("Not actually making {$qualifiedFileName}");
                 }
