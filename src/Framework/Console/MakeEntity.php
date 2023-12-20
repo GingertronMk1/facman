@@ -28,31 +28,31 @@ final class MakeEntity extends Command
     private const PLACES_AND_THINGS = [
         'Domain/'.self::CLASSNAME_PLACEHOLDER => [
             self::CLASSNAME_PLACEHOLDER.'Entity' => [
-                'kind' => 'class'
+                'kind' => 'class',
             ],
             self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
-                'kind' => 'interface'
+                'kind' => 'interface',
             ],
         ],
         'Application/'.self::CLASSNAME_PLACEHOLDER => [
             self::CLASSNAME_PLACEHOLDER.'Model' => [
-                'kind' => 'class'
+                'kind' => 'class',
             ],
             self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
-                'kind' => 'interface'
+                'kind' => 'interface',
             ],
         ],
         'Infrastructure/'.self::CLASSNAME_PLACEHOLDER => [
             'Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
-                'kind' => 'class'
+                'kind' => 'class',
             ],
             'Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
-                'kind' => 'class'
+                'kind' => 'class',
             ],
         ],
         'Framework/Controller' => [
             self::CLASSNAME_PLACEHOLDER.'Controller' => [
-                'kind' => 'class'
+                'kind' => 'class',
             ],
         ],
     ];
@@ -60,8 +60,7 @@ final class MakeEntity extends Command
     public function __construct(
         private readonly KernelInterface $kernel,
         private readonly Environment $twig
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -75,7 +74,7 @@ final class MakeEntity extends Command
             )
             ->addOption(
                 self::OPT_DRY_RUN,
-                null,
+                'd',
                 InputOption::VALUE_NONE,
                 'Add to not actually write any files'
             )
@@ -109,12 +108,12 @@ final class MakeEntity extends Command
                 $qualifiedFileName = "{$dirName}/{$thing}.php";
                 $kind = $attrs['kind'] ?? 'class';
                 $content = $this->twig->render(
-                        'util/make-entity.php.twig',
-                        [
-                            'nameSpace' => $nameSpace,
-                            'className' => $thing,
-                            'kind' => $kind
-                        ]) ;
+                    'util/make-entity.php.twig',
+                    [
+                        'nameSpace' => $nameSpace,
+                        'className' => $thing,
+                        'kind' => $kind,
+                    ]);
                 $io->text($content);
                 if (!$dryRun) {
                     $io->text("Making {$qualifiedFileName}");
@@ -123,7 +122,7 @@ final class MakeEntity extends Command
                     fwrite(
                         $fp,
                         $content
-);
+                    );
                 } else {
                     $io->text("Not actually making {$qualifiedFileName}");
                 }
