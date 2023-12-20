@@ -17,59 +17,35 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class MakeEntity extends Command
 {
+    private const TYPE_INTERFACE = 'cnterface';
     private const CLASSNAME_PLACEHOLDER = '<className>';
+    private const TYPE_CLASS = 'class';
     private const THINGS_AND_PLACES = [
         'Application' => [
-            self::CLASSNAME_PLACEHOLDER . 'FinderInterface' => <<<PHP
-<?php
-
-namespace <nameSpace>;
-
-interface <fullClass> {
-}
-
-PHP
+            self::CLASSNAME_PLACEHOLDER . 'FinderInterface' => [
+                'type' => self::TYPE_INTERFACE
+            ]
         ],
         'Domain' => [
-            self::CLASSNAME_PLACEHOLDER . 'Id' => <<<PHP
-<?php
-
-namespace <nameSpace>;
-
-final class <fullClass> {
-}
-
-PHP,
-            self::CLASSNAME_PLACEHOLDER . 'RepositoryInterface' => <<<PHP
-<?php
-
-namespace <nameSpace>;
-
-interface <fullClass> {
-}
-
-PHP,
-
+            self::CLASSNAME_PLACEHOLDER . 'Id' => [
+                'type' => self::TYPE_CLASS
+            ],
+            self::CLASSNAME_PLACEHOLDER . 'RepositoryInterface' => [
+                'type' => self::TYPE_INTERFACE
+            ],
         ],
         'Infrastructure' => [
-            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Repository' => <<<PHP
-<?php
-
-namespace <nameSpace>;
-
-final class <fullClass> implements Interface {
-}
-
-PHP,
-            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Finder' => <<<PHP
-<?php
-
-namespace <nameSpace>;
-
-final class <fullClass> implements Interface {
-}
-
-PHP,
+            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Repository' => [
+                'type' => self::TYPE_CLASS
+            ],
+            'Dbal' . self::CLASSNAME_PLACEHOLDER . 'Finder' => [
+                'type' => self::TYPE_CLASS
+            ],
+        ],
+        'Framework' => [
+            'Controller/' . self::CLASSNAME_PLACEHOLDER . 'Controller' => [
+                'type' => self::TYPE_CLASS
+            ]
         ]
     ];
 
@@ -85,7 +61,7 @@ PHP,
         $className = $input->getArgument('classname');
         // retrieve the argument value using getArgument()
         foreach(self::THINGS_AND_PLACES as $place => $things) {
-            foreach ($things as $thing => $content) {
+            foreach ($things as $thing => $attrs) {
                 $dir = "src/{$place}/{$className}";
                 $fileName = str_replace(
                     self::CLASSNAME_PLACEHOLDER,
@@ -96,17 +72,26 @@ PHP,
                 $output->writeln("Making `{$fullPath}`");
                 $properClassName = preg_replace('/\bsrc\b/', 'App', $dir);
                 $properClassName = preg_replace('/\//', '\\', $properClassName);
-                $content = preg_replace('/<fullClass>/', $fileName, $content);
-                $content = preg_replace('/<nameSpace>/', $properClassName, $content);
 
-                if (!is_dir($dir)) {
-                    mkdir($dir, recursive: true);
-                }
-                if (!file_exists($fullPath)) {
-                    $fp = fopen($fullPath, 'w');
-                    fwrite($fp, $content);
-                    fclose($fp);
-                }
+                $content = [
+                    '<?php',
+                    '',
+                    "namespace {$properClassName};",
+                    ''
+                ];
+
+                $content[] = match($attrs['type']) {
+                    self::TYPE_CLASS => 'class ' . $fileName,
+                    self::TYPE_INTERFACE => 'interface ' . $fileName,
+                };
+
+                $content[] = '{' . PHP_EOL . PHP_EOL . '}';
+
+
+                touch($fullPath);
+                $fp = fopen($fullPath, 'w');
+                fwrite($fp, implode(PHP_EOL, $content));
+                fclose($fp);
                 $output->writeln("Made `{$fullPath}`");
             }
         }
