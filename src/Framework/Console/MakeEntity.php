@@ -64,6 +64,8 @@ final class MakeEntity extends Command
             $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
             $dirName = $this->kernel->getProjectDir()."/src/{$place}";
             $io->section($dirName);
+            $nameSpace = 'App\\' . str_replace('/', '\\', $place);
+            $io->text("Namespace is '{$nameSpace}'");
             if (!$dryRun) {
                 if (!is_dir($dirName)) {
                     $io->text("Making {$dirName}");
