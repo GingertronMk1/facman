@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1)
+declare(strict_types=1);
 
 namespace {{ nameSpace }};
 
@@ -11,5 +11,5 @@ namespace {{ nameSpace }};
 {% endif %}
 {{ kind }} {{ className }}
 {
-    public function __construct() {}
+    {% if kind is 'class' %}public function __construct() {}{% endif %}
 }

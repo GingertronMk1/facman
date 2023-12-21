@@ -87,10 +87,13 @@
             "@auto-scripts"
         ],
         "ecs": [
-            "./vendor/bin/ecs --config=config/ecs.php --fix"
+            "./vendor/bin/ecs --config=./config/packages/ecs.php --fix"
         ],
         "deptrac": [
-            "./vendor/bin/deptrac analyse --config-file=config/deptrac.yaml"
+            "./vendor/bin/deptrac analyse --config-file=./config/packages/deptrac.yaml"
+        ],
+        "phinx": [
+            "./vendor/bin/phinx --configuration=./config/packages/phinx.php"
         ]
     },
     "conflict": {
