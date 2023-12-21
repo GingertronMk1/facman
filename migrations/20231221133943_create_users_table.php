@@ -27,6 +27,6 @@ final class CreateUsersTable extends AbstractMigration
             ->create();
         ;
 
-        $table->addIndex('email')->update();
+        $table->addIndex('email', ['unique' => true])->update();
     }
 }
