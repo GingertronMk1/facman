@@ -25,38 +25,7 @@ final class MakeEntity extends Command
 
     private const CLASSNAME_PLACEHOLDER = '<className>';
 
-    private const PLACES_AND_THINGS = [
-        'Domain/'.self::CLASSNAME_PLACEHOLDER => [
-            self::CLASSNAME_PLACEHOLDER.'Entity' => [
-                'kind' => 'class',
-            ],
-            self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
-                'kind' => 'interface',
-            ],
-        ],
-        'Application/'.self::CLASSNAME_PLACEHOLDER => [
-            self::CLASSNAME_PLACEHOLDER.'Model' => [
-                'kind' => 'class',
-            ],
-            self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
-                'kind' => 'interface',
-            ],
-        ],
-        'Infrastructure/'.self::CLASSNAME_PLACEHOLDER => [
-            'Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
-                'kind' => 'class',
-            ],
-            'Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
-                'kind' => 'class',
-            ],
-        ],
-        'Framework/Controller' => [
-            self::CLASSNAME_PLACEHOLDER.'Controller' => [
-                'kind' => 'class',
-            ],
-        ],
-    ];
-
+    private string $className = '';
     private bool $dryRun = false;
     private SymfonyStyle $io;
 
@@ -88,21 +57,20 @@ final class MakeEntity extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->dryRun = (bool) $input->getOption(self::OPT_DRY_RUN);
-        $className = $input->getArgument(self::ARG_CLASSNAME);
+        $this->className = $input->getArgument(self::ARG_CLASSNAME);
         $this->io->note($this->dryRun ? 'Dry Run' : 'Not a Dry Run');
-        foreach (self::PLACES_AND_THINGS as $place => $things) {
-            $this->generatePlace($className, $place, $things);
+        foreach ($this->getPlacesAndThings() as $place => $things) {
+            $this->generatePlace($place, $things);
         }
 
         return self::SUCCESS;
     }
 
     private function generatePlace(
-        string $className,
         string $place,
         array $things
     ): void {
-        $place = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $place);
+        $place = str_replace(self::CLASSNAME_PLACEHOLDER, $this->className, $place);
         $dirName = $this->kernel->getProjectDir()."/src/{$place}";
         $this->io->section($dirName);
         $nameSpace = 'App\\'.str_replace('/', '\\', $place);
@@ -121,7 +89,6 @@ final class MakeEntity extends Command
             $this->generateThing(
                 $thing,
                 $attrs,
-                $className,
                 $dirName,
                 $nameSpace
             );
@@ -131,11 +98,10 @@ final class MakeEntity extends Command
     private function generateThing(
         string $thing,
         array $attrs,
-        string $className,
         string $dirName,
         string $nameSpace,
     ): void {
-        $thing = str_replace(self::CLASSNAME_PLACEHOLDER, $className, $thing);
+        $thing = str_replace(self::CLASSNAME_PLACEHOLDER, $this->className, $thing);
         $qualifiedFileName = "{$dirName}/{$thing}.php";
         $kind = $attrs['kind'] ?? 'class';
         $content = $this->twig->render(
@@ -144,6 +110,7 @@ final class MakeEntity extends Command
                 'nameSpace' => $nameSpace,
                 'className' => $thing,
                 'kind' => $kind,
+                'comment' => $attrs['comment'] ?? null,
             ]);
         $this->io->text($content);
         if (!$this->dryRun) {
@@ -157,5 +124,40 @@ final class MakeEntity extends Command
         } else {
             $this->io->text("Not actually making {$qualifiedFileName}");
         }
+    }
+
+    private function getPlacesAndThings(): array
+    {
+        return [
+        'Domain/'.self::CLASSNAME_PLACEHOLDER => [
+            self::CLASSNAME_PLACEHOLDER.'Entity' => [
+                'kind' => 'class',
+            ],
+            self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
+                'kind' => 'interface',
+            ],
+        ],
+        'Application/'.self::CLASSNAME_PLACEHOLDER => [
+            self::CLASSNAME_PLACEHOLDER.'Model' => [
+                'kind' => 'class',
+            ],
+            self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
+                'kind' => 'interface',
+            ],
+        ],
+        'Infrastructure/'.self::CLASSNAME_PLACEHOLDER => [
+            'Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
+                'kind' => 'class',
+            ],
+            'Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
+                'kind' => 'class',
+            ],
+        ],
+        'Framework/Controller' => [
+            self::CLASSNAME_PLACEHOLDER.'Controller' => [
+                'kind' => 'class',
+            ],
+        ],
+    ];
     }
 }

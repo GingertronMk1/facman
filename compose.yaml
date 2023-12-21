@@ -4,10 +4,10 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: _docker/nginx.dockerfile
+      dockerfile: _docker/config/nginx.dockerfile
     volumes:
       - "./:/var/www:delegated"
-      - "./_docker/nginx/conf.d/:/etc/nginx/conf.d/:delegated"
+      - "./_docker/config/nginx/conf.d/:/etc/nginx/conf.d/:delegated"
     depends_on:
       - app
     ports:
@@ -30,7 +30,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: _docker/app.dockerfile
+      dockerfile: _docker/config/app.dockerfile
     volumes:
       - '.:/var/www:delegated'
     networks:
