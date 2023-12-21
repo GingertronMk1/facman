@@ -11,5 +11,7 @@ namespace {{ nameSpace }};
 {% endif %}
 {{ kind }} {{ className }}
 {
-    {% if kind is 'class' %}public function __construct() {}{% endif %}
+    {% if kind == 'class' %}
+    public function __construct() {}
+    {% endif %}
 }

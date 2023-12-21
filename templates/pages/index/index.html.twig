@@ -2,4 +2,8 @@
 
 {% block body %}
     <h1>Welcome.</h1>
+    {% for user in users %}
+      {{ user.id }}
+      {{ user.email }}
+    {% endfor %}
 {% endblock %}

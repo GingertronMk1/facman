@@ -114,13 +114,16 @@ final class MakeEntity extends Command
             ]);
         $this->io->text($content);
         if (!$this->dryRun) {
-            $this->io->text("Making {$qualifiedFileName}");
-            touch($qualifiedFileName);
-            $fp = fopen($qualifiedFileName, 'w');
-            fwrite(
-                $fp,
-                $content
-            );
+            if (!file_exists($qualifiedFileName)) {
+                $this->io->text("Making {$qualifiedFileName}");
+                $fp = fopen($qualifiedFileName, 'w');
+                fwrite(
+                    $fp,
+                    $content
+                );
+            } else {
+                $this->io->text("{$qualifiedFileName} already exists");
+            }
         } else {
             $this->io->text("Not actually making {$qualifiedFileName}");
         }
@@ -131,7 +134,6 @@ final class MakeEntity extends Command
         return [
         'Domain/'.self::CLASSNAME_PLACEHOLDER => [
             self::CLASSNAME_PLACEHOLDER.'Entity' => [
-                'kind' => 'class',
             ],
             self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
                 'kind' => 'interface',
@@ -139,24 +141,26 @@ final class MakeEntity extends Command
         ],
         'Application/'.self::CLASSNAME_PLACEHOLDER => [
             self::CLASSNAME_PLACEHOLDER.'Model' => [
-                'kind' => 'class',
             ],
             self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
                 'kind' => 'interface',
             ],
+            'Create'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [],
+            'Create'.self::CLASSNAME_PLACEHOLDER.'Command' => [],
+            'Update'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [],
+            'Update'.self::CLASSNAME_PLACEHOLDER.'Command' => [],
         ],
         'Infrastructure/'.self::CLASSNAME_PLACEHOLDER => [
             'Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
-                'kind' => 'class',
             ],
             'Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
-                'kind' => 'class',
             ],
         ],
         'Framework/Controller' => [
-            self::CLASSNAME_PLACEHOLDER.'Controller' => [
-                'kind' => 'class',
-            ],
+            self::CLASSNAME_PLACEHOLDER.'Controller' => [],
+        ],
+        'Framework/Form' => [
+            self::CLASSNAME_PLACEHOLDER.'Type' => [],
         ],
     ];
     }

@@ -14,7 +14,8 @@ class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
         private string $email,
         private array $roles,
         private string $password
-    ) {}
+    ) {
+    }
 
     public function getRoles(): array
     {
@@ -26,9 +27,18 @@ class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
     public function eraseCredentials(): void
     {
-
     }
 
     public function getPassword(): string

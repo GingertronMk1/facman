@@ -2,6 +2,7 @@ doctrine:
     dbal:
         driver: pdo_pgsql
         dbname: '%env(resolve:POSTGRES_DB)%'
+        host: 'database'
         port: '%env(resolve:POSTGRES_PORT)%'
         user: '%env(resolve:POSTGRES_USER)%'
         password: '%env(resolve:POSTGRES_PASSWORD)%'

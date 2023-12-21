@@ -4,5 +4,5 @@ source .env
 
 ./_docker/bin/database/exec sh -c "\
     PGPASSWORD=$POSTGRES_PASSWORD \
-    psql -d $POSTGRES_DB -U $POSTGRES_USER\
+    psql -U $POSTGRES_USER $@\
   "
