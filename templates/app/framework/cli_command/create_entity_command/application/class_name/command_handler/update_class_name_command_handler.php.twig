@@ -1,3 +1,21 @@
 <?php
 
 declare(strict_types=1);
+
+namespace {{ nameSpace }};
+
+use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
+
+class {{ classBaseName }} {
+    public function __construct(
+        public {{ entityName }}Id $id
+    )
+    {}
+
+    public static function fromModel({{ entityName }}Model $model): self
+    {
+        return new self(
+            id: $model->id,
+        );
+    }
+}

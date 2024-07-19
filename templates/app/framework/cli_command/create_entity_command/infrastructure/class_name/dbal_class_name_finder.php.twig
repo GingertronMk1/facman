@@ -1,3 +1,19 @@
 <?php
 
 declare(strict_types=1);
+
+namespace {{ nameSpace }};
+
+use App\Application\{{ entityName }}\{{ entityName }}FinderInterface;
+use Doctrine\Dbal\Connection;
+
+readonly class {{ className }} implements {{ entityName }}FinderInterface
+{
+    public function __construct(
+        private Connection $connection
+    ) {}
+
+    private function createFromRow(array $row): {{ entityName }}Model
+    {
+    }
+}

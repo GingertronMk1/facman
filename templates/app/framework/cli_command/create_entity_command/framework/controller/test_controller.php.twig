@@ -1,3 +1,16 @@
 <?php
 
-declare(strict_types=1);
+namespace {{ nameSpace }};
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class {{ className }} extends AbstractController
+{
+    #[Route(path: '/', name: 'index')]
+    public function home(): Response
+    {
+        return '';
+    }
+}

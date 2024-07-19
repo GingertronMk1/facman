@@ -1,3 +1,15 @@
 <?php
 
 declare(strict_types=1);
+
+namespace {{ nameSpace }};
+
+use App\Domain\{{ entityName }}\{{ entityName }}RepositoryInterface;
+use Doctrine\Dbal\Connection;
+
+readonly class {{ className }} implements {{ entityName }}RepositoryInterface
+{
+    public function __construct(
+        private Connection $connection
+    ) {}
+}
