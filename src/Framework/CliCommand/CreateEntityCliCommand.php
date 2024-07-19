@@ -18,7 +18,7 @@ use Symfony\Component\Form\AbstractType;
 
 #[AsCommand(
     name: 'app:create-entity',
-    description: 'Add a short description for your command',
+    description: 'Create and scaffold an entity',
 )]
 class CreateEntityCliCommand extends Command
 {
@@ -46,24 +46,27 @@ class CreateEntityCliCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $baseClassName = $input->getArgument('arg1');
+        $baseClassName = $input->getArgument(self::CLASSNAME_PLACEHOLDER);
 
+        $successful = [];
         foreach ($this->getClassNames() as $classNameRaw => $properties) {
             $className = $this->replacePlaceholder($classNameRaw, $baseClassName);
 
             $classFileName = str_replace(['\\', 'App/'], ['/', 'src/'], $className).'.php';
             $fileMarkup = $this->getMarkupForFile($className, $properties, $baseClassName);
 
-            $io->writeln($classFileName);
-            $io->writeln($fileMarkup);
-
             try {
                 $this->filesystem->dumpFile(
-                    $classFileName, $fileMarkup);
+                    $classFileName,
+                    $fileMarkup
+                );
+                $successful[] = $classFileName;
             } catch (\Throwable $e) {
                 $io->error($e->getMessage());
             }
         }
+
+        $io->listing($successful);
 
         return Command::SUCCESS;
     }
