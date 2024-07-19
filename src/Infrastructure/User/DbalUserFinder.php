@@ -28,7 +28,13 @@ readonly class DbalUserFinder implements UserFinderInterface
         return [];
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     private function createFromRow(array $row): UserModel
     {
+        return new UserModel(
+            id: UserId::fromString($row['id'])
+        );
     }
 }

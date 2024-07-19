@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace {{ nameSpace }};
 
 use App\Domain\{{ entityName }}\{{ entityName }}RepositoryInterface;
+use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
+use App\Domain\{{ entityName }}\{{ entityName }}Entity;
 use Doctrine\Dbal\Connection;
 
 readonly class {{ classBaseName }} implements {{ entityName }}RepositoryInterface
@@ -12,4 +14,19 @@ readonly class {{ classBaseName }} implements {{ entityName }}RepositoryInterfac
     public function __construct(
         private Connection $connection
     ) {}
+
+    public function generateId(): {{ entityName }}Id
+    {
+        return {{ entityName }}Id::generate();
+    }
+
+    public function store({{ entityName }}Entity $entity): {{ entityName }}Id
+    {
+        return $entity->id;
+    }
+
+    public function update({{ entityName }}Entity $entity): {{ entityName }}Id
+    {
+        return $entity->id;
+    }
 }
