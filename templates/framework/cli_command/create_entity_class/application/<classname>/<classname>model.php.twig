@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use App\Domain\{{ className }}\ValueObject\{{ className }}Id;
+
+class {{ classBaseName }}
+{
+    public function __construct(
+        public readonly {{ className }}Id $id
+    ) {
+    }
+}

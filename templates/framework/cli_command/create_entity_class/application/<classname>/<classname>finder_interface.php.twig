@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use App\Domain\{{ className }}\ValueObject\{{ className }}Id;
+
+interface {{ classBaseName }}
+{
+    public function getById({{ className }}Id $id): {{ className }}Model;
+
+    /**
+     * @return array<{{ className }}Model>
+     */
+    public function getAll(): array;
+}
