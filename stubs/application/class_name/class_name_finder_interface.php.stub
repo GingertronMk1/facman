@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ nameSpace }};
+
+use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
+
+interface {{ classBaseName }} {
+    public function findById({{ entityName }}Id $id): {{ entityName }}Model;
+    /**
+     *  @return array<{{ entityName }}Model>
+     */
+    public function all(): array;
+}

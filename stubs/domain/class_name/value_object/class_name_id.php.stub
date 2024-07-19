@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ nameSpace }};
+
+use App\Domain\Common\ValueObject\AbstractUuidId;
+
+class {{ classBaseName }} extends AbstractUuidId
+{
+}

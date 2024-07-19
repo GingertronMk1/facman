@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ nameSpace }};
+
+use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
+use App\Domain\{{ entityName }}\{{ entityName }}Entity;
+use App\Application\{{ entityName }}\{{ entityName }}FinderInterface;
+use App\Application\{{ entityName }}\{{ entityName }}Model;
+use Doctrine\DBAL\Connection;
+
+readonly class {{ classBaseName }} implements {{ entityName }}FinderInterface
+{
+    public function __construct(
+        private Connection $connection
+    ) {}
+
+    public function findById({{ entityName }}Id $id): {{ entityName }}Model
+    {
+    }
+
+    /**
+     *  @return array<{{ entityName }}Model>
+     */
+    public function all(): array
+    {
+        return [];
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private function createFromRow(array $row): {{ entityName }}Model
+    {
+        return new {{ entityName }}Model(
+            id: {{ entityName }}Id::fromString($row['id'])
+        );
+    }
+
+}
