@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Framework\Form\Site;
 
-class CreateSiteFormType extends \Symfony\Component\Form\AbstractType
+use Symfony\Component\Form\AbstractType;
+
+class CreateSiteFormType extends AbstractType
 {
     public function __construct(
-    ) {
-    }
+    ) {}
 }

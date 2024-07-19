@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace App\Domain\User;
 
-class UserRepositoryException extends \Exception
-{
-}
+class UserRepositoryException extends \Exception {}

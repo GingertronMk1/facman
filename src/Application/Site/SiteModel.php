@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Application\Site;
 
+use App\Domain\Site\ValueObject\SiteId;
+
 readonly class SiteModel
 {
     public function __construct(
-        public \App\Domain\Site\ValueObject\SiteId $siteId,
-    ) {
-    }
+        public SiteId $siteId,
+    ) {}
 }

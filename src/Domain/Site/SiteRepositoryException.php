@@ -7,6 +7,5 @@ namespace App\Domain\Site;
 final class SiteRepositoryException extends \Exception
 {
     public function __construct(
-    ) {
-    }
+    ) {}
 }

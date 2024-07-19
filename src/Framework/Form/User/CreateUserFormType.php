@@ -18,7 +18,8 @@ class CreateUserFormType extends AbstractType
             ->add('name', TextType::class)
             ->add('email', EmailType::class)
             ->add(
-                'password', RepeatedType::class,
+                'password',
+                RepeatedType::class,
                 [
                     'first_options' => ['label' => 'Password'],
                     'second_options' => ['label' => 'Repeat Password'],

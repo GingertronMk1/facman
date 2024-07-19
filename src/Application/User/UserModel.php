@@ -18,8 +18,7 @@ readonly class UserModel implements UserInterface, PasswordAuthenticatedUserInte
         public string $password,
         public DateTime $createdAt,
         public DateTime $updatedAt,
-    ) {
-    }
+    ) {}
 
     public function getRoles(): array
     {

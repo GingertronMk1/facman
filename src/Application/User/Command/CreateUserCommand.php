@@ -13,6 +13,5 @@ class CreateUserCommand
         public string $email = '',
         public string $password = '',
         public ?UserId $id = null,
-    ) {
-    }
+    ) {}
 }

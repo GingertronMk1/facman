@@ -20,8 +20,7 @@ readonly class DbalUserRepository implements UserRepositoryInterface
         private Connection $connection,
         private UserPasswordHasherInterface $hasher,
         private ClockInterface $clock
-    ) {
-    }
+    ) {}
 
     public function generateId(): UserId
     {
@@ -45,7 +44,8 @@ readonly class DbalUserRepository implements UserRepositoryInterface
                 'email' => $entity->email,
                 'password' => $this->hasher->hashPassword($entity, $entity->password),
                 'now' => (string) $this->clock->getTime(),
-            ]);
+            ])
+        ;
 
         try {
             $rowsAffected = $qb->executeStatement();
@@ -79,7 +79,8 @@ readonly class DbalUserRepository implements UserRepositoryInterface
                 'email' => $entity->email,
                 'password' => $this->hasher->hashPassword($entity, $entity->password),
                 'now' => (string) $this->clock->getTime(),
-            ]);
+            ])
+        ;
 
         try {
             $rowsAffected = $qb->executeStatement();

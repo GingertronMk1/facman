@@ -13,8 +13,7 @@ readonly class UpdateUserCommandHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    ) {
-    }
+    ) {}
 
     public function handle(UpdateUserCommand $command): UserId
     {

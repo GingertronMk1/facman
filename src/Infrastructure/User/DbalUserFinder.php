@@ -17,8 +17,7 @@ readonly class DbalUserFinder implements UserFinderInterface
 {
     public function __construct(
         private Connection $connection
-    ) {
-    }
+    ) {}
 
     public function findById(UserId $id): UserModel
     {
@@ -38,6 +37,29 @@ readonly class DbalUserFinder implements UserFinderInterface
     public function all(): array
     {
         return array_map(fn ($row) => $this->createFromRow($row), $this->getBaseQuery()->fetchAllAssociative());
+    }
+
+    public function refreshUser(UserInterface $user): UserInterface
+    {
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
+    }
+
+    public function supportsClass(string $class): bool
+    {
+        // Tells Symfony to use this provider for this User class.
+        return UserModel::class === $class || is_subclass_of($class, UserModel::class);
+    }
+
+    public function loadUserByIdentifier(string $identifier): UserModel
+    {
+        $qb = $this->getBaseQuery();
+        $qb
+            ->andWhere('email = :email')
+            ->setParameter('email', $identifier)
+        ;
+        $result = $qb->fetchAssociative();
+
+        return $this->createFromRow($result);
     }
 
     private function getBaseQuery(): QueryBuilder
@@ -65,30 +87,5 @@ readonly class DbalUserFinder implements UserFinderInterface
             createdAt: DateTime::fromString($row['created_at']),
             updatedAt: DateTime::fromString($row['updated_at']),
         );
-    }
-
-    public function refreshUser(UserInterface $user): UserInterface
-    {
-        return $this->loadUserByIdentifier($user->getUserIdentifier());
-    }
-
-    public function supportsClass(string $class): bool
-    {
-        /*
-         * Tells Symfony to use this provider for this User class.
-         */
-        return UserModel::class === $class || is_subclass_of($class, UserModel::class);
-    }
-
-    public function loadUserByIdentifier(string $identifier): UserModel
-    {
-        $qb = $this->getBaseQuery();
-        $qb
-            ->andWhere('email = :email')
-            ->setParameter('email', $identifier)
-        ;
-        $result = $qb->fetchAssociative();
-
-        return $this->createFromRow($result);
     }
 }

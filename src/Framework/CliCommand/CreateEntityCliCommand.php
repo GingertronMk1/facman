@@ -2,6 +2,7 @@
 
 namespace App\Framework\CliCommand;
 
+use App\Application\Common\ClockInterface;
 use App\Domain\Common\ValueObject\AbstractUuidId;
 use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
@@ -108,7 +109,7 @@ class CreateEntityCliCommand extends Command
         $markup[] = "namespace {$nameSpace};";
         $markup[] = '';
         $kind = $properties['kind'] ?? 'class';
-        $idLine = "{$kind} $className";
+        $idLine = "{$kind} {$className}";
 
         if ($extends = $properties['extends'] ?? false) {
             $idLine .= " extends \\{$extends}";
@@ -158,79 +159,82 @@ class CreateEntityCliCommand extends Command
         return [
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Entity' => [
                 'attributes' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
             ],
-            'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
+            'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
                 'kind' => 'interface',
             ],
-            'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryException' => [
+            'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryException' => [
                 'kind' => 'final class',
                 'extends' => \Exception::class,
             ],
-            'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => [
+            'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => [
                 'kind' => 'readonly class',
                 'extends' => AbstractUuidId::class,
                 'constructor' => false,
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\Command\\Create'.self::CLASSNAME_PLACEHOLDER.'Command' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\Command\Create'.self::CLASSNAME_PLACEHOLDER.'Command' => [
                 'attributes' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\Command\\Update'.self::CLASSNAME_PLACEHOLDER.'Command' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\Command\Update'.self::CLASSNAME_PLACEHOLDER.'Command' => [
                 'attributes' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\CommandHandler\\Create'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\CommandHandler\Create'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [
+                'kind' => 'readonly class',
                 'attributes' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => 'private',
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => 'private',
                 ],
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\CommandHandler\\Update'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\CommandHandler\Update'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [
+                'kind' => 'readonly class',
                 'attributes' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => 'private',
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => 'private',
                 ],
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
                 'kind' => 'interface',
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderException' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderException' => [
                 'kind' => 'final class',
                 'extends' => \Exception::class,
             ],
-            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Model' => [
+            'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Model' => [
                 'kind' => 'readonly class',
                 'attributes' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
             ],
-            'App\\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
-                'kind' => 'readonly class',
-                'attributes' => [
-                    Connection::class => 'private',
-                ],
-                'implements' => [
-                    'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface',
-                ],
-            ],
-            'App\\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\\Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
+            'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
                 'kind' => 'readonly class',
                 'attributes' => [
                     Connection::class => 'private',
                 ],
                 'implements' => [
-                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',
+                    'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface',
                 ],
             ],
-            'App\\Framework\\Controller\\'.self::CLASSNAME_PLACEHOLDER.'Controller' => [
+            'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
+                'kind' => 'readonly class',
+                'attributes' => [
+                    Connection::class => 'private',
+                    ClockInterface::class => 'private'
+                ],
+                'implements' => [
+                    'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',
+                ],
+            ],
+            'App\Framework\Controller\\'.self::CLASSNAME_PLACEHOLDER.'Controller' => [
                 'extends' => AbstractController::class,
             ],
-            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Create'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
+            'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Create'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
                 'extends' => AbstractType::class,
             ],
-            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
+            'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
                 'extends' => AbstractType::class,
             ],
         ];

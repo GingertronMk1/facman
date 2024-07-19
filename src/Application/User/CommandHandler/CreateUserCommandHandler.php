@@ -13,8 +13,7 @@ class CreateUserCommandHandler
 {
     public function __construct(
         private readonly UserRepositoryInterface $userRepository
-    ) {
-    }
+    ) {}
 
     public function handle(CreateUserCommand $command): UserId
     {

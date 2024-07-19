@@ -7,7 +7,7 @@ namespace App\Application\Site\Command;
 class CreateSiteCommand
 {
     public function __construct(
-        public \App\Domain\Site\ValueObject\SiteId $siteId,
-    ) {
-    }
+        public string $name = '',
+        public string $description = '',
+    ) {}
 }
