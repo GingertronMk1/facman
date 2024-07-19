@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+find ./_docker/bin -type f -exec chmod -v +x {} \;

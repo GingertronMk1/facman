@@ -2,7 +2,7 @@
 
 namespace App\Domain\Common\ValueObject;
 
-abstract class AbstractId implements \Stringable, \JsonSerializable
+abstract readonly class AbstractId implements \Stringable, \JsonSerializable
 {
     public function jsonSerialize(): mixed
     {

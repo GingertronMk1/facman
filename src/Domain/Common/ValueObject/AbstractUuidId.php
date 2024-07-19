@@ -6,10 +6,10 @@ namespace App\Domain\Common\ValueObject;
 
 use Symfony\Component\Uid\UuidV7;
 
-abstract class AbstractUuidId extends AbstractId
+abstract readonly class AbstractUuidId extends AbstractId
 {
     final protected function __construct(
-        private readonly UuidV7 $uuid
+        private UuidV7 $uuid
     ) {
     }
 

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+source .env
+
+./bin/docker/app/console doctrine:migrations:generate

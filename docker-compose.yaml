@@ -1,0 +1,64 @@
+services:
+  nginx:
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: _docker/config/nginx.dockerfile
+    volumes:
+      - "./:/var/www:delegated"
+      - "./_docker/config/nginx/conf.d/:/etc/nginx/conf.d/:delegated"
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - facman-network
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    platform: linux/x86_64
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    networks:
+      - facman-network
+
+  app:
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: _docker/config/app.dockerfile
+    volumes:
+      - '.:/var/www:delegated'
+      - './_docker/config/app/php.ini:/usr/local/etc/php/conf.d/zzz_app.ini'
+    networks:
+      - facman-network
+
+  node:
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: _docker/config/node.dockerfile
+    volumes:
+        - '.:/app:delegated'
+    networks:
+        - facman-network
+
+  adminer:
+    image: adminer:4-standalone
+    platform: linux/x86_64
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - './_docker/plugins:/var/www/html/plugins-enabled:delegated'
+    networks:
+      - facman-network
+
+networks:
+  facman-network:
+    driver: bridge

@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
+    docker compose exec "$@"
+else
+    docker compose exec -T "$@"
+fi

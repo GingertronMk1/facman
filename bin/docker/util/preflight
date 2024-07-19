@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+./bin/docker/app/ecs -- --fix
+./bin/docker/app/composer stan
+./bin/docker/app/deptrac
+./bin/docker/node/npm run stylelint
