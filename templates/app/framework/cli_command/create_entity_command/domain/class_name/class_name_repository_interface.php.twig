@@ -6,7 +6,7 @@ namespace {{ nameSpace }};
 
 use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
 
-interface {{ className }} {
+interface {{ classBaseName }} {
     public function generateId(): {{ entityName }}Id;
     public function store({{ entityName }}Entity $entity): {{ entityName }}Id;
     public function update({{ entityName }}Entity $entity): {{ entityName }}Id;

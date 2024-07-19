@@ -47,8 +47,10 @@ class CreateEntityCommand extends Command
         $twigPrefix = str_replace('\\', '/', $this->inflector->tableize(self::class));
         foreach ($this->getClassNames() as $classNameRaw) {
             $className = 'App\\'.str_replace(self::CLASSNAME_PLACEHOLDER, $baseClassName, $classNameRaw);
-            $twigFileNameForTwigRender = $twigPrefix.'/'.$this->inflector->tableize($classNameRaw).'.php.twig';
+            $twigFileNameForTwigRender = str_replace('\\', '/', $twigPrefix.'/'.$this->inflector->tableize($classNameRaw).'.php.twig');
             $twigFileNameForFileSystem = "templates/{$twigFileNameForTwigRender}";
+            $io->title($className);
+            $io->title($twigFileNameForTwigRender);
 
             if (!$this->filesystem->exists($twigFileNameForFileSystem)) {
                 $this->filesystem->dumpFile($twigFileNameForFileSystem, "<?php\n\ndeclare(strict_types=1);");
@@ -70,10 +72,11 @@ class CreateEntityCommand extends Command
             $io->writeln(json_encode($twigContext, JSON_PRETTY_PRINT));
 
             try {
-                $this->filesystem->dumpFile($classFileName, $this->twig->render(
-                    $twigFileNameForTwigRender,
-                    $twigContext
-                ));
+                $this->filesystem->dumpFile(
+                    $classFileName, $this->twig->render(
+                        $twigFileNameForTwigRender,
+                        $twigContext
+                    ));
             } catch (\Throwable $e) {
                 $io->error($e->getMessage());
             }

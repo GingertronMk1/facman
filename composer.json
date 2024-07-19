@@ -62,6 +62,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "stan": "./vendor/bin/phpstan",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix",
+        "check": [
+            "@cs-fix",
+            "@stan"
         ]
     },
     "conflict": {

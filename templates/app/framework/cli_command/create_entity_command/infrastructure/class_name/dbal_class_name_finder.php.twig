@@ -4,15 +4,30 @@ declare(strict_types=1);
 
 namespace {{ nameSpace }};
 
+use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
 use App\Application\{{ entityName }}\{{ entityName }}FinderInterface;
+use App\Application\{{ entityName }}\{{ entityName }}Model;
 use Doctrine\Dbal\Connection;
 
-readonly class {{ className }} implements {{ entityName }}FinderInterface
+readonly class {{ classBaseName }} implements {{ entityName }}FinderInterface
 {
     public function __construct(
         private Connection $connection
     ) {}
+    public function findById({{ entityName }}Id $id): {{ entityName }}Model
+    {
+    }
+    /**
+     *  @return array<{{ entityName }}Model>
+     */
+    public function all(): array
+    {
+        return [];
+    }
 
+    /**
+     * @return {{ entityName }}Model
+     */
     private function createFromRow(array $row): {{ entityName }}Model
     {
     }
