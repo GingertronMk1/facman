@@ -6,6 +6,6 @@ namespace App\Domain\User\ValueObject;
 
 use App\Domain\Common\ValueObject\AbstractUuidId;
 
-class UserId extends AbstractUuidId
+readonly class UserId extends AbstractUuidId
 {
 }

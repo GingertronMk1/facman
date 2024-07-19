@@ -6,9 +6,10 @@ namespace App\Application\User\Command;
 
 use App\Domain\User\ValueObject\UserId;
 
-class UpdateUserCommand {
+class UpdateUserCommand
+{
     public function __construct(
         public UserId $id
-    )
-    {}
+    ) {
+    }
 }

@@ -34,6 +34,7 @@ readonly class DbalUserFinder implements UserFinderInterface
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')->from('users');
+
         return $qb;
     }
 
@@ -56,7 +57,7 @@ readonly class DbalUserFinder implements UserFinderInterface
 
     public function supportsClass(string $class): bool
     {
-        /**
+        /*
          * Tells Symfony to use this provider for this User class.
          */
         return UserModel::class === $class || is_subclass_of($class, UserModel::class);
