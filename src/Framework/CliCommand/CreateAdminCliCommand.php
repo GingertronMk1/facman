@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:create-admin',
     description: 'Create an admin user with username `admin@facman.test` and password `password`',
 )]
-class CreateAdminCommand extends Command
+class CreateAdminCliCommand extends Command
 {
     public function __construct(
         private readonly CreateUserCommandHandler $handler,
