@@ -11,7 +11,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 )]
 class CreateEntityCommand extends Command
 {
-    private const CLASSNAME_PLACEHOLDER = 'ClassName';
+    private const CLASSNAME_PLACEHOLDER = 'className';
     private readonly Inflector $inflector;
 
     public function __construct(
@@ -36,8 +35,11 @@ class CreateEntityCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument(
+                self::CLASSNAME_PLACEHOLDER,
+                InputArgument::OPTIONAL,
+                'The name of the entity to create'
+            )
         ;
     }
 
@@ -68,6 +70,8 @@ class CreateEntityCommand extends Command
 
     /**
      * @return array<string, string>
+     *
+     * @throws \Exception
      */
     private function getBaseNameAndNameSpace(string $className): array
     {
