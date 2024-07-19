@@ -52,7 +52,7 @@ class CreateEntityCommand extends Command
             $className = str_replace(self::CLASSNAME_PLACEHOLDER, $baseClassName, $classNameRaw);
 
             $classFileName = str_replace(['\\', 'App/'], ['/', 'src/'], $className) . '.php';
-            $fileMarkup = $this->getMarkupForFile($className, $properties);
+            $fileMarkup = $this->getMarkupForFile($className, $properties, $baseClassName);
 
             $io->writeln($classFileName);
             $io->writeln($fileMarkup);
@@ -78,7 +78,7 @@ class CreateEntityCommand extends Command
         ];
     }
 
-    private function getMarkupForFile(string $className, array $properties): string
+    private function getMarkupForFile(string $className, array $properties, string $entityName): string
     {
         $markup = ['<?php','','declare(strict_types=1);',''];
         ['nameSpace' => $nameSpace, 'classBaseName' => $className] = $this->getBaseNameAndNameSpace($className);
@@ -89,11 +89,11 @@ class CreateEntityCommand extends Command
         $idLine = "{$kind} $className";
 
         if ($extends = $properties['extends'] ?? false) {
-            $idLine .= " extends {$extends}";
+            $idLine .= " extends \\{$extends}";
         }
 
         if ($implements = $properties['implements'] ?? false) {
-            $implements = implode(', ', $implements);
+            $implements = implode(', ', array_map(fn (string $c) => "\\{$c}", $implements));
             $idLine .= " implements {$implements}";
         }
 
@@ -107,8 +107,9 @@ class CreateEntityCommand extends Command
         $markup[] = ') {}';
         $markup[] = '}';
 
+        $markup = implode(PHP_EOL, $markup) . PHP_EOL;
 
-        return implode(PHP_EOL, $markup) . PHP_EOL;
+        return str_replace(self::CLASSNAME_PLACEHOLDER, $entityName, $markup);
     }
 
     private function getClassNames(): array
