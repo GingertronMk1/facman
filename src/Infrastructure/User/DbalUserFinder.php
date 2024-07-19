@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\User;
 
+use App\Application\User\UserFinderException;
 use App\Application\User\UserFinderInterface;
 use App\Application\User\UserModel;
 use App\Domain\Common\ValueObject\DateTime;
@@ -50,8 +51,12 @@ readonly class DbalUserFinder implements UserFinderInterface
     /**
      * @param array<string, mixed> $row
      */
-    private function createFromRow(array $row): UserModel
+    private function createFromRow(array|false $row): UserModel
     {
+        if (!$row) {
+            throw new UserFinderException();
+        }
+
         return new UserModel(
             id: UserId::fromString($row['id']),
             name: $row['name'],
@@ -75,7 +80,7 @@ readonly class DbalUserFinder implements UserFinderInterface
         return UserModel::class === $class || is_subclass_of($class, UserModel::class);
     }
 
-    public function loadUserByIdentifier(string $identifier): UserInterface
+    public function loadUserByIdentifier(string $identifier): UserModel
     {
         $qb = $this->getBaseQuery();
         $qb

@@ -7,6 +7,9 @@ namespace App\Application\User;
 use App\Domain\User\ValueObject\UserId;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * @extends UserProviderInterface<UserModel>
+ */
 interface UserFinderInterface extends UserProviderInterface
 {
     public function findById(UserId $id): UserModel;

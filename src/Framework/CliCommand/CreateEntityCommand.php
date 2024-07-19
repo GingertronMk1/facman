@@ -16,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Twig\Environment;
 
 #[AsCommand(
     name: 'app:create-entity',
@@ -29,7 +28,6 @@ class CreateEntityCommand extends Command
 
     public function __construct(
         private readonly Filesystem $filesystem,
-        private readonly Environment $twig,
     ) {
         parent::__construct();
         $this->inflector = InflectorFactory::create()->build();
@@ -68,9 +66,16 @@ class CreateEntityCommand extends Command
         return Command::SUCCESS;
     }
 
+    /**
+     * @return array<string, string>
+     */
     private function getBaseNameAndNameSpace(string $className): array
     {
         $lastBackslash = strrpos($className, '\\');
+
+        if (!$lastBackslash) {
+            throw new \Exception("No backslash found in {$className}.");
+        }
 
         return [
             'nameSpace' => substr($className, 0, $lastBackslash),
@@ -83,6 +88,11 @@ class CreateEntityCommand extends Command
         return str_replace(self::CLASSNAME_PLACEHOLDER, $className, $target);
     }
 
+    /**
+     * @param array<string, mixed> $properties
+     *
+     * @throws \Exception
+     */
     private function getMarkupForFile(string $className, array $properties, string $entityName): string
     {
         $markup = ['<?php', '', 'declare(strict_types=1);', ''];
@@ -133,6 +143,9 @@ class CreateEntityCommand extends Command
         return str_replace(self::CLASSNAME_PLACEHOLDER, $entityName, $markup);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getClassNames(): array
     {
         return [
