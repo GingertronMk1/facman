@@ -26,6 +26,10 @@ final class Version20240719140550 extends AbstractMigration
             'string'
         );
         $table->addColumn(
+            'name',
+            'string'
+        );
+        $table->addColumn(
             'email',
             'string',
         );
