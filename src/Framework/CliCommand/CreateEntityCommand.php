@@ -2,8 +2,11 @@
 
 namespace App\Framework\CliCommand;
 
+use App\Domain\Common\ValueObject\AbstractUuidId;
+use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,6 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Twig\Environment;
 
 #[AsCommand(
@@ -44,32 +48,15 @@ class CreateEntityCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $baseClassName = $input->getArgument('arg1');
 
-        $twigPrefix = str_replace('\\', '/', $this->inflector->tableize(self::class));
-        foreach ($this->getClassNames() as $classNameRaw) {
-            $className = 'App\\'.str_replace(self::CLASSNAME_PLACEHOLDER, $baseClassName, $classNameRaw);
-            $twigFileNameForTwigRender = str_replace('\\', '/', $twigPrefix.'/'.$this->inflector->tableize($classNameRaw).'.php.twig');
-            $twigFileNameForFileSystem = "templates/{$twigFileNameForTwigRender}";
-            $io->title($className);
-            $io->title($twigFileNameForTwigRender);
+        foreach ($this->getClassNames() as $classNameRaw => $properties) {
+            $className = str_replace(self::CLASSNAME_PLACEHOLDER, $baseClassName, $classNameRaw);
 
-            if (!$this->filesystem->exists($twigFileNameForFileSystem)) {
-                $this->filesystem->dumpFile($twigFileNameForFileSystem, "<?php\n\ndeclare(strict_types=1);");
-            }
+            $classFileName = str_replace(['\\', 'App/'], ['/', 'src/'], $className) . '.php';
 
-            $classFileName = str_replace(['\\', 'App/'], ['/', 'src/'], $className).'.php';
-
-            $io->writeln($className);
             $io->writeln($classFileName);
-            $io->writeln($twigFileNameForFileSystem);
+            $io->writeln($this->getMarkupForFile($className, $properties));
 
-            $lastBackslash = strrpos($className, '\\');
-            $twigContext = [
-                'nameSpace' => substr($className, 0, $lastBackslash),
-                'classBaseName' => substr($className, $lastBackslash + 1),
-                'entityName' => $baseClassName,
-            ];
-
-            $io->writeln(json_encode($twigContext, JSON_PRETTY_PRINT));
+            continue;
 
             try {
                 $this->filesystem->dumpFile(
@@ -85,25 +72,128 @@ class CreateEntityCommand extends Command
         return Command::SUCCESS;
     }
 
+    private function getBaseNameAndNameSpace(string $className): array
+    {
+
+        $lastBackslash = strrpos($className, '\\');
+        return [
+            'nameSpace' => substr($className, 0, $lastBackslash),
+            'classBaseName' => substr($className, $lastBackslash + 1),
+        ];
+    }
+
+    private function getMarkupForFile(string $className, array $properties): string
+    {
+        $markup = ['<?php','','declare(strict_types=1);',''];
+        ['nameSpace' => $nameSpace, 'classBaseName' => $className] = $this->getBaseNameAndNameSpace($className);
+
+        $markup[] = "namespace {$nameSpace};";
+        $markup[] = '';
+        $kind = $properties['kind'] ?? 'class';
+        $idLine = "{$kind} $className";
+
+        if ($extends = $properties['extends'] ?? false) {
+            $idLine .= " extends {$extends}";
+        }
+
+        if ($implements = $properties['implements'] ?? false) {
+            $implements = implode(', ', $implements);
+            $idLine .= " implements {$implements}";
+        }
+
+        $markup[] = $idLine;
+        $markup[] = '{';
+        $markup[] = 'public function __construct(';
+        foreach ($properties['attributes'] ?? [] as $class => $type) {
+            ['classBaseName' => $attrClassName] = $this->getBaseNameAndNameSpace($class);
+            $markup[] = $type . ' ' . $class . ' $' . $this->inflector->camelize($attrClassName) . ',';
+        }
+        $markup[] = ') {}';
+        $markup[] = '}';
+
+
+        return implode(PHP_EOL, $markup) . PHP_EOL;
+    }
+
     private function getClassNames(): array
     {
         return [
-            'Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Entity',
-            'Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',
-            'Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryException',
-            'Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\Command\\Create'.self::CLASSNAME_PLACEHOLDER.'Command',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\Command\\Update'.self::CLASSNAME_PLACEHOLDER.'Command',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\CommandHandler\\Create'.self::CLASSNAME_PLACEHOLDER.'CommandHandler',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\CommandHandler\\Update'.self::CLASSNAME_PLACEHOLDER.'CommandHandler',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderException',
-            'Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Model',
-            'Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder',
-            'Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\\Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository',
-            'Framework\\Controller\\'.self::CLASSNAME_PLACEHOLDER.'Controller',
-            'Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Create'.self::CLASSNAME_PLACEHOLDER.'Form',
-            'Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Update'.self::CLASSNAME_PLACEHOLDER.'Form',
+            'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Entity' => [
+                'attributes' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public'
+                ]
+            ],
+            'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
+                'kind' => 'interface',
+            ],
+            'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryException' => [
+                'kind' => 'final class',
+                'extends' => \Exception::class
+            ],
+            'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => [
+                'kind' => 'readonly class',
+                'extends' => AbstractUuidId::class
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\Command\\Create'.self::CLASSNAME_PLACEHOLDER.'Command' => [
+                'attributes' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public'
+                ]
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\Command\\Update'.self::CLASSNAME_PLACEHOLDER.'Command' => [
+                'attributes' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public'
+                ]
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\CommandHandler\\Create'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [
+                'attributes' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => 'private'
+                ]
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\CommandHandler\\Update'.self::CLASSNAME_PLACEHOLDER.'CommandHandler' => [
+                'attributes' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => 'private'
+                ]
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface' => [
+                'kind' => 'interface'
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderException' =>[
+                'kind' => 'final class',
+                'extends' => \Exception::class
+            ],
+            'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Model' =>[
+                'kind' => 'readonly class',
+                'attributes' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public'
+                ]
+            ],
+            'App\\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
+                'kind' => 'readonly class',
+                'attributes' => [
+                    Connection::class => 'private'
+                ],
+                'implements' => [
+                    'App\\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface'
+                ]
+            ],
+            'App\\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\\Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
+                'kind' => 'readonly class',
+                'attributes' => [
+                    Connection::class => 'private'
+                ],
+                'implements' => [
+                    'App\\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface'
+                ]
+            ],
+            'App\\Framework\\Controller\\'.self::CLASSNAME_PLACEHOLDER.'Controller' => [
+                'extends' => AbstractController::class
+            ],
+            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Create'.self::CLASSNAME_PLACEHOLDER.'Form' => [
+                'extends' => FormType::class
+            ],
+            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Update'.self::CLASSNAME_PLACEHOLDER.'Form' => [
+                'extends' => FormType::class
+            ],
         ];
     }
 }

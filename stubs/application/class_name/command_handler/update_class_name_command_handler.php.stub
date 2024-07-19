@@ -18,7 +18,7 @@ class Create{{ entityName }}CommandHandler {
     public function handle(Update{{ entityName }}Command $command): {{ entityName }}Id
     {
         $entity = new {{ entityName }}Entity(
-        id: $this->repo->generateId();
+            id: $this->repo->generateId();
         );
 
         return $this->repo->store($entity);
