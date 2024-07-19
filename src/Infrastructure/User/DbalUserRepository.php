@@ -7,7 +7,7 @@ namespace App\Infrastructure\User;
 use App\Domain\User\UserEntity;
 use App\Domain\User\UserRepositoryInterface;
 use App\Domain\User\ValueObject\UserId;
-use Doctrine\Dbal\Connection;
+use Doctrine\DBAL\Connection;
 
 readonly class DbalUserRepository implements UserRepositoryInterface
 {
