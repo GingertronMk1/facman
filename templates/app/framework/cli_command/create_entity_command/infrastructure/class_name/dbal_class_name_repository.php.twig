@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace {{ nameSpace }};
 
+use App\Application\Common\ClockInterface;
 use App\Domain\{{ entityName }}\{{ entityName }}RepositoryInterface;
 use App\Domain\{{ entityName }}\ValueObject\{{ entityName }}Id;
 use App\Domain\{{ entityName }}\{{ entityName }}Entity;
@@ -12,7 +13,8 @@ use Doctrine\DBAL\Connection;
 readonly class {{ classBaseName }} implements {{ entityName }}RepositoryInterface
 {
     public function __construct(
-        private Connection $connection
+        private Connection $connection,
+        private ClockInterface $clock
     ) {}
 
     public function generateId(): {{ entityName }}Id
