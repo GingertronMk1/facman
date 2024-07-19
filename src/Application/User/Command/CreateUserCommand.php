@@ -9,9 +9,9 @@ use App\Domain\User\ValueObject\UserId;
 class CreateUserCommand
 {
     public function __construct(
-        public string $name,
-        public string $email,
-        public string $password,
+        public string $name = '',
+        public string $email = '',
+        public string $password = '',
         public ?UserId $id = null,
     ) {
     }

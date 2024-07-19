@@ -14,13 +14,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\AbstractType;
 
 #[AsCommand(
     name: 'app:create-entity',
     description: 'Add a short description for your command',
 )]
-class CreateEntityCommand extends Command
+class CreateEntityCliCommand extends Command
 {
     private const CLASSNAME_PLACEHOLDER = 'className';
     private readonly Inflector $inflector;
@@ -224,11 +224,11 @@ class CreateEntityCommand extends Command
             'App\\Framework\\Controller\\'.self::CLASSNAME_PLACEHOLDER.'Controller' => [
                 'extends' => AbstractController::class,
             ],
-            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Create'.self::CLASSNAME_PLACEHOLDER.'Form' => [
-                'extends' => FormType::class,
+            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Create'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
+                'extends' => AbstractType::class,
             ],
-            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Update'.self::CLASSNAME_PLACEHOLDER.'Form' => [
-                'extends' => FormType::class,
+            'App\\Framework\\Form\\'.self::CLASSNAME_PLACEHOLDER.'\\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
+                'extends' => AbstractType::class,
             ],
         ];
     }
