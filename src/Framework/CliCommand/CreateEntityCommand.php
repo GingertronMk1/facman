@@ -52,18 +52,14 @@ class CreateEntityCommand extends Command
             $className = str_replace(self::CLASSNAME_PLACEHOLDER, $baseClassName, $classNameRaw);
 
             $classFileName = str_replace(['\\', 'App/'], ['/', 'src/'], $className) . '.php';
+            $fileMarkup = $this->getMarkupForFile($className, $properties);
 
             $io->writeln($classFileName);
-            $io->writeln($this->getMarkupForFile($className, $properties));
-
-            continue;
+            $io->writeln($fileMarkup);
 
             try {
                 $this->filesystem->dumpFile(
-                    $classFileName, $this->twig->render(
-                        $twigFileNameForTwigRender,
-                        $twigContext
-                    ));
+                    $classFileName, $fileMarkup);
             } catch (\Throwable $e) {
                 $io->error($e->getMessage());
             }
