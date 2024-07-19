@@ -35,13 +35,12 @@ class CreateAdminCommand extends Command
         );
 
         $id = $this->handler->handle($command);
-        $io->definitionList([
+        $io->definitionList(
             ['id' => $command->id],
             ['name' => $command->name],
             ['email' => $command->email],
             ['password' => $command->password],
-        ]);
-        $io->success($id);
+        );
 
         return Command::SUCCESS;
     }
