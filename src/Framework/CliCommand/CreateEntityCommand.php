@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Twig\Environment;
 
 #[AsCommand(
     name: 'app:create-entity',
@@ -24,6 +25,7 @@ class CreateEntityCommand extends Command
 
     public function __construct(
         private readonly Filesystem $filesystem,
+        private readonly Environment $twig,
     )
     {
         parent::__construct();
@@ -58,6 +60,13 @@ class CreateEntityCommand extends Command
             $io->writeln($className);
             $io->writeln($classFileName);
             $io->writeln($twigFileNameForFileSystem);
+
+            $this->filesystem->dumpFile($classFileName, $this->twig->render(
+                $twigFileNameForTwigRender,
+                [
+                    'className' => $className,
+                ]
+            ));
 
 
         }
