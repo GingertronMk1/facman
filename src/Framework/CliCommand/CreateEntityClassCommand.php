@@ -48,21 +48,29 @@ class CreateEntityClassCommand extends Command
         $this->fs->mkdir(['src/Application', 'src/Infrastructure', 'src/Framework', 'src/Domain']);
 
         $files = [];
-        foreach($this->getFilesToCreateFlat($arg1) as $file) {
+        foreach($this->getFilesToCreateFlat() as $file) {
             $files[$this->inflector->tableize($file)] = $this->replaceClassNamePlaceholder($arg1, $file);
         };
 
-        foreach($files as $fileName => $className)
-            $fileName = $this->inflector->tableize('templates/framework/clicommand/' . self::class) . $fileName;
+        foreach($files as $fileName => $className) {
+            $finalBackslash = strrpos($className, '\\');
+            $nameSpace = substr($className, 0, $finalBackslash);
+            $classBaseName = substr($className, $finalBackslash + 1);
+            $io->writeln([$className, $nameSpace, $classBaseName]);
+            $io->newLine(2);
+            $fileName = "templates/framework/cli_command/create_entity_class/{$fileName}.php.twig";
             if (!$this->fs->exists($fileName)) {
-                $this->fs->dumpFile($fileName, <<<EOF
-<?php
-
-declare(strict_types=1);
-
-EOF
-);
+                $this->fs->dumpFile($fileName, '');
             }
+
+            $classFileName = preg_replace(['/^App\\\\/', '/\\\\/'], ['src/', '/'], $className) . '.php';
+
+            $this->fs->dumpFile($classFileName, $this->twig->render($fileName, [
+                'namespace' => $nameSpace,
+                'classBaseName' => $classBaseName,
+                'className' => $arg1,
+            ]));
+        }
 
         return Command::SUCCESS;
     }
@@ -99,7 +107,7 @@ EOF
     private function getFilesToCreate(): array
     {
         return [
-            'Domain' => [
+            'Domain/' . self::CLASSNAME_PLACEHOLDER => [
                 'ValueObject' => [
                     self::CLASSNAME_PLACEHOLDER . "Id",
                 ],
@@ -107,7 +115,7 @@ EOF
                 self::CLASSNAME_PLACEHOLDER . "RepositoryInterface",
                 self::CLASSNAME_PLACEHOLDER . "RepositoryException"
             ],
-            'Application' => [
+            'Application/' . self::CLASSNAME_PLACEHOLDER => [
                 'Command' => [
                     "Create" . self::CLASSNAME_PLACEHOLDER . "Command",
                     "Update" . self::CLASSNAME_PLACEHOLDER . "Command"
