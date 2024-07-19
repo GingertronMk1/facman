@@ -13,6 +13,9 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% include 'nav.html.twig' %}
+        <main class="container py-3">
+            {% block body %}{% endblock %}
+        </main>
     </body>
 </html>

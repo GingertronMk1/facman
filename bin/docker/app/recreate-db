@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+source .env
+
+./bin/docker/app/console doctrine:database:drop --force \
+    && ./bin/docker/app/console doctrine:database:create \
+    && ./bin/docker/app/console doctrine:migrations:migrate -n \
+    && ./bin/docker/app/console app:load-fixtures
