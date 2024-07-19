@@ -4,20 +4,27 @@ declare(strict_types=1);
 
 namespace App\Application\User\CommandHandler;
 
-use App\Application\User\UserModel;
+use App\Application\User\Command\UpdateUserCommand;
+use App\Domain\User\UserEntity;
+use App\Domain\User\UserRepositoryInterface;
 use App\Domain\User\ValueObject\UserId;
 
-class UpdateUserCommandHandler
+readonly class UpdateUserCommandHandler
 {
     public function __construct(
-        public UserId $id
+        private UserRepositoryInterface $userRepository
     ) {
     }
 
-    public static function fromModel(UserModel $model): self
+    public function handle(UpdateUserCommand $command): UserId
     {
-        return new self(
-            id: $model->id,
+        $entity = new UserEntity(
+            id: $command->id,
+            name: $command->name,
+            email: $command->email,
+            password: $command->password,
         );
+
+        return $this->userRepository->update($entity);
     }
 }

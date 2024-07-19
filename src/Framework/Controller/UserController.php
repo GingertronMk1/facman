@@ -3,8 +3,12 @@
 namespace App\Framework\Controller;
 
 use App\Application\User\Command\CreateUserCommand;
+use App\Application\User\Command\UpdateUserCommand;
 use App\Application\User\CommandHandler\CreateUserCommandHandler;
+use App\Application\User\CommandHandler\UpdateUserCommandHandler;
+use App\Application\User\UserModel;
 use App\Framework\Form\User\CreateUserFormType;
+use App\Framework\Form\User\UpdateUserFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +38,37 @@ class UserController extends AbstractController
 
         return $this->render(
             'user/create.html.twig',
+            [
+                'form' => $form,
+            ]
+        );
+    }
+
+    #[Route(path: '/update', name: 'update', methods: ['GET', 'POST'])]
+    public function update(
+        UpdateUserCommandHandler $handler,
+        Request $request
+    ): Response {
+        $user = $this->getUser();
+        if (!$user instanceof UserModel) {
+            throw new \Exception();
+        }
+        $command = UpdateUserCommand::fromModel($user);
+        $form = $this->createForm(UpdateUserFormType::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $handler->handle($command);
+
+                return $this->redirectToRoute('index');
+            } catch (\Throwable $e) {
+                throw new \Exception('Error updating person', previous: $e);
+            }
+        }
+
+        return $this->render(
+            'user/update.html.twig',
             [
                 'form' => $form,
             ]
