@@ -19,15 +19,26 @@ final class Version20240719211501 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        $companiesTable = $schema->createTable('companies');
+        $companiesTable->addColumn('id', 'string');
+        $companiesTable->addColumn('name', 'string');
+        $companiesTable->addColumn('description', 'text', ['notnull' => false]);
+        $companiesTable->addColumn('created_at', 'datetime');
+        $companiesTable->addColumn('updated_at', 'datetime');
+        $companiesTable->addColumn('deleted_at', 'datetime', ['notnull' => false]);
+        $companiesTable->setPrimaryKey(['id']);
+
         // this up() migration is auto-generated, please modify it to your needs
         $sitesTable = $schema->createTable('sites');
         $sitesTable->addColumn('id', 'string');
+        $sitesTable->addColumn('company_id', 'string');
         $sitesTable->addColumn('name', 'string');
         $sitesTable->addColumn('description', 'text', ['notnull' => false]);
         $sitesTable->addColumn('created_at', 'datetime');
         $sitesTable->addColumn('updated_at', 'datetime');
         $sitesTable->addColumn('deleted_at', 'datetime', ['notnull' => false]);
         $sitesTable->setPrimaryKey(['id']);
+        $sitesTable->addForeignKeyConstraint($companiesTable, ['company_id'], ['id']);
 
         $buildingsTable = $schema->createTable('buildings');
         $buildingsTable->addColumn('id', 'string');
