@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Site;
 
+use App\Domain\Company\ValueObject\CompanyId;
 use App\Domain\Site\ValueObject\SiteId;
 
 class SiteEntity
@@ -12,5 +13,6 @@ class SiteEntity
         public SiteId $id,
         public string $name,
         public string $description,
+        public CompanyId $companyId,
     ) {}
 }

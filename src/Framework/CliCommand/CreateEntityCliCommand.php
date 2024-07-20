@@ -168,6 +168,7 @@ class CreateEntityCliCommand extends Command
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryException' => [
                 'kind' => 'final class',
                 'extends' => \Exception::class,
+                'constructor' => false,
             ],
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => [
                 'kind' => 'readonly class',
@@ -202,6 +203,7 @@ class CreateEntityCliCommand extends Command
             'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderException' => [
                 'kind' => 'final class',
                 'extends' => \Exception::class,
+                'constructor' => false,
             ],
             'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Model' => [
                 'kind' => 'readonly class',
@@ -235,7 +237,7 @@ class CreateEntityCliCommand extends Command
                 'extends' => AbstractType::class,
             ],
             'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
-                'extends' => AbstractType::class,
+                'extends' => 'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType',
             ],
         ];
     }

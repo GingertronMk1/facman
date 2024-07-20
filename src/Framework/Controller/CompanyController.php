@@ -4,8 +4,31 @@ declare(strict_types=1);
 
 namespace App\Framework\Controller;
 
-class CompanyController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+use App\Application\Company\Command\CreateCompanyCommand;
+use App\Application\Company\CommandHandler\CreateCompanyCommandHandler;
+use App\Framework\Form\Company\CreateCompanyFormType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route(path: '/company', name: 'company.')]
+class CompanyController extends AbstractController
 {
-public function __construct(
-) {}
+    #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
+    public function create(
+        CreateCompanyCommandHandler $handler,
+        Request $request
+    ): Response {
+        $command = new CreateCompanyCommand();
+        $form = $this->createForm(CreateCompanyFormType::class, $command);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $handler->handle($command);
+            $this->redirectToRoute('company.index');
+        }
+
+        return $this->render('company/create.html.twig', ['form' => $form]);
+    }
 }

@@ -33,6 +33,7 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
                 'id' => ':id',
                 'name' => ':name',
                 'description' => ':description',
+                'company_id' => ':company_id',
                 'created_at' => ':now',
                 'updated_at' => ':now',
             ])
@@ -40,6 +41,7 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
                 'id' => (string) $entity->id,
                 'name' => $entity->name,
                 'description' => $entity->description,
+                'company_id' => (string) $entity->companyId,
                 'now' => (string) $this->clockInterface->getTime(),
             ])
         ;
@@ -53,6 +55,27 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
 
     public function update(SiteEntity $entity): SiteId
     {
-        // TODO: Implement update() method.
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->update(self::TABLE)
+            ->where('id = :id')
+            ->values([
+                'name' => ':name',
+                'description' => ':description',
+                'company_id' => ':company_id',
+                'updated_at' => ':now',
+            ])
+            ->setParameters([
+                'id' => (string) $entity->id,
+                'name' => $entity->name,
+                'description' => $entity->description,
+                'company_id' => (string) $entity->companyId,
+                'now' => (string) $this->clockInterface->getTime(),
+            ])
+        ;
+
+        $rowsAffected = $qb->executeStatement();
+
+        return $entity->id;
     }
 }

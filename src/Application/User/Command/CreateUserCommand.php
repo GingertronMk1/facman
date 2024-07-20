@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application\User\Command;
 
-use App\Application\Common\Command;
 use App\Domain\User\ValueObject\UserId;
 
-class CreateUserCommand 
+class CreateUserCommand
 {
     public function __construct(
         public string $name = '',
