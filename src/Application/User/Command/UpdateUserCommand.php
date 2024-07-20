@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Application\User\Command;
 
-use App\Application\Common\AbstractCommand;
+use App\Application\Common\Command;
 use App\Application\User\UserModel;
 use App\Domain\User\ValueObject\UserId;
 
-class UpdateUserAbstractCommand extends AbstractCommand
+class UpdateUserCommand 
 {
     private function __construct(
         public UserId $id,

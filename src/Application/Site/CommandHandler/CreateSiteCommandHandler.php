@@ -22,6 +22,7 @@ readonly class CreateSiteCommandHandler
             name: $command->name,
             description: $command->description,
         );
+
         return $this->siteRepositoryInterface->store($entity);
     }
 }

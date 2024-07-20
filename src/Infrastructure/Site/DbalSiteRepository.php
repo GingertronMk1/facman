@@ -14,6 +14,7 @@ use Doctrine\DBAL\Connection;
 readonly class DbalSiteRepository implements SiteRepositoryInterface
 {
     private const TABLE = 'sites';
+
     public function __construct(
         private Connection $connection,
         private ClockInterface $clockInterface,
@@ -39,14 +40,15 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
                 'id' => (string) $entity->id,
                 'name' => $entity->name,
                 'description' => $entity->description,
-                'now' => (string) $this->clockInterface->getTime()
-            ]);
+                'now' => (string) $this->clockInterface->getTime(),
+            ])
+        ;
         $rowsAffected = $qb->executeStatement();
         if (1 !== $rowsAffected) {
             throw new UserRepositoryException('Wrong number of rows');
         }
-        return $entity->id;
 
+        return $entity->id;
     }
 
     public function update(SiteEntity $entity): SiteId

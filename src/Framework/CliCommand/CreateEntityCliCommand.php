@@ -222,7 +222,7 @@ class CreateEntityCliCommand extends Command
                 'kind' => 'readonly class',
                 'attributes' => [
                     Connection::class => 'private',
-                    ClockInterface::class => 'private'
+                    ClockInterface::class => 'private',
                 ],
                 'implements' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',

@@ -14,7 +14,5 @@ class SiteController extends AbstractController
     public function create(
         CreateSiteCommandHandler $handler,
         Request $request
-    ): Response
-    {
-    }
+    ): Response {}
 }
