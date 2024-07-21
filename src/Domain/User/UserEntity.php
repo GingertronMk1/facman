@@ -14,8 +14,7 @@ readonly class UserEntity implements PasswordAuthenticatedUserInterface
         public string $name,
         public string $email,
         public string $password
-    ) {
-    }
+    ) {}
 
     public function getPassword(): ?string
     {

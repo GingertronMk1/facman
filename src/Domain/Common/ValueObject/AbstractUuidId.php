@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Common\ValueObject;
 
+use InvalidArgumentException;
 use Symfony\Component\Uid\UuidV7;
 
 abstract readonly class AbstractUuidId extends AbstractId
 {
     final protected function __construct(
         private UuidV7 $uuid
-    ) {
-    }
+    ) {}
 
     /**
      * Get a string representation of this object.
@@ -36,7 +36,7 @@ abstract readonly class AbstractUuidId extends AbstractId
 
         try {
             static::fromString($uuid);
-        } catch (\InvalidArgumentException) {
+        } catch (InvalidArgumentException) {
             $valid = false;
         }
 
@@ -56,7 +56,7 @@ abstract readonly class AbstractUuidId extends AbstractId
      *
      * @param string $uuid the ID
      *
-     * @throws \InvalidArgumentException thrown if the string is not a valid UUID
+     * @throws InvalidArgumentException thrown if the string is not a valid UUID
      */
     public static function fromString(string $uuid): static
     {

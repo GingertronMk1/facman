@@ -14,8 +14,7 @@ class UpdateUserCommand
         public string $name,
         public string $email,
         public string $password,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(UserModel $userModel): self
     {

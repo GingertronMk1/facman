@@ -11,14 +11,15 @@ use App\Domain\Common\ValueObject\DateTime;
 use App\Domain\User\ValueObject\UserId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Throwable;
 
 readonly class DbalUserFinder implements UserFinderInterface
 {
     public function __construct(
         private Connection $connection
-    ) {
-    }
+    ) {}
 
     public function findById(UserId $id): UserModel
     {
@@ -27,17 +28,64 @@ readonly class DbalUserFinder implements UserFinderInterface
             ->andWhere('id = :id')
             ->setParameter('id', (string) $id)
         ;
-        $result = $qb->fetchAssociative();
+
+        try {
+            $result = $qb->fetchAssociative();
+        } catch (Throwable $e) {
+            throw UserFinderException::errorGettingRows($e);
+        }
 
         return $this->createFromRow($result);
     }
 
     /**
      * @return array<UserModel>
+     *
+     * @throws UserFinderException
      */
     public function all(): array
     {
-        return array_map(fn ($row) => $this->createFromRow($row), $this->getBaseQuery()->fetchAllAssociative());
+        try {
+            $rows = $this->getBaseQuery()->fetchAllAssociative();
+        } catch (Throwable $e) {
+            throw UserFinderException::errorGettingRows($e);
+        }
+
+        return array_map(fn ($row) => $this->createFromRow($row), $rows);
+    }
+
+    /**
+     * @throws UserFinderException
+     */
+    public function refreshUser(UserInterface $user): UserInterface
+    {
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
+    }
+
+    public function supportsClass(string $class): bool
+    {
+        // Tells Symfony to use this provider for this User class.
+        return UserModel::class === $class || is_subclass_of($class, UserModel::class);
+    }
+
+    /**
+     * @throws UserFinderException
+     */
+    public function loadUserByIdentifier(string $identifier): UserModel
+    {
+        $qb = $this->getBaseQuery();
+        $qb
+            ->andWhere('email = :email')
+            ->setParameter('email', $identifier)
+        ;
+
+        try {
+            $result = $qb->fetchAssociative();
+        } catch (Throwable $e) {
+            throw UserFinderException::errorGettingRows($e);
+        }
+
+        return $this->createFromRow($result);
     }
 
     private function getBaseQuery(): QueryBuilder
@@ -49,46 +97,37 @@ readonly class DbalUserFinder implements UserFinderInterface
     }
 
     /**
-     * @param array<string, mixed> $row
+     * @param array<string, false|mixed> $row
+     *
+     * @throws UserFinderException
      */
     private function createFromRow(array|false $row): UserModel
     {
         if (!$row) {
-            throw new UserFinderException();
+            throw UserFinderException::notFound();
+        }
+
+        try {
+            $id = UserId::fromString($row['id']);
+            $createdAt = DateTime::fromString($row['created_at']);
+            $updatedAt = DateTime::fromString($row['updated_at']);
+
+            $deletedAt = null;
+            if (is_string($row['deleted_at'])) {
+                $deletedAt = DateTime::fromString($row['deleted_at']);
+            }
+        } catch (InvalidArgumentException $e) {
+            throw UserFinderException::invalidId($e);
         }
 
         return new UserModel(
-            id: UserId::fromString($row['id']),
+            id: $id,
             name: $row['name'],
             email: $row['email'],
             password: $row['password'],
-            createdAt: DateTime::fromString($row['created_at']),
-            updatedAt: DateTime::fromString($row['updated_at']),
+            createdAt: $createdAt,
+            updatedAt: $updatedAt,
+            deletedAt: $deletedAt
         );
-    }
-
-    public function refreshUser(UserInterface $user): UserInterface
-    {
-        return $this->loadUserByIdentifier($user->getUserIdentifier());
-    }
-
-    public function supportsClass(string $class): bool
-    {
-        /*
-         * Tells Symfony to use this provider for this User class.
-         */
-        return UserModel::class === $class || is_subclass_of($class, UserModel::class);
-    }
-
-    public function loadUserByIdentifier(string $identifier): UserModel
-    {
-        $qb = $this->getBaseQuery();
-        $qb
-            ->andWhere('email = :email')
-            ->setParameter('email', $identifier)
-        ;
-        $result = $qb->fetchAssociative();
-
-        return $this->createFromRow($result);
     }
 }

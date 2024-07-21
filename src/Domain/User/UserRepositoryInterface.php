@@ -10,7 +10,13 @@ interface UserRepositoryInterface
 {
     public function generateId(): UserId;
 
+    /**
+     * @throws UserRepositoryException
+     */
     public function store(UserEntity $entity): UserId;
 
+    /**
+     * @throws UserRepositoryException
+     */
     public function update(UserEntity $entity): UserId;
 }

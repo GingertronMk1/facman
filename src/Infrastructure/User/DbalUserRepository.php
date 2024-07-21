@@ -10,7 +10,9 @@ use App\Domain\User\UserRepositoryException;
 use App\Domain\User\UserRepositoryInterface;
 use App\Domain\User\ValueObject\UserId;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Throwable;
 
 readonly class DbalUserRepository implements UserRepositoryInterface
 {
@@ -20,8 +22,7 @@ readonly class DbalUserRepository implements UserRepositoryInterface
         private Connection $connection,
         private UserPasswordHasherInterface $hasher,
         private ClockInterface $clock
-    ) {
-    }
+    ) {}
 
     public function generateId(): UserId
     {
@@ -45,18 +46,10 @@ readonly class DbalUserRepository implements UserRepositoryInterface
                 'email' => $entity->email,
                 'password' => $this->hasher->hashPassword($entity, $entity->password),
                 'now' => (string) $this->clock->getTime(),
-            ]);
+            ])
+        ;
 
-        try {
-            $rowsAffected = $qb->executeStatement();
-            if (1 !== $rowsAffected) {
-                throw new UserRepositoryException('The wrong number of rows were changed');
-            }
-        } catch (UserRepositoryException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            throw new UserRepositoryException(previous: $e);
-        }
+        $this->executeAndCheck($qb);
 
         return $entity->id;
     }
@@ -79,19 +72,27 @@ readonly class DbalUserRepository implements UserRepositoryInterface
                 'email' => $entity->email,
                 'password' => $this->hasher->hashPassword($entity, $entity->password),
                 'now' => (string) $this->clock->getTime(),
-            ]);
+            ])
+        ;
 
-        try {
-            $rowsAffected = $qb->executeStatement();
-            if (1 !== $rowsAffected) {
-                throw new UserRepositoryException('The wrong number of rows were changed');
-            }
-        } catch (UserRepositoryException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            throw new UserRepositoryException(previous: $e);
-        }
+        $this->executeAndCheck($qb);
 
         return $entity->id;
+    }
+
+    /**
+     * @throws UserRepositoryException
+     */
+    private function executeAndCheck(QueryBuilder $qb): void
+    {
+        try {
+            $rowsAffected = $qb->executeStatement();
+        } catch (Throwable $e) {
+            throw UserRepositoryException::errorUpdatingRows(previous: $e);
+        }
+
+        if (1 !== $rowsAffected) {
+            throw UserRepositoryException::wrongNumberOfRows($rowsAffected);
+        }
     }
 }

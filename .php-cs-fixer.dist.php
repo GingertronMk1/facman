@@ -1,13 +1,20 @@
 <?php
 
-$finder = (new PhpCsFixer\Finder())
+use PhpCsFixer\Finder;
+use PhpCsFixer\Config;
+use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
+
+$finder = (new Finder())
     ->in(__DIR__)
-    ->exclude('var')
+    ->ignoreVCSIgnored(true)
 ;
 
-return (new PhpCsFixer\Config())
+return (new Config())
+    ->setParallelConfig(ParallelConfigFactory::detect())
     ->setRules([
-        '@Symfony' => true,
+        '@PER-CS2.0' => true,
+        '@PhpCsFixer' => true,
+        'global_namespace_import' => true
     ])
     ->setFinder($finder)
-;
+    ;
