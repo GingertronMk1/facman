@@ -6,7 +6,6 @@ namespace App\Application\Site\Command;
 
 use App\Application\Company\CompanyModel;
 use App\Application\Site\SiteModel;
-use App\Domain\Company\ValueObject\CompanyId;
 use App\Domain\Site\ValueObject\SiteId;
 
 class UpdateSiteCommand

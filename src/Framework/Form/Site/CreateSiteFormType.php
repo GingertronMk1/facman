@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Framework\Form\Site;
 
+use App\Application\Company\CompanyFinderException;
 use App\Application\Company\CompanyFinderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,7 +20,7 @@ class CreateSiteFormType extends AbstractType
     ) {}
 
     /**
-     * @throws \App\Application\Company\CompanyFinderException
+     * @throws CompanyFinderException
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -28,7 +29,7 @@ class CreateSiteFormType extends AbstractType
             ->add('company', ChoiceType::class, [
                 'choices' => $this->companyFinder->all(),
                 'choice_label' => 'name',
-                'choice_value' => 'id'
+                'choice_value' => 'id',
             ])
             ->add('description', TextareaType::class)
             ->add('submit', SubmitType::class)

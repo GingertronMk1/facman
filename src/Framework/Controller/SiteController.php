@@ -38,21 +38,24 @@ class SiteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $handler->handle($command);
+
             return $this->redirectToRoute('site.index');
         }
 
         return $this->render('site/create.html.twig', ['form' => $form]);
     }
 
+    /**
+     * @throws SiteFinderException
+     */
     #[Route(path: '/', name: 'index', methods: ['GET'])]
     public function index(
         SiteFinderInterface $finder
-    ): Response
-    {
+    ): Response {
         return $this->render(
             'site/index.html.twig',
             [
-                'sites' => $finder->all()
+                'sites' => $finder->all(),
             ]
         );
     }
