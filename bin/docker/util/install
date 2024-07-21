@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-touch ./var/db.sqlite
+. .env
+
+touch "./var/${DB_DATABASE}"
 
 docker compose up -d --build \
 && ./bin/docker/app/composer install \
