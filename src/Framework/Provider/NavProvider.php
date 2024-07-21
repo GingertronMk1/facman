@@ -26,6 +26,7 @@ final readonly class NavProvider
             'Companies' => $this->urlGenerator->generate('company.index'),
             'Sites' => $this->urlGenerator->generate('site.index'),
             'Buildings' => $this->urlGenerator->generate('building.index'),
+            'Floors' => $this->urlGenerator->generate('floor.index'),
         ];
     }
 }

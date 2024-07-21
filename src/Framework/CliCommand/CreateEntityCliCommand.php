@@ -238,6 +238,7 @@ class CreateEntityCliCommand extends Command
                     Connection::class => 'private',
                     ClockInterface::class => 'private',
                 ],
+                'extends' => AbstractDbalRepository::class,
                 'implements' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',
                 ],
