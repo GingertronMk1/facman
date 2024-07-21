@@ -15,6 +15,7 @@ final readonly class NavProvider
 
     /**
      * @return array<string, string>
+     *
      * @throws InvalidParameterException
      * @throws MissingMandatoryParametersException
      * @throws RouteNotFoundException

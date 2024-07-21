@@ -6,6 +6,7 @@ use App\Application\Common\ClockInterface;
 use App\Application\Common\Exception\AbstractFinderException;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Common\ValueObject\AbstractUuidId;
+use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
@@ -226,6 +227,7 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     Connection::class => 'private',
                 ],
+                'extends' => AbstractDbalRepository::class,
                 'implements' => [
                     'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface',
                 ],
@@ -247,7 +249,7 @@ class CreateEntityCliCommand extends Command
                 'extends' => AbstractType::class,
             ],
             'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
-                'extends' => 'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType',
+                'extends' => 'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Create'.self::CLASSNAME_PLACEHOLDER.'FormType',
             ],
         ];
     }

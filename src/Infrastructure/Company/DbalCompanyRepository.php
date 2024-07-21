@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace App\Infrastructure\Company;
 
 use App\Application\Common\ClockInterface;
+use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Company\CompanyEntity;
 use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\CompanyRepositoryInterface;
 use App\Domain\Company\ValueObject\CompanyId;
+use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\QueryBuilder;
+use InvalidArgumentException;
 use Throwable;
 
-readonly class DbalCompanyRepository implements CompanyRepositoryInterface
+readonly class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRepositoryInterface
 {
     private const TABLE = 'companies';
 
@@ -66,6 +68,10 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
         return $prefix;
     }
 
+    /**
+     * @throws AbstractRepositoryException
+     * @throws InvalidArgumentException
+     */
     public function store(CompanyEntity $entity): CompanyId
     {
         $qb = $this->connection->createQueryBuilder();
@@ -87,11 +93,15 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
             ])
         ;
 
-        $this->executeAndCheck($qb);
+        $this->executeAndCheck($qb, CompanyRepositoryException::class);
 
         return $entity->id;
     }
 
+    /**
+     * @throws AbstractRepositoryException
+     * @throws InvalidArgumentException
+     */
     public function update(CompanyEntity $entity): CompanyId
     {
         $qb = $this->connection->createQueryBuilder();
@@ -109,24 +119,8 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
             ])
         ;
 
-        $this->executeAndCheck($qb);
+        $this->executeAndCheck($qb, CompanyRepositoryException::class);
 
         return $entity->id;
-    }
-
-    /**
-     * @throws CompanyRepositoryException
-     */
-    private function executeAndCheck(QueryBuilder $qb): void
-    {
-        try {
-            $rowsAffected = $qb->executeStatement();
-        } catch (Throwable $e) {
-            throw CompanyRepositoryException::errorUpdatingRows(previous: $e);
-        }
-
-        if (1 !== $rowsAffected) {
-            throw CompanyRepositoryException::wrongNumberOfRows($rowsAffected);
-        }
     }
 }
