@@ -22,21 +22,29 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
     {
         $qb = $this->getBaseQuery();
         $qb->where('id = :id')->setParameter('id', (string) $id);
-        $result = $qb->fetchAssociative();
+
+        try {
+            $result = $qb->fetchAssociative();
+        } catch (\Throwable $e) {
+            throw CompanyFinderException::errorGettingRows($e);
+        }
 
         return $this->createFromRow($result);
     }
 
     public function all(): array
     {
-        $qb = $this->getBaseQuery();
-        $rows = $qb->fetchAllAssociative();
+        try {
+            $rows = $this->getBaseQuery()->fetchAllAssociative();
+        } catch (\Throwable $e) {
+            throw CompanyFinderException::errorGettingRows($e);
+        }
 
         return array_map(fn ($row) => $this->createFromRow($row), $rows);
     }
 
     /**
-     * @param array<string, mixed>|false $row
+     * @param array<string, false|mixed> $row
      *
      * @throws CompanyFinderException
      */
@@ -46,13 +54,22 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
             throw new CompanyFinderException('No rows found');
         }
 
+        try {
+            $id = CompanyId::fromString($row['id']);
+            $createdAt = DateTime::fromString($row['created_at']);
+            $updatedAt = DateTime::fromString($row['updated_at']);
+            $deletedAt = is_string($row['deleted_at']) ? DateTime::fromString($row['deleted_at']) : null;
+        } catch (\Throwable $e) {
+            throw CompanyFinderException::errorCreatingModel($e);
+        }
+
         return new CompanyModel(
-            CompanyId::fromString($row['id']),
+            $id,
             $row['name'],
             $row['description'],
-            DateTime::fromString($row['created_at']),
-            DateTime::fromString($row['updated_at']),
-            is_string($row['deleted_at']) ? DateTime::fromString($row['deleted_at']) : null,
+            $createdAt,
+            $updatedAt,
+            $deletedAt,
         );
     }
 

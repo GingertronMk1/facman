@@ -4,6 +4,7 @@ namespace App\Framework\CliCommand;
 
 use App\Application\User\Command\CreateUserCommand;
 use App\Application\User\CommandHandler\CreateUserCommandHandler;
+use App\Domain\User\UserRepositoryException;
 use App\Domain\User\ValueObject\UserId;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,6 +24,10 @@ class CreateAdminCliCommand extends Command
         parent::__construct();
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     * @throws UserRepositoryException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -34,7 +39,7 @@ class CreateAdminCliCommand extends Command
             id: UserId::fromString('0190cc0b-f01f-7c54-865c-600e259ec5fb')
         );
 
-        $id = $this->handler->handle($command);
+        $this->handler->handle($command);
         $io->definitionList(
             ['id' => $command->id],
             ['name' => $command->name],

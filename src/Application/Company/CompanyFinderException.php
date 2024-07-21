@@ -4,4 +4,6 @@ declare(strict_types=1);
 
 namespace App\Application\Company;
 
-final class CompanyFinderException extends \Exception {}
+use App\Application\Common\Exception\AbstractFinderException;
+
+final class CompanyFinderException extends AbstractFinderException {}

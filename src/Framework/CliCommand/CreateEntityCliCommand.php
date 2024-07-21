@@ -3,6 +3,8 @@
 namespace App\Framework\CliCommand;
 
 use App\Application\Common\ClockInterface;
+use App\Application\Common\Exception\AbstractFinderException;
+use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Common\ValueObject\AbstractUuidId;
 use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
@@ -33,6 +35,9 @@ class CreateEntityCliCommand extends Command
         $this->inflector = InflectorFactory::create()->build();
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     protected function configure(): void
     {
         $this
@@ -44,6 +49,9 @@ class CreateEntityCliCommand extends Command
         ;
     }
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -75,14 +83,14 @@ class CreateEntityCliCommand extends Command
     /**
      * @return array<string, string>
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     private function getBaseNameAndNameSpace(string $className): array
     {
         $lastBackslash = strrpos($className, '\\');
 
         if (!$lastBackslash) {
-            throw new \Exception("No backslash found in {$className}.");
+            throw new \InvalidArgumentException("No backslash found in {$className}.");
         }
 
         return [
@@ -99,7 +107,7 @@ class CreateEntityCliCommand extends Command
     /**
      * @param array<string, mixed> $properties
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     private function getMarkupForFile(string $className, array $properties, string $entityName): string
     {
@@ -167,7 +175,7 @@ class CreateEntityCliCommand extends Command
             ],
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryException' => [
                 'kind' => 'final class',
-                'extends' => \Exception::class,
+                'extends' => AbstractRepositoryException::class,
                 'constructor' => false,
             ],
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => [
@@ -202,7 +210,7 @@ class CreateEntityCliCommand extends Command
             ],
             'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderException' => [
                 'kind' => 'final class',
-                'extends' => \Exception::class,
+                'extends' => AbstractFinderException::class,
                 'constructor' => false,
             ],
             'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'Model' => [

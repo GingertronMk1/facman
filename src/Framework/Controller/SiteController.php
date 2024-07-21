@@ -6,6 +6,7 @@ namespace App\Framework\Controller;
 
 use App\Application\Site\Command\CreateSiteCommand;
 use App\Application\Site\CommandHandler\CreateSiteCommandHandler;
+use App\Domain\Site\SiteRepositoryException;
 use App\Framework\Form\Site\CreateSiteFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/site', name: 'site.')]
 class SiteController extends AbstractController
 {
+    /**
+     * @throws \LogicException
+     * @throws SiteRepositoryException
+     */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateSiteCommandHandler $handler,

@@ -10,6 +10,7 @@ use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\CompanyRepositoryInterface;
 use App\Domain\Company\ValueObject\CompanyId;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 readonly class DbalCompanyRepository implements CompanyRepositoryInterface
 {
@@ -43,10 +44,8 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
                 'now' => (string) $this->clockInterface->getTime(),
             ])
         ;
-        $rowsAffected = $qb->executeStatement();
-        if (1 !== $rowsAffected) {
-            throw new CompanyRepositoryException('Wrong number of rows');
-        }
+
+        $this->executeAndCheck($qb);
 
         return $entity->id;
     }
@@ -70,8 +69,24 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
             ])
         ;
 
-        $rowsAffected = $qb->executeStatement();
+        $this->executeAndCheck($qb);
 
         return $entity->id;
+    }
+
+    /**
+     * @throws CompanyRepositoryException
+     */
+    private function executeAndCheck(QueryBuilder $qb): void
+    {
+        try {
+            $rowsAffected = $qb->executeStatement();
+        } catch (\Throwable $e) {
+            throw CompanyRepositoryException::errorUpdatingRows(previous: $e);
+        }
+
+        if (1 !== $rowsAffected) {
+            throw CompanyRepositoryException::wrongNumberOfRows($rowsAffected);
+        }
     }
 }

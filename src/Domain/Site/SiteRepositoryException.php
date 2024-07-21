@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Site;
 
-final class SiteRepositoryException extends \Exception
-{
-    public function __construct(
-    ) {}
-}
+use App\Domain\Common\Exception\AbstractRepositoryException;
+
+final class SiteRepositoryException extends AbstractRepositoryException {}

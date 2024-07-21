@@ -7,7 +7,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
 #            id: App\Framework\Security\UserProvider
-            id: App\Application\User\UserFinderInterface
+            id:\App\Application\User\UserFinderInterface
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

@@ -7,6 +7,9 @@ use App\Domain\Common\ValueObject\DateTime;
 
 class SystemClock implements ClockInterface
 {
+    /**
+     * @throws \InvalidArgumentException
+     */
     public function getTime(?string $modifier = null): DateTime
     {
         $initialDateTime = new \DateTimeImmutable();

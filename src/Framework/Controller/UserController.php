@@ -17,6 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/user', name: 'user.')]
 class UserController extends AbstractController
 {
+    /**
+     * @throws \Exception
+     */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateUserCommandHandler $handler,
@@ -44,6 +47,9 @@ class UserController extends AbstractController
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route(path: '/update', name: 'update', methods: ['GET', 'POST'])]
     public function update(
         UpdateUserCommandHandler $handler,

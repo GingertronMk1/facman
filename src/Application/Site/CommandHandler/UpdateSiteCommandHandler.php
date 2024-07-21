@@ -6,6 +6,7 @@ namespace App\Application\Site\CommandHandler;
 
 use App\Application\Site\Command\UpdateSiteCommand;
 use App\Domain\Site\SiteEntity;
+use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 
@@ -15,6 +16,9 @@ readonly class UpdateSiteCommandHandler
         private SiteRepositoryInterface $siteRepositoryInterface,
     ) {}
 
+    /**
+     * @throws SiteRepositoryException
+     */
     public function handle(UpdateSiteCommand $command): SiteId
     {
         $entity = new SiteEntity(

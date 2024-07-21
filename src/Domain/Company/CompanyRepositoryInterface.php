@@ -10,7 +10,13 @@ interface CompanyRepositoryInterface
 {
     public function generateId(): CompanyId;
 
+    /**
+     * @throws CompanyRepositoryException
+     */
     public function store(CompanyEntity $entity): CompanyId;
 
+    /**
+     * @throws CompanyRepositoryException
+     */
     public function update(CompanyEntity $entity): CompanyId;
 }

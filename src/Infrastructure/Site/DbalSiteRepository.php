@@ -6,10 +6,11 @@ namespace App\Infrastructure\Site;
 
 use App\Application\Common\ClockInterface;
 use App\Domain\Site\SiteEntity;
+use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
-use App\Domain\User\UserRepositoryException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 readonly class DbalSiteRepository implements SiteRepositoryInterface
 {
@@ -45,10 +46,7 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
                 'now' => (string) $this->clockInterface->getTime(),
             ])
         ;
-        $rowsAffected = $qb->executeStatement();
-        if (1 !== $rowsAffected) {
-            throw new UserRepositoryException('Wrong number of rows');
-        }
+        $this->executeAndCheck($qb);
 
         return $entity->id;
     }
@@ -74,8 +72,24 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
             ])
         ;
 
-        $rowsAffected = $qb->executeStatement();
+        $this->executeAndCheck($qb);
 
         return $entity->id;
+    }
+
+    /**
+     * @throws SiteRepositoryException
+     */
+    private function executeAndCheck(QueryBuilder $qb): void
+    {
+        try {
+            $rowsAffected = $qb->executeStatement();
+        } catch (\Throwable $e) {
+            throw SiteRepositoryException::errorUpdatingRows(previous: $e);
+        }
+
+        if (1 !== $rowsAffected) {
+            throw SiteRepositoryException::wrongNumberOfRows($rowsAffected);
+        }
     }
 }

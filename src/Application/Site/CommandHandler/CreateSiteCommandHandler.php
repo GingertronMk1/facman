@@ -6,6 +6,7 @@ namespace App\Application\Site\CommandHandler;
 
 use App\Application\Site\Command\CreateSiteCommand;
 use App\Domain\Site\SiteEntity;
+use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 
@@ -15,10 +16,14 @@ readonly class CreateSiteCommandHandler
         private SiteRepositoryInterface $siteRepositoryInterface,
     ) {}
 
+    /**
+     * @throws SiteRepositoryException
+     * @throws \InvalidArgumentException
+     */
     public function handle(CreateSiteCommand $command): SiteId
     {
         if (is_null($command->companyId)) {
-            throw new \Exception('No company ID');
+            throw new \InvalidArgumentException('No company ID');
         }
         $entity = new SiteEntity(
             id: $this->siteRepositoryInterface->generateId(),

@@ -8,10 +8,15 @@ use App\Domain\Company\ValueObject\CompanyId;
 
 interface CompanyFinderInterface
 {
+    /**
+     * @throws CompanyFinderException
+     */
     public function findById(CompanyId $id): CompanyModel;
 
     /**
      * @return array<CompanyModel>
+     *
+     * @throws CompanyFinderException
      */
     public function all(): array;
 }

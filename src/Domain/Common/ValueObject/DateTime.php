@@ -14,6 +14,9 @@ class DateTime implements \Stringable, \JsonSerializable
     /** @var string The underlying date. */
     private readonly string $date;
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     private function __construct(
         string $date
     ) {
@@ -28,6 +31,8 @@ class DateTime implements \Stringable, \JsonSerializable
      * Get a string representation of this object.
      *
      * @return string the date in a string format
+     *
+     * @throws \Exception
      */
     public function __toString(): string
     {
@@ -38,6 +43,8 @@ class DateTime implements \Stringable, \JsonSerializable
      * Create an instance from a string.
      *
      * @param string $dateString the date string
+     *
+     * @throws \InvalidArgumentException
      */
     public static function fromString(string $dateString): self
     {
@@ -61,6 +68,8 @@ class DateTime implements \Stringable, \JsonSerializable
      * Create an instance from a DateTimeInterface.
      *
      * @param \DateTimeInterface $dateTime the date
+     *
+     * @throws \InvalidArgumentException
      */
     public static function fromDateTimeInterface(\DateTimeInterface $dateTime): self
     {
@@ -71,6 +80,8 @@ class DateTime implements \Stringable, \JsonSerializable
 
     /**
      * Create a DateTime object from a timestamp in seconds.
+     *
+     * @throws \InvalidArgumentException
      */
     public static function fromTimestamp(int $timestamp): self
     {
@@ -111,6 +122,8 @@ class DateTime implements \Stringable, \JsonSerializable
 
     /**
      * Format the object as a string, using the PHP DateTime formatting options.
+     *
+     * @throws \Exception
      */
     public function format(string $formatString): string
     {
@@ -123,6 +136,8 @@ class DateTime implements \Stringable, \JsonSerializable
      * Get a DateTimeImmutable version of this object.
      *
      * @return \DateTimeImmutable the date in a DateTimeImmutable format
+     *
+     * @throws \Exception
      */
     public function toDateTimeImmutable(): \DateTimeImmutable
     {
@@ -148,6 +163,8 @@ class DateTime implements \Stringable, \JsonSerializable
 
     /**
      * Determine if this date occurs before another date.
+     *
+     * @throws \Exception
      */
     public function isBefore(DateTime $other): bool
     {
@@ -156,6 +173,8 @@ class DateTime implements \Stringable, \JsonSerializable
 
     /**
      * Determine if this date occurs after another date.
+     *
+     * @throws \Exception
      */
     public function isAfter(DateTime $other): bool
     {
@@ -164,6 +183,8 @@ class DateTime implements \Stringable, \JsonSerializable
 
     /**
      * Get a timestamp representation of the date.
+     *
+     * @throws \Exception
      */
     public function toTimestamp(): int
     {
@@ -174,6 +195,8 @@ class DateTime implements \Stringable, \JsonSerializable
 
     /**
      * Get a microsecond timestamp representation of the date.
+     *
+     * @throws \Exception
      */
     public function toMicrosecondTimestamp(): int
     {

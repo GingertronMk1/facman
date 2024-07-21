@@ -6,6 +6,7 @@ namespace App\Application\Company\CommandHandler;
 
 use App\Application\Company\Command\CreateCompanyCommand;
 use App\Domain\Company\CompanyEntity;
+use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\CompanyRepositoryInterface;
 use App\Domain\Company\ValueObject\CompanyId;
 
@@ -15,6 +16,9 @@ readonly class CreateCompanyCommandHandler
         private CompanyRepositoryInterface $companyRepositoryInterface,
     ) {}
 
+    /**
+     * @throws CompanyRepositoryException
+     */
     public function handle(CreateCompanyCommand $command): CompanyId
     {
         $entity = new CompanyEntity(

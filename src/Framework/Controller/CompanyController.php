@@ -6,6 +6,7 @@ namespace App\Framework\Controller;
 
 use App\Application\Company\Command\CreateCompanyCommand;
 use App\Application\Company\CommandHandler\CreateCompanyCommandHandler;
+use App\Domain\Company\CompanyRepositoryException;
 use App\Framework\Form\Company\CreateCompanyFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/company', name: 'company.')]
 class CompanyController extends AbstractController
 {
+    /**
+     * @throws \LogicException
+     * @throws CompanyRepositoryException
+     */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateCompanyCommandHandler $handler,

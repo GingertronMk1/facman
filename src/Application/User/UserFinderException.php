@@ -4,4 +4,6 @@ declare(strict_types=1);
 
 namespace App\Application\User;
 
-class UserFinderException extends \Exception {}
+use App\Application\Common\Exception\AbstractFinderException;
+
+class UserFinderException extends AbstractFinderException {}
