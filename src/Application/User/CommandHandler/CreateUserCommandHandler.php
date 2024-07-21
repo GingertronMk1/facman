@@ -9,10 +9,10 @@ use App\Domain\User\UserEntity;
 use App\Domain\User\UserRepositoryInterface;
 use App\Domain\User\ValueObject\UserId;
 
-class CreateUserCommandHandler
+readonly class CreateUserCommandHandler
 {
     public function __construct(
-        private readonly UserRepositoryInterface $userRepository
+        private UserRepositoryInterface $userRepository
     ) {}
 
     public function handle(CreateUserCommand $command): UserId

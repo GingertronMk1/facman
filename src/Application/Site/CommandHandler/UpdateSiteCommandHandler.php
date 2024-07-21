@@ -9,7 +9,7 @@ use App\Domain\Site\SiteEntity;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 
-class UpdateSiteCommandHandler
+readonly class UpdateSiteCommandHandler
 {
     public function __construct(
         private SiteRepositoryInterface $siteRepositoryInterface,
