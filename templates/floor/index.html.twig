@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<a href="{{ path('floor.create') }}" class="btn btn-primary">Add <i class="fa-solid fa-plus"></i></a>
+
+    <div class="row mt-3">
+        <div class="col-2">Name</div>
+        <div class="col-2">Company</div>
+        <div class="col-6">Description</div>
+        <div class="col-2">Actions</div>
+    </div>
+{% for floor in floors %}
+    <div class="row mt-3">
+        <div class="col-2">{{ floor.name }}</div>
+        <div class="col-2">{{ floor.building.name }}</div>
+        <div class="col-6">{{ floor.description }}</div>
+        <div class="col-2 d-flex">
+            <a class="ms-auto btn btn-outline-secondary"
+               href="{{ path('floor.update', {'id': floor.id}) }}">
+                Edit
+            </a>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

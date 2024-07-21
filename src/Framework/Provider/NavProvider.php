@@ -15,6 +15,7 @@ final readonly class NavProvider
 
     /**
      * @return array<string, string>
+     *
      * @throws InvalidParameterException
      * @throws MissingMandatoryParametersException
      * @throws RouteNotFoundException
@@ -24,6 +25,8 @@ final readonly class NavProvider
         return [
             'Companies' => $this->urlGenerator->generate('company.index'),
             'Sites' => $this->urlGenerator->generate('site.index'),
+            'Buildings' => $this->urlGenerator->generate('building.index'),
+            'Floors' => $this->urlGenerator->generate('floor.index'),
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 docker compose up -d --build \
 && ./bin/docker/app/composer install \
-&& ./bin/docker/app/migrate \
+&& ./bin/docker/app/recreate-db \
 && ./bin/docker/node/npm install \
 && ./bin/docker/node/npm run dev \
 && ./bin/docker/app/console app:create-admin \

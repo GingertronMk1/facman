@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-echo '' > ./var/data.db \
-  && ./bin/console doctrine:migrations:migrate --no-interaction
+./bin/docker/app/exec echo '' > ./var/db.sqlite \
+  && ./bin/docker/app/console doctrine:migrations:migrate --no-interaction
