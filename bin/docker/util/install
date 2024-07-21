@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+touch ./var/db.sqlite
+
 docker compose up -d --build \
 && ./bin/docker/app/composer install \
 && ./bin/docker/app/migrate \
