@@ -14,6 +14,7 @@ return (new Config())
     ->setRules([
         '@PER-CS2.0' => true,
         '@PhpCsFixer' => true,
+        'global_namespace_import' => true
     ])
     ->setFinder($finder)
     ;

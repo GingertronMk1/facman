@@ -11,7 +11,9 @@ use App\Domain\Common\ValueObject\DateTime;
 use App\Domain\User\ValueObject\UserId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use InvalidArgumentException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Throwable;
 
 readonly class DbalUserFinder implements UserFinderInterface
 {
@@ -29,7 +31,7 @@ readonly class DbalUserFinder implements UserFinderInterface
 
         try {
             $result = $qb->fetchAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw UserFinderException::errorGettingRows($e);
         }
 
@@ -45,7 +47,7 @@ readonly class DbalUserFinder implements UserFinderInterface
     {
         try {
             $rows = $this->getBaseQuery()->fetchAllAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw UserFinderException::errorGettingRows($e);
         }
 
@@ -79,7 +81,7 @@ readonly class DbalUserFinder implements UserFinderInterface
 
         try {
             $result = $qb->fetchAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw UserFinderException::errorGettingRows($e);
         }
 
@@ -114,7 +116,7 @@ readonly class DbalUserFinder implements UserFinderInterface
             if (is_string($row['deleted_at'])) {
                 $deletedAt = DateTime::fromString($row['deleted_at']);
             }
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw UserFinderException::invalidId($e);
         }
 

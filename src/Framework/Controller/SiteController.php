@@ -8,6 +8,7 @@ use App\Application\Site\Command\CreateSiteCommand;
 use App\Application\Site\CommandHandler\CreateSiteCommandHandler;
 use App\Domain\Site\SiteRepositoryException;
 use App\Framework\Form\Site\CreateSiteFormType;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class SiteController extends AbstractController
 {
     /**
-     * @throws \LogicException
+     * @throws LogicException
      * @throws SiteRepositoryException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]

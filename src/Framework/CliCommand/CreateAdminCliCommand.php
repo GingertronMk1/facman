@@ -6,6 +6,7 @@ use App\Application\User\Command\CreateUserCommand;
 use App\Application\User\CommandHandler\CreateUserCommandHandler;
 use App\Domain\User\UserRepositoryException;
 use App\Domain\User\ValueObject\UserId;
+use InvalidArgumentException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +26,7 @@ class CreateAdminCliCommand extends Command
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @throws UserRepositoryException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int

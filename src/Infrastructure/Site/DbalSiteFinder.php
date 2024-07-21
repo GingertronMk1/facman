@@ -13,6 +13,7 @@ use App\Domain\Company\ValueObject\CompanyId;
 use App\Domain\Site\ValueObject\SiteId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Throwable;
 
 readonly class DbalSiteFinder implements SiteFinderInterface
 {
@@ -28,7 +29,7 @@ readonly class DbalSiteFinder implements SiteFinderInterface
 
         try {
             $result = $qb->fetchAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw SiteFinderException::errorGettingRows($e);
         }
 
@@ -41,7 +42,7 @@ readonly class DbalSiteFinder implements SiteFinderInterface
 
         try {
             $rows = $qb->fetchAllAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw SiteFinderException::errorGettingRows($e);
         }
 
@@ -58,7 +59,7 @@ readonly class DbalSiteFinder implements SiteFinderInterface
 
         try {
             $rows = $qb->fetchAllAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw SiteFinderException::errorGettingRows($e);
         }
 
@@ -86,7 +87,7 @@ readonly class DbalSiteFinder implements SiteFinderInterface
             }
 
             $company = $this->companyFinder->findById(CompanyId::fromString($row['company_id']));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw SiteFinderException::errorCreatingModel($e);
         }
 

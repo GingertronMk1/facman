@@ -11,6 +11,7 @@ use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Throwable;
 
 readonly class DbalSiteRepository implements SiteRepositoryInterface
 {
@@ -84,7 +85,7 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
     {
         try {
             $rowsAffected = $qb->executeStatement();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw SiteRepositoryException::errorUpdatingRows(previous: $e);
         }
 

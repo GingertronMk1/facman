@@ -12,6 +12,7 @@ use App\Domain\User\ValueObject\UserId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Throwable;
 
 readonly class DbalUserRepository implements UserRepositoryInterface
 {
@@ -86,7 +87,7 @@ readonly class DbalUserRepository implements UserRepositoryInterface
     {
         try {
             $rowsAffected = $qb->executeStatement();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw UserRepositoryException::errorUpdatingRows(previous: $e);
         }
 

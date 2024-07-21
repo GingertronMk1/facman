@@ -11,6 +11,7 @@ use App\Domain\Common\ValueObject\DateTime;
 use App\Domain\Company\ValueObject\CompanyId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Throwable;
 
 readonly class DbalCompanyFinder implements CompanyFinderInterface
 {
@@ -25,7 +26,7 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
 
         try {
             $result = $qb->fetchAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw CompanyFinderException::errorGettingRows($e);
         }
 
@@ -36,7 +37,7 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
     {
         try {
             $rows = $this->getBaseQuery()->fetchAllAssociative();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw CompanyFinderException::errorGettingRows($e);
         }
 
@@ -59,7 +60,7 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
             $createdAt = DateTime::fromString($row['created_at']);
             $updatedAt = DateTime::fromString($row['updated_at']);
             $deletedAt = is_string($row['deleted_at']) ? DateTime::fromString($row['deleted_at']) : null;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw CompanyFinderException::errorCreatingModel($e);
         }
 

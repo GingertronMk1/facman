@@ -9,16 +9,18 @@ use App\Application\User\CommandHandler\UpdateUserCommandHandler;
 use App\Application\User\UserModel;
 use App\Framework\Form\User\CreateUserFormType;
 use App\Framework\Form\User\UpdateUserFormType;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 #[Route(path: '/user', name: 'user.')]
 class UserController extends AbstractController
 {
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
@@ -34,8 +36,8 @@ class UserController extends AbstractController
                 $handler->handle($command);
 
                 return $this->redirectToRoute('app_login');
-            } catch (\Throwable $e) {
-                throw new \Exception('Error creating person', previous: $e);
+            } catch (Throwable $e) {
+                throw new Exception('Error creating person', previous: $e);
             }
         }
 
@@ -48,7 +50,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: '/update', name: 'update', methods: ['GET', 'POST'])]
     public function update(
@@ -57,7 +59,7 @@ class UserController extends AbstractController
     ): Response {
         $user = $this->getUser();
         if (!$user instanceof UserModel) {
-            throw new \Exception();
+            throw new Exception();
         }
         $command = UpdateUserCommand::fromModel($user);
         $form = $this->createForm(UpdateUserFormType::class, $command);
@@ -68,8 +70,8 @@ class UserController extends AbstractController
                 $handler->handle($command);
 
                 return $this->redirectToRoute('index');
-            } catch (\Throwable $e) {
-                throw new \Exception('Error updating person', previous: $e);
+            } catch (Throwable $e) {
+                throw new Exception('Error updating person', previous: $e);
             }
         }
 

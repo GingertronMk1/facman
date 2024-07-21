@@ -9,6 +9,7 @@ use App\Domain\Common\ValueObject\AbstractUuidId;
 use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\AbstractType;
+use Throwable;
 
 #[AsCommand(
     name: 'app:create-entity',
@@ -36,7 +38,7 @@ class CreateEntityCliCommand extends Command
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function configure(): void
     {
@@ -50,7 +52,7 @@ class CreateEntityCliCommand extends Command
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -70,7 +72,7 @@ class CreateEntityCliCommand extends Command
                     $fileMarkup
                 );
                 $successful[] = $classFileName;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $io->error($e->getMessage());
             }
         }
@@ -83,14 +85,14 @@ class CreateEntityCliCommand extends Command
     /**
      * @return array<string, string>
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function getBaseNameAndNameSpace(string $className): array
     {
         $lastBackslash = strrpos($className, '\\');
 
         if (!$lastBackslash) {
-            throw new \InvalidArgumentException("No backslash found in {$className}.");
+            throw new InvalidArgumentException("No backslash found in {$className}.");
         }
 
         return [
@@ -107,7 +109,7 @@ class CreateEntityCliCommand extends Command
     /**
      * @param array<string, mixed> $properties
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function getMarkupForFile(string $className, array $properties, string $entityName): string
     {

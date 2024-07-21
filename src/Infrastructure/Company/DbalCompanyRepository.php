@@ -11,6 +11,7 @@ use App\Domain\Company\CompanyRepositoryInterface;
 use App\Domain\Company\ValueObject\CompanyId;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Throwable;
 
 readonly class DbalCompanyRepository implements CompanyRepositoryInterface
 {
@@ -81,7 +82,7 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
     {
         try {
             $rowsAffected = $qb->executeStatement();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw CompanyRepositoryException::errorUpdatingRows(previous: $e);
         }
 

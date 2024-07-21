@@ -9,6 +9,7 @@ use App\Domain\Site\SiteEntity;
 use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
+use InvalidArgumentException;
 
 readonly class CreateSiteCommandHandler
 {
@@ -18,12 +19,12 @@ readonly class CreateSiteCommandHandler
 
     /**
      * @throws SiteRepositoryException
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function handle(CreateSiteCommand $command): SiteId
     {
         if (is_null($command->companyId)) {
-            throw new \InvalidArgumentException('No company ID');
+            throw new InvalidArgumentException('No company ID');
         }
         $entity = new SiteEntity(
             id: $this->siteRepositoryInterface->generateId(),

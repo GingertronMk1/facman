@@ -8,6 +8,7 @@ use App\Application\Company\Command\CreateCompanyCommand;
 use App\Application\Company\CommandHandler\CreateCompanyCommandHandler;
 use App\Domain\Company\CompanyRepositoryException;
 use App\Framework\Form\Company\CreateCompanyFormType;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CompanyController extends AbstractController
 {
     /**
-     * @throws \LogicException
+     * @throws LogicException
      * @throws CompanyRepositoryException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]

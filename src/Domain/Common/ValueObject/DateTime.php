@@ -4,8 +4,12 @@ namespace App\Domain\Common\ValueObject;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
+use InvalidArgumentException;
+use JsonSerializable;
+use Stringable;
 
-class DateTime implements \Stringable, \JsonSerializable
+class DateTime implements Stringable, JsonSerializable
 {
     public const FORMAT_SECONDS = 'Y-m-d H:i:s';
     public const FORMAT_MILLISECONDS = 'Y-m-d H:i:s.v';
@@ -15,13 +19,13 @@ class DateTime implements \Stringable, \JsonSerializable
     private readonly string $date;
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     private function __construct(
         string $date
     ) {
-        if (!\DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $date)) {
-            throw new \InvalidArgumentException('Invalid date provided: '.$date.'. Format: '.self::FORMAT_MICROSECONDS.'.');
+        if (!DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $date)) {
+            throw new InvalidArgumentException('Invalid date provided: '.$date.'. Format: '.self::FORMAT_MICROSECONDS.'.');
         }
 
         $this->date = $date;
@@ -32,7 +36,7 @@ class DateTime implements \Stringable, \JsonSerializable
      *
      * @return string the date in a string format
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __toString(): string
     {
@@ -44,21 +48,21 @@ class DateTime implements \Stringable, \JsonSerializable
      *
      * @param string $dateString the date string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromString(string $dateString): self
     {
         $dateFormat = match (true) {
-            false !== \DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $dateString) => self::FORMAT_MICROSECONDS,
-            false !== \DateTimeImmutable::createFromFormat(self::FORMAT_MILLISECONDS, $dateString) => self::FORMAT_MILLISECONDS,
-            false !== \DateTimeImmutable::createFromFormat(self::FORMAT_SECONDS, $dateString) => self::FORMAT_SECONDS,
-            default => throw new \InvalidArgumentException(sprintf('Invalid date provided: %s. Format: %s.', $dateString, self::FORMAT_MICROSECONDS)),
+            false !== DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $dateString) => self::FORMAT_MICROSECONDS,
+            false !== DateTimeImmutable::createFromFormat(self::FORMAT_MILLISECONDS, $dateString) => self::FORMAT_MILLISECONDS,
+            false !== DateTimeImmutable::createFromFormat(self::FORMAT_SECONDS, $dateString) => self::FORMAT_SECONDS,
+            default => throw new InvalidArgumentException(sprintf('Invalid date provided: %s. Format: %s.', $dateString, self::FORMAT_MICROSECONDS)),
         };
 
-        $dateTimeImmutable = \DateTimeImmutable::createFromFormat($dateFormat, $dateString);
+        $dateTimeImmutable = DateTimeImmutable::createFromFormat($dateFormat, $dateString);
 
         if (!$dateTimeImmutable) {
-            throw new \InvalidArgumentException("Invalid date string `{$dateString}`.");
+            throw new InvalidArgumentException("Invalid date string `{$dateString}`.");
         }
 
         return new self($dateTimeImmutable->format(self::FORMAT_MICROSECONDS));
@@ -67,11 +71,11 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Create an instance from a DateTimeInterface.
      *
-     * @param \DateTimeInterface $dateTime the date
+     * @param DateTimeInterface $dateTime the date
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public static function fromDateTimeInterface(\DateTimeInterface $dateTime): self
+    public static function fromDateTimeInterface(DateTimeInterface $dateTime): self
     {
         $dateString = $dateTime->format(self::FORMAT_MICROSECONDS);
 
@@ -81,7 +85,7 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Create a DateTime object from a timestamp in seconds.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromTimestamp(int $timestamp): self
     {
@@ -89,7 +93,7 @@ class DateTime implements \Stringable, \JsonSerializable
 
         switch ($length) {
             case $length <= 10: // seconds
-                $immutable = \DateTimeImmutable::createFromFormat('U', (string) $timestamp);
+                $immutable = DateTimeImmutable::createFromFormat('U', (string) $timestamp);
 
                 break;
 
@@ -97,7 +101,7 @@ class DateTime implements \Stringable, \JsonSerializable
                 $seconds = floor($timestamp / 1000);
                 $fractionalMilliseconds = $timestamp - ($seconds * 1000);
 
-                $immutable = \DateTimeImmutable::createFromFormat('U.v', "{$seconds}.{$fractionalMilliseconds}");
+                $immutable = DateTimeImmutable::createFromFormat('U.v', "{$seconds}.{$fractionalMilliseconds}");
 
                 break;
 
@@ -105,16 +109,16 @@ class DateTime implements \Stringable, \JsonSerializable
                 $seconds = floor($timestamp / 1000000);
                 $fractionalMicroseconds = $timestamp - ($seconds * 1000000);
 
-                $immutable = \DateTimeImmutable::createFromFormat('U.u', "{$seconds}.{$fractionalMicroseconds}");
+                $immutable = DateTimeImmutable::createFromFormat('U.u', "{$seconds}.{$fractionalMicroseconds}");
 
                 break;
 
             default:
-                throw new \InvalidArgumentException('Invalid integer format');
+                throw new InvalidArgumentException('Invalid integer format');
         }
 
         if (!$immutable) {
-            throw new \InvalidArgumentException("Invalid timestamp `{$timestamp}`.");
+            throw new InvalidArgumentException("Invalid timestamp `{$timestamp}`.");
         }
 
         return self::fromDateTimeInterface($immutable);
@@ -123,7 +127,7 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Format the object as a string, using the PHP DateTime formatting options.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function format(string $formatString): string
     {
@@ -135,15 +139,15 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Get a DateTimeImmutable version of this object.
      *
-     * @return \DateTimeImmutable the date in a DateTimeImmutable format
+     * @return DateTimeImmutable the date in a DateTimeImmutable format
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function toDateTimeImmutable(): \DateTimeImmutable
+    public function toDateTimeImmutable(): DateTimeImmutable
     {
-        $returnVal = \DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $this->date);
+        $returnVal = DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $this->date);
         if (!$returnVal) {
-            throw new \Exception("Invalid date {$this->date}");
+            throw new Exception("Invalid date {$this->date}");
         }
 
         return $returnVal;
@@ -164,7 +168,7 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Determine if this date occurs before another date.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function isBefore(DateTime $other): bool
     {
@@ -174,7 +178,7 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Determine if this date occurs after another date.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function isAfter(DateTime $other): bool
     {
@@ -184,7 +188,7 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Get a timestamp representation of the date.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function toTimestamp(): int
     {
@@ -196,7 +200,7 @@ class DateTime implements \Stringable, \JsonSerializable
     /**
      * Get a microsecond timestamp representation of the date.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function toMicrosecondTimestamp(): int
     {
