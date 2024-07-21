@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. .env
+. ./.env
 
 touch "./var/${DB_DATABASE}" \
 && docker compose up -d --build \
