@@ -2,5 +2,5 @@
 
 . ./.env
 
-touch "./var/${DB_DATABASE}" \
+echo '' > "./var/${DB_DATABASE}" \
   && ./bin/docker/app/console doctrine:migrations:migrate --no-interaction "$@"
