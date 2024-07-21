@@ -10,7 +10,7 @@ use App\Domain\Company\ValueObject\CompanyId;
 readonly class CompanyModel
 {
     public function __construct(
-        public CompanyId $companyId,
+        public CompanyId $id,
         public string $name,
         public string $description,
         public DateTime $createdAt,
