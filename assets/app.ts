@@ -18,11 +18,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const searchParams = new URLSearchParams({
                 companyName: target.value
             });
-            fetch(`{{ path('ajax.prefix.get') }}?${searchParams}`)
+            fetch(`/ajax/prefix/?${searchParams}`)
                 .then(response => response.json())
                 .then(({ prefix }) => {
 
-                    const prefixInput: HTMLInputElement = document.querySelector('input#create_company_form_prefix');
+                    const prefixInput: HTMLInputElement = document.querySelector('input#create_company_form_prefix') as HTMLInputElement;
                     prefixInput.value = prefix;
                 })
             ;
