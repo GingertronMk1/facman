@@ -1,26 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block javascripts %}
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelector('input#create_company_form_name').addEventListener('input', function (e) {
-                if (e instanceof InputEvent) {
-                    console.log(e.target?.value);
-                    const searchParams = new URLSearchParams({
-                        companyName: e.target.value
-                    });
-                    fetch(`{{ path('ajax.prefix.get') }}?${searchParams}`)
-                        .then(response => response.json())
-                        .then(({ prefix }) => {
-                            document.querySelector('input#create_company_form_prefix').value = prefix;
-                        })
-                    ;
-                }
-            });
-        })
-    </script>
-{% endblock %}
-
 {% block body %}
     {{ form(form) }}
 {% endblock %}
