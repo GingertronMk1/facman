@@ -41,12 +41,15 @@ readonly class DbalBuildingRepository extends AbstractDbalRepository implements 
                 'name' => ':name',
                 'description' => ':description',
                 'site_id' => ':site_id',
+                'created_at' => ':now',
+                'updated_at' => ':now',
             ])
             ->setParameters([
                 'id' => (string) $entity->id,
                 'name' => $entity->name,
                 'description' => $entity->description,
                 'site_id' => (string) $entity->siteId,
+                'now' => (string) $this->clockInterface->getTime(),
             ])
         ;
 
