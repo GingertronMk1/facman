@@ -6,3 +6,6 @@ parameters:
         - public/
         - src/
         - tests/
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
