@@ -6,6 +6,8 @@ namespace App\Framework\Controller;
 
 use App\Application\Company\Command\CreateCompanyCommand;
 use App\Application\Company\CommandHandler\CreateCompanyCommandHandler;
+use App\Application\Company\CompanyFinderException;
+use App\Application\Company\CompanyFinderInterface;
 use App\Domain\Company\CompanyRepositoryException;
 use App\Framework\Form\Company\CreateCompanyFormType;
 use LogicException;
@@ -17,6 +19,21 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route(path: '/company', name: 'company.')]
 class CompanyController extends AbstractController
 {
+    /**
+     * @throws CompanyFinderException
+     */
+    #[Route(path: '/', name: 'index', methods: ['GET'])]
+    public function index(
+        CompanyFinderInterface $finder
+    ): Response {
+        return $this->render(
+            'company/index.html.twig',
+            [
+                'companies' => $finder->all(),
+            ]
+        );
+    }
+
     /**
      * @throws LogicException
      * @throws CompanyRepositoryException
@@ -32,9 +49,15 @@ class CompanyController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $handler->handle($command);
-            $this->redirectToRoute('company.index');
+
+            return $this->redirectToRoute('company.index');
         }
 
-        return $this->render('company/create.html.twig', ['form' => $form]);
+        return $this->render(
+            'company/create.html.twig',
+            [
+                'form' => $form,
+            ]
+        );
     }
 }

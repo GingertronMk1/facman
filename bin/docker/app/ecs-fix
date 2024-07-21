@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-./bin/docker/app/composer check-fix "$@"
