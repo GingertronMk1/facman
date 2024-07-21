@@ -36,6 +36,19 @@ services:
     networks:
         - facman-network
 
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}
+    platform: linux/x86_64
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    networks:
+      - facman-network
+
+
+
   adminer:
     image: adminer:4-standalone
     platform: linux/x86_64
@@ -47,7 +60,6 @@ services:
       ADMINER_DESIGN: 'flat'
     volumes:
       - './_docker/plugins:/var/www/html/plugins-enabled:delegated'
-      - './var/${DB_DATABASE}:/var/www/html/${DB_DATABASE}:rw'
     networks:
       - facman-network
 

@@ -11,21 +11,23 @@ class DefaultLogin
         echo $this->loginFormField(
             'driver',
             '',
-            'sqlite',
+            'pgsql'
+        );
+        echo $this->loginFormField(
+            'server',
+            'POSTGRES_HOST'
         );
         echo $this->loginFormField(
             'username',
-            '',
-            'admin',
+            'POSTGRES_USER'
         );
         echo $this->loginFormField(
             'password',
-            '',
-            'admin',
+            'POSTGRES_PASSWORD'
         );
         echo $this->loginFormField(
             'db',
-            'DB_DATABASE',
+            'POSTGRES_DB'
         );
         echo '</table>';
         echo "<p><input type='submit' value='Login'>";
@@ -33,8 +35,11 @@ class DefaultLogin
         return 0;
     }
 
-    public function loginFormField(string $name, string $envValue = '', string $value = ''): string
-    {
+    public function loginFormField(
+        string $name,
+        string $envValue = '',
+        string $value = ''
+    ): string {
         $inputValue = $value;
         if (!empty($envValue) && isset($_ENV[$envValue])) {
             $inputValue = $_ENV[$envValue];
