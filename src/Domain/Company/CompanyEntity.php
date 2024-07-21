@@ -12,5 +12,6 @@ class CompanyEntity
         public CompanyId $id,
         public string $name,
         public string $description,
+        public string $prefix,
     ) {}
 }

@@ -13,6 +13,11 @@ interface CompanyRepositoryInterface
     /**
      * @throws CompanyRepositoryException
      */
+    public function generatePrefix(string $companyName): string;
+
+    /**
+     * @throws CompanyRepositoryException
+     */
     public function store(CompanyEntity $entity): CompanyId;
 
     /**

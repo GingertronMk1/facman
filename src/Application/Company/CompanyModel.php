@@ -13,6 +13,7 @@ readonly class CompanyModel
         public CompanyId $id,
         public string $name,
         public string $description,
+        public string $prefix,
         public DateTime $createdAt,
         public DateTime $updatedAt,
         public ?DateTime $deletedAt,

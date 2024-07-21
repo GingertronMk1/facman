@@ -68,6 +68,7 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
             $id,
             $row['name'],
             $row['description'],
+            $row['prefix'],
             $createdAt,
             $updatedAt,
             $deletedAt,

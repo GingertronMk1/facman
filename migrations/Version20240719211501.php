@@ -21,12 +21,14 @@ final class Version20240719211501 extends AbstractMigration
     {
         $companiesTable = $schema->createTable('companies');
         $companiesTable->addColumn('id', 'string');
+        $companiesTable->addColumn('prefix', 'string');
         $companiesTable->addColumn('name', 'string');
         $companiesTable->addColumn('description', 'text', ['notnull' => false]);
         $companiesTable->addColumn('created_at', 'datetime');
         $companiesTable->addColumn('updated_at', 'datetime');
         $companiesTable->addColumn('deleted_at', 'datetime', ['notnull' => false]);
         $companiesTable->setPrimaryKey(['id']);
+        $companiesTable->addUniqueIndex(['prefix']);
 
         // this up() migration is auto-generated, please modify it to your needs
         $sitesTable = $schema->createTable('sites');

@@ -12,7 +12,8 @@ class UpdateCompanyCommand
     private function __construct(
         public CompanyId $id,
         public string $name,
-        public string $description
+        public string $description,
+        public readonly string $prefix
     ) {}
 
     public static function fromModel(CompanyModel $company): self
@@ -21,6 +22,7 @@ class UpdateCompanyCommand
             id: $company->id,
             name: $company->name,
             description: $company->description,
+            prefix: $company->prefix
         );
     }
 }

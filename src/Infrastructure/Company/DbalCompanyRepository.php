@@ -27,6 +27,45 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
         return CompanyId::generate();
     }
 
+    public function generatePrefix(string $companyName): string
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('prefix')->from(self::TABLE);
+
+        try {
+            $companyPrefixes = $qb->fetchFirstColumn();
+        } catch (Throwable $e) {
+            throw CompanyRepositoryException::errorGettingPrefixes($e);
+        }
+
+        $companyNameWords = preg_split('/\s+/', $companyName);
+
+        if (!$companyNameWords) {
+            throw CompanyRepositoryException::errorGeneratingPrefix();
+        }
+        $numLetters = 1;
+        $prefix = '';
+        do {
+            $oldPrefix = $prefix;
+            $prefix = strtoupper(
+                implode(
+                    separator: '',
+                    array: array_map(
+                        fn (string $word) => substr($word, 0, $numLetters),
+                        $companyNameWords
+                    )
+                )
+            );
+
+            if ($prefix === $oldPrefix) {
+                throw CompanyRepositoryException::errorGeneratingPrefix();
+            }
+            ++$numLetters;
+        } while (!empty($prefix) && in_array($prefix, $companyPrefixes));
+
+        return $prefix;
+    }
+
     public function store(CompanyEntity $entity): CompanyId
     {
         $qb = $this->connection->createQueryBuilder();
@@ -35,6 +74,7 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
                 'id' => ':id',
                 'name' => ':name',
                 'description' => ':description',
+                'prefix' => ':prefix',
                 'created_at' => ':now',
                 'updated_at' => ':now',
             ])
@@ -42,6 +82,7 @@ readonly class DbalCompanyRepository implements CompanyRepositoryInterface
                 'id' => (string) $entity->id,
                 'name' => $entity->name,
                 'description' => $entity->description,
+                'prefix' => $entity->prefix,
                 'now' => (string) $this->clockInterface->getTime(),
             ])
         ;

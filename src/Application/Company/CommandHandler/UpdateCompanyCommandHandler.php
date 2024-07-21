@@ -25,6 +25,7 @@ readonly class UpdateCompanyCommandHandler
             id: $command->id,
             name: $command->name,
             description: $command->description,
+            prefix: $command->prefix,
         );
 
         return $this->companyRepositoryInterface->update($entity);

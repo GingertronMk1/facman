@@ -17,6 +17,7 @@ class CreateCompanyFormType extends AbstractType
         $builder
             ->add('name', TextType::class)
             ->add('description', TextareaType::class)
+            ->add('prefix', TextType::class, ['required' => false])
             ->add('submit', SubmitType::class)
         ;
     }

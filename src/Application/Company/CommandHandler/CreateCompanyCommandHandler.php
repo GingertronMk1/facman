@@ -21,10 +21,15 @@ readonly class CreateCompanyCommandHandler
      */
     public function handle(CreateCompanyCommand $command): CompanyId
     {
+        $prefix = $command->prefix;
+        if (empty($prefix)) {
+            $prefix = $this->companyRepositoryInterface->generatePrefix($command->name);
+        }
         $entity = new CompanyEntity(
             id: $this->companyRepositoryInterface->generateId(),
             name: $command->name,
             description: $command->description,
+            prefix: $prefix
         );
 
         return $this->companyRepositoryInterface->store($entity);
