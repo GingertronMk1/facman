@@ -23,14 +23,14 @@ readonly class CreateSiteCommandHandler
      */
     public function handle(CreateSiteCommand $command): SiteId
     {
-        if (is_null($command->companyId)) {
+        if (is_null($command->company)) {
             throw new InvalidArgumentException('No company ID');
         }
         $entity = new SiteEntity(
             id: $this->siteRepositoryInterface->generateId(),
             name: $command->name,
             description: $command->description,
-            companyId: $command->companyId
+            companyId: $command->company->id
         );
 
         return $this->siteRepositoryInterface->store($entity);

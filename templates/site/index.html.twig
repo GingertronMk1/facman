@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<a href="{{ path('site.create') }}" class="btn btn-primary">Add <i class="fa-solid fa-plus"></i></a>
+
+    <div class="row mt-3">
+        <div class="col-2">Name</div>
+        <div class="col-2">Company</div>
+        <div class="col-6">Description</div>
+        <div class="col-2">Actions</div>
+    </div>
+{% for site in sites %}
+    <div class="row mt-3">
+        <div class="col-2">{{ site.name }}</div>
+        <div class="col-2">{{ site.company.name }}</div>
+        <div class="col-6">{{ site.description }}</div>
+        <div class="col-2 d-flex">
+            <a class="ms-auto btn btn-outline-secondary"
+               href="{{ path('site.update', {'id': site.id}) }}">
+                Edit
+            </a>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

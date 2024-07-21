@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Site\Command;
 
+use App\Application\Company\CompanyModel;
 use App\Application\Site\SiteModel;
 use App\Domain\Company\ValueObject\CompanyId;
 use App\Domain\Site\ValueObject\SiteId;
@@ -14,16 +15,16 @@ class UpdateSiteCommand
         public SiteId $id,
         public string $name,
         public string $description,
-        public CompanyId $companyId,
+        public CompanyModel $company,
     ) {}
 
-    public function fromModel(SiteModel $model): self
+    public static function fromModel(SiteModel $model): self
     {
         return new self(
             id: $model->id,
             name: $model->name,
             description: $model->description,
-            companyId: $model->company->id
+            company: $model->company
         );
     }
 }

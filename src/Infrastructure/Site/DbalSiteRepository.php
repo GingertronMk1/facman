@@ -58,12 +58,10 @@ readonly class DbalSiteRepository implements SiteRepositoryInterface
         $qb
             ->update(self::TABLE)
             ->where('id = :id')
-            ->values([
-                'name' => ':name',
-                'description' => ':description',
-                'company_id' => ':company_id',
-                'updated_at' => ':now',
-            ])
+            ->set('name', ':name')
+            ->set('description', ':description')
+            ->set('company_id', ':company_id')
+            ->set('updated_at', ':now')
             ->setParameters([
                 'id' => (string) $entity->id,
                 'name' => $entity->name,

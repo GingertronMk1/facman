@@ -25,7 +25,7 @@ readonly class UpdateSiteCommandHandler
             id: $command->id,
             name: $command->name,
             description: $command->description,
-            companyId: $command->companyId,
+            companyId: $command->company->id,
         );
 
         return $this->siteRepositoryInterface->update($entity);
