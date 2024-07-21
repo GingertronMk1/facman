@@ -2,9 +2,8 @@
 
 . .env
 
-touch "./var/${DB_DATABASE}"
-
-docker compose up -d --build \
+touch "./var/${DB_DATABASE}" \
+&& docker compose up -d --build \
 && ./bin/docker/app/composer install \
 && ./bin/docker/app/migrate \
 && ./bin/docker/node/npm install \
