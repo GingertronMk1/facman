@@ -6,6 +6,7 @@ namespace App\Framework\Form\Site;
 
 use App\Application\Company\CompanyFinderException;
 use App\Application\Company\CompanyFinderInterface;
+use App\Framework\Form\Address\CreateAddressFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -32,6 +33,7 @@ class CreateSiteFormType extends AbstractType
                 'choice_value' => 'id',
             ])
             ->add('description', TextareaType::class)
+            ->add('address', CreateAddressFormType::class)
             ->add('submit', SubmitType::class)
         ;
     }

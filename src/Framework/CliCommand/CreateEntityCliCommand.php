@@ -11,6 +11,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use InvalidArgumentException;
+use JsonSerializable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -221,6 +222,7 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
+                'implements' => JsonSerializable::class,
             ],
             'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
                 'kind' => 'readonly class',
