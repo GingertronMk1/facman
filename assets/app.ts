@@ -5,16 +5,22 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
+import * as bootstrap from 'bootstrap';
+
+window.bootstrap = bootstrap;
+
 // any CSS you import will output into a single css file (app.scss in this case)
 import './styles/app.scss';
-import * as bootstrap from 'bootstrap';
 
 /**
  * Generating a company's prefix in the company creation screen
  */
 document.addEventListener("DOMContentLoaded", () => {
-    document
-        .querySelector('input#create_company_form_name')
+    const companyFormName: HTMLInputElement = document.querySelector('input#create_company_form_name');
+    if (!companyFormName) {
+        return;
+    }
+    companyFormName
         .addEventListener('input', function (e: Event) {
             const target: HTMLInputElement = e.target as HTMLInputElement;
             console.log(target.value);

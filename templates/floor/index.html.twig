@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block header %}
+    <h1 class="col">Floors</h1>
+    <a href="{{ path('floor.create') }}" class="btn btn-primary col-1 my-auto">Add <i class="fa-solid fa-plus"></i></a>
+{% endblock %}
+
 {% block body %}
-<a href="{{ path('floor.create') }}" class="btn btn-primary">Add <i class="fa-solid fa-plus"></i></a>
 
     <div class="row mt-3">
         <div class="col-2">Name</div>
