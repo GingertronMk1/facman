@@ -9,6 +9,9 @@
 import './styles/app.scss';
 import * as bootstrap from 'bootstrap';
 
+/**
+ * Generating a company's prefix in the company creation screen
+ */
 document.addEventListener("DOMContentLoaded", () => {
     document
         .querySelector('input#create_company_form_name')
