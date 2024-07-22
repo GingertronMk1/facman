@@ -14,7 +14,7 @@ final readonly class NavProvider
     ) {}
 
     /**
-     * @return array<string, string>
+     * @return array<string, array<string, string>|string>
      *
      * @throws InvalidParameterException
      * @throws MissingMandatoryParametersException
@@ -28,7 +28,7 @@ final readonly class NavProvider
                 'Sites' => $this->urlGenerator->generate('site.index'),
                 'Buildings' => $this->urlGenerator->generate('building.index'),
                 'Floors' => $this->urlGenerator->generate('floor.index'),
-            ]
+            ],
         ];
     }
 }
