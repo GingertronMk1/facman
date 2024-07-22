@@ -23,6 +23,9 @@ readonly class AddressModel implements JsonSerializable
         public ?DateTime $deletedAt,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         return [

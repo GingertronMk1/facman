@@ -10,6 +10,8 @@ interface AddressFinderInterface
 {
     /**
      * @return array<AddressModel>
+     *
+     * @throws AddressFinderException
      */
     public function find(
         AbstractId $modelId,

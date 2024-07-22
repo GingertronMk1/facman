@@ -37,7 +37,9 @@ readonly class CreateBuildingCommandHandler
             siteId: $command->site->id,
         );
 
-        $this->createAddressCommandHandler->handle($command->address, $id, BuildingModel::class);
+        if ($command->address) {
+            $this->createAddressCommandHandler->handle($command->address, $id, BuildingModel::class);
+        }
 
         return $this->buildingRepositoryInterface->store($entity);
     }

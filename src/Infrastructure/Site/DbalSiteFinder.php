@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Site;
 
+use App\Application\Address\AddressFinderInterface;
 use App\Application\Company\CompanyFinderInterface;
 use App\Application\Site\SiteFinderException;
 use App\Application\Site\SiteFinderInterface;
@@ -19,7 +20,8 @@ readonly class DbalSiteFinder implements SiteFinderInterface
 {
     public function __construct(
         private Connection $connection,
-        private CompanyFinderInterface $companyFinder
+        private CompanyFinderInterface $companyFinder,
+        private AddressFinderInterface $addressFinder
     ) {}
 
     public function findById(SiteId $id): SiteModel
@@ -91,11 +93,20 @@ readonly class DbalSiteFinder implements SiteFinderInterface
             throw SiteFinderException::errorCreatingModel($e);
         }
 
+        $addresses = [];
+
+        try {
+            $addresses = $this->addressFinder->find($id, SiteModel::class);
+        } catch (Throwable $e) {
+            // ignore
+        }
+
         return new SiteModel(
             id: $id,
             name: $row['name'],
             description: $row['description'],
             company: $company,
+            addresses: $addresses,
             createdAt: $createdAt,
             updatedAt: $updatedAt,
             deletedAt: $deletedAt

@@ -60,11 +60,11 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
      */
     private function createFromRow(array|false $row): BuildingModel
     {
-        if (!$row) {
-            throw new BuildingFinderException('No rows found');
-        }
-
         try {
+            if (!$row) {
+                throw new BuildingFinderException('No rows found');
+            }
+
             $id = BuildingId::fromString($row['id']);
             $createdAt = DateTime::fromString($row['created_at']);
             $updatedAt = DateTime::fromString($row['updated_at']);
@@ -74,20 +74,20 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
             }
 
             $site = $this->siteFinder->findById(SiteId::fromString($row['site_id']));
+
+            return new BuildingModel(
+                id: $id,
+                name: $row['name'],
+                description: $row['description'],
+                site: $site,
+                addresses: $this->addressFinder->find($id, BuildingModel::class),
+                createdAt: $createdAt,
+                updatedAt: $updatedAt,
+                deletedAt: $deletedAt
+            );
         } catch (Throwable $e) {
             throw BuildingFinderException::errorCreatingModel($e);
         }
-
-        return new BuildingModel(
-            id: $id,
-            name: $row['name'],
-            description: $row['description'],
-            site: $site,
-            addresses: $this->addressFinder->find($id, BuildingModel::class),
-            createdAt: $createdAt,
-            updatedAt: $updatedAt,
-            deletedAt: $deletedAt
-        );
     }
 
     private function getBaseQuery(): QueryBuilder

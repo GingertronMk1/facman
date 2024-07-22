@@ -8,8 +8,10 @@ use App\Application\Common\ClockInterface;
 use App\Domain\Address\AddressEntity;
 use App\Domain\Address\AddressRepositoryException;
 use App\Domain\Address\AddressRepositoryInterface;
+use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
+use InvalidArgumentException;
 
 readonly class DbalAddressRepository extends AbstractDbalRepository implements AddressRepositoryInterface
 {
@@ -20,6 +22,10 @@ readonly class DbalAddressRepository extends AbstractDbalRepository implements A
         private ClockInterface $clockInterface,
     ) {}
 
+    /**
+     * @throws AbstractRepositoryException
+     * @throws InvalidArgumentException
+     */
     public function store(AddressEntity $addressEntity): void
     {
         $qb = $this->connection->createQueryBuilder();
@@ -53,6 +59,10 @@ readonly class DbalAddressRepository extends AbstractDbalRepository implements A
         $this->executeAndCheck($qb, AddressRepositoryException::class);
     }
 
+    /**
+     * @throws AbstractRepositoryException
+     * @throws InvalidArgumentException
+     */
     public function update(AddressEntity $addressEntity): void
     {
         $qb = $this->connection->createQueryBuilder();

@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Exception\AccessException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CreateAddressFormType extends AbstractType
@@ -31,6 +32,9 @@ class CreateAddressFormType extends AbstractType
         ;
     }
 
+    /**
+     * @throws AccessException
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
