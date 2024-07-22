@@ -15,12 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
         .addEventListener('input', function (e: Event) {
             const target: HTMLInputElement = e.target as HTMLInputElement;
             console.log(target.value);
-            const searchParams = new URLSearchParams({
+            const searchParams: URLSearchParams = new URLSearchParams({
                 companyName: target.value
             });
             fetch(`/ajax/prefix/?${searchParams}`)
-                .then(response => response.json())
-                .then(({ prefix }) => {
+                .then((response: Response): Promise<object> => {
+                    return response.json();
+                })
+                .then(({ prefix }: { prefix: string }): void => {
                     const prefixInput: HTMLInputElement = document.querySelector('input#create_company_form_prefix') as HTMLInputElement;
                     prefixInput.value = prefix;
                 })
