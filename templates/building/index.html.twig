@@ -19,7 +19,10 @@
     <div class="row mt-3">
         <div class="col-2">{{ building.name }}</div>
         <div class="col-2">{{ building.site.name }}</div>
-        <div class="col">{{ building.description }}</div>
+        <div class="col">
+            {{ building.description }}
+            {{ building.addresses|json_encode }}
+        </div>
         <div class="col-2">{{ building.createdAt|date('d/m/Y H:i') }}</div>
         <div class="col-2">{{ building.updatedAt|date('d/m/Y H:i') }}</div>
         <div class="col-1 d-flex">

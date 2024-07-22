@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\Building\CommandHandler;
 
+use App\Application\Address\CommandHandler\StoreAddressCommandHandler;
+use App\Application\Building\BuildingModel;
 use App\Application\Building\Command\CreateBuildingCommand;
 use App\Domain\Building\BuildingEntity;
 use App\Domain\Building\BuildingRepositoryInterface;
@@ -15,6 +17,7 @@ readonly class CreateBuildingCommandHandler
 {
     public function __construct(
         private BuildingRepositoryInterface $buildingRepositoryInterface,
+        private StoreAddressCommandHandler $createAddressCommandHandler,
     ) {}
 
     /**
@@ -26,12 +29,15 @@ readonly class CreateBuildingCommandHandler
         if (!$command->site?->id) {
             throw new InvalidArgumentException('No site ID passed in');
         }
+        $id = $this->buildingRepositoryInterface->generateId();
         $entity = new BuildingEntity(
-            id: $this->buildingRepositoryInterface->generateId(),
+            id: $id,
             name: $command->name,
             description: $command->description,
-            siteId: $command->site->id
+            siteId: $command->site->id,
         );
+
+        $this->createAddressCommandHandler->handle($command->address, $id, BuildingModel::class);
 
         return $this->buildingRepositoryInterface->store($entity);
     }

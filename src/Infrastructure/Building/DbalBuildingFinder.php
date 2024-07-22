@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Building;
 
+use App\Application\Address\AddressFinderInterface;
 use App\Application\Building\BuildingFinderException;
 use App\Application\Building\BuildingFinderInterface;
 use App\Application\Building\BuildingModel;
@@ -19,7 +20,8 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
 {
     public function __construct(
         private Connection $connection,
-        private SiteFinderInterface $siteFinder
+        private SiteFinderInterface $siteFinder,
+        private AddressFinderInterface $addressFinder
     ) {}
 
     public function findById(BuildingId $id): BuildingModel
@@ -81,6 +83,7 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
             name: $row['name'],
             description: $row['description'],
             site: $site,
+            addresses: $this->addressFinder->find($id, BuildingModel::class),
             createdAt: $createdAt,
             updatedAt: $updatedAt,
             deletedAt: $deletedAt

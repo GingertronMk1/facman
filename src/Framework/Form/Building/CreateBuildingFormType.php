@@ -6,6 +6,7 @@ namespace App\Framework\Form\Building;
 
 use App\Application\Site\SiteFinderException;
 use App\Application\Site\SiteFinderInterface;
+use App\Framework\Form\Address\CreateAddressFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -32,6 +33,7 @@ class CreateBuildingFormType extends AbstractType
                 'choice_value' => 'id',
             ])
             ->add('description', TextareaType::class)
+            ->add('address', CreateAddressFormType::class)
             ->add('submit', SubmitType::class)
         ;
     }

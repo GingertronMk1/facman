@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+./bin/docker/app/console app:create-entity "$@" \
+  && ./bin/docker/app/console doctrine:migrations:generate
