@@ -174,7 +174,7 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
-                'extends' => AbstractMappedEntity::class
+                'extends' => AbstractMappedEntity::class,
             ],
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
                 'kind' => 'interface',

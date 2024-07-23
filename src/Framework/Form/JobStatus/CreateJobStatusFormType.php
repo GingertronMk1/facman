@@ -20,6 +20,6 @@ class CreateJobStatusFormType extends AbstractType
             ->add('description', TextareaType::class, ['required' => false])
             ->add('colour', ColorType::class)
             ->add('submit', SubmitType::class)
-            ;
+        ;
     }
 }
