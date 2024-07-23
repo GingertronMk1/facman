@@ -19,7 +19,12 @@
     <div class="row mt-3">
         <div class="col-2">{{ status.name }}</div>
         <div class="col">{{ status.description }}</div>
-        <div class="col-1" style="background-color: {{ status.colour }}; color: {{ status.colour }}">{{ status.colour }}</div>
+        <div class="col-1" style="
+                background-color: {{ status.colour }};
+                color: {{ status.colour }}
+                ">
+            {{ status.colour }}
+        </div>
         <div class="col-2">{{ status.createdAt|date('d/m/Y H:i') }}</div>
         <div class="col-2">{{ status.updatedAt|date('d/m/Y H:i') }}</div>
         <div class="col-1 d-flex"><a class="ms-auto btn btn-outline-secondary" href="{{ path('job-status.update', {'id': status.id}) }}">Edit</a></div>
