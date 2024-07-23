@@ -16,8 +16,9 @@ use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Framework\Form\Building\CreateBuildingFormType;
 use App\Framework\Form\Building\UpdateBuildingFormType;
-use LogicException;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,9 +27,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class BuildingController extends AbstractController
 {
     /**
-     * @throws LogicException
      * @throws BuildingRepositoryException
      * @throws AbstractRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
@@ -65,11 +67,12 @@ class BuildingController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws BuildingRepositoryException
      * @throws BuildingFinderException
      * @throws AbstractFinderException
      * @throws AbstractRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/update/{id}', name: 'update', methods: ['GET', 'POST'])]
     public function update(

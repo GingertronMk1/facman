@@ -16,8 +16,9 @@ use App\Domain\Floor\FloorRepositoryException;
 use App\Domain\Floor\ValueObject\FloorId;
 use App\Framework\Form\Floor\CreateFloorFormType;
 use App\Framework\Form\Floor\UpdateFloorFormType;
-use LogicException;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -26,9 +27,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class FloorController extends AbstractController
 {
     /**
-     * @throws LogicException
      * @throws FloorRepositoryException
      * @throws AbstractRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
@@ -65,11 +67,12 @@ class FloorController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws FloorRepositoryException
      * @throws FloorFinderException
      * @throws AbstractFinderException
      * @throws AbstractRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/update/{id}', name: 'update', methods: ['GET', 'POST'])]
     public function update(

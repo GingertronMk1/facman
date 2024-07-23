@@ -11,7 +11,6 @@ use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
-use LogicException;
 
 class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositoryInterface
 {
@@ -26,7 +25,6 @@ class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositor
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
-     * @throws LogicException
      */
     public function store(SiteEntity $entity): SiteId
     {
@@ -38,7 +36,6 @@ class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositor
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
-     * @throws LogicException
      */
     public function update(SiteEntity $entity): SiteId
     {

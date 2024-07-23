@@ -3,9 +3,9 @@
 namespace App\Domain\Common;
 
 use BackedEnum;
-use LogicException;
 use ReflectionClass;
 use ReflectionProperty;
+use Stringable;
 
 abstract class AbstractMappedEntity
 {
@@ -15,8 +15,6 @@ abstract class AbstractMappedEntity
 
     /**
      * @return array<string, int|string>
-     *
-     * @throws LogicException
      */
     public function getMappedData(): array
     {
@@ -30,16 +28,16 @@ abstract class AbstractMappedEntity
             $propertyName = $property->getName();
             $replacedName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $propertyName);
             if (!$replacedName) {
-                throw new LogicException("{$propertyName} could not be tableised.");
+                $replacedName = $propertyName;
             }
             $tabledName = strtolower($replacedName);
 
             $propertyValue = $property->getValue($this);
-            if ($propertyValue instanceof BackedEnum) {
-                $mappedData[$tabledName] = $propertyValue->value;
-            } else {
-                $mappedData[$tabledName] = $propertyValue;
-            }
+            $mappedData[$tabledName] = match (true) {
+                ($propertyValue instanceof BackedEnum) => $propertyValue->value,
+                ($propertyValue instanceof Stringable) => (string) $propertyValue,
+                default => $propertyValue,
+            };
         }
 
         return $mappedData;

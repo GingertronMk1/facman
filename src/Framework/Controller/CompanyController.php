@@ -14,8 +14,9 @@ use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\ValueObject\CompanyId;
 use App\Framework\Form\Company\CreateCompanyFormType;
 use App\Framework\Form\Company\UpdateCompanyFormType;
-use LogicException;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,8 +40,9 @@ class CompanyController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws CompanyRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
@@ -66,9 +68,10 @@ class CompanyController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws CompanyRepositoryException
      * @throws CompanyFinderException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/update/{id}', name: 'update', methods: ['GET', 'POST'])]
     public function update(

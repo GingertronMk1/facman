@@ -10,7 +10,6 @@ use App\Domain\Floor\FloorRepositoryInterface;
 use App\Domain\Floor\ValueObject\FloorId;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
-use LogicException;
 
 class DbalFloorRepository extends AbstractDbalRepository implements FloorRepositoryInterface
 {
@@ -24,7 +23,6 @@ class DbalFloorRepository extends AbstractDbalRepository implements FloorReposit
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
-     * @throws LogicException
      */
     public function store(FloorEntity $entity): FloorId
     {
@@ -36,7 +34,6 @@ class DbalFloorRepository extends AbstractDbalRepository implements FloorReposit
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
-     * @throws LogicException
      */
     public function update(FloorEntity $entity): FloorId
     {

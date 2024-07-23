@@ -14,8 +14,9 @@ use App\Domain\JobStatus\JobStatusRepositoryException;
 use App\Domain\JobStatus\ValueObject\JobStatusId;
 use App\Framework\Form\JobStatus\CreateJobStatusFormType;
 use App\Framework\Form\JobStatus\UpdateJobStatusFormType;
-use LogicException;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,8 +40,9 @@ class JobStatusController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws JobStatusRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
@@ -66,9 +68,10 @@ class JobStatusController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws JobStatusRepositoryException
      * @throws JobStatusFinderException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/update/{id}', name: 'update', methods: ['GET', 'POST'])]
     public function update(

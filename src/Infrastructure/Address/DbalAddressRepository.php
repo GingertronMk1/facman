@@ -10,7 +10,6 @@ use App\Domain\Address\AddressRepositoryInterface;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
-use LogicException;
 
 class DbalAddressRepository extends AbstractDbalRepository implements AddressRepositoryInterface
 {
@@ -20,7 +19,6 @@ class DbalAddressRepository extends AbstractDbalRepository implements AddressRep
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
-     * @throws LogicException
      */
     public function store(AddressEntity $addressEntity): void
     {
@@ -30,7 +28,6 @@ class DbalAddressRepository extends AbstractDbalRepository implements AddressRep
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
-     * @throws LogicException
      */
     public function update(AddressEntity $addressEntity): void
     {

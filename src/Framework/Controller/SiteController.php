@@ -14,8 +14,9 @@ use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\ValueObject\SiteId;
 use App\Framework\Form\Site\CreateSiteFormType;
 use App\Framework\Form\Site\UpdateSiteFormType;
-use LogicException;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,8 +25,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class SiteController extends AbstractController
 {
     /**
-     * @throws LogicException
      * @throws SiteRepositoryException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
@@ -61,9 +63,10 @@ class SiteController extends AbstractController
     }
 
     /**
-     * @throws LogicException
      * @throws SiteRepositoryException
      * @throws SiteFinderException
+     * @throws LogicException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/update/{id}', name: 'update', methods: ['GET', 'POST'])]
     public function update(
