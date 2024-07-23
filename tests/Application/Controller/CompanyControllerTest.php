@@ -56,31 +56,31 @@ class CompanyControllerTest extends ApplicationTestCase
     public function testUpdate(): void
     {
         $id = $this->repository->generateId();
+        $originalName = 'Update Test Company';
+        $originalDescription = 'a description';
         $company = new CompanyEntity(
             id: $id,
-            name: 'Update Test Company',
-            description: 'a description',
+            name: $originalName,
+            description: $originalDescription,
             prefix: 'UTC'
         );
         $this->repository->store($company);
 
-        $crawler = $this->client->request(
-            'GET',
-            $this->router->generate('company.update', ['id' => $id])
-        );
-        $this->assertResponseIsSuccessful();
-
-        $form = $crawler->filterXPath('//form[@name=\'update_company_form\']')->form();
-
         $newName = 'Update Test Company Again';
         $newDescription = 'Changed';
 
-        $form->setValues([
-            'update_company_form[name]' => $newName,
-            'update_company_form[description]' => $newDescription,
-
-        ]);
-        $this->client->submit($form);
+        $this->checkForm(
+            $this->router->generate('company.update', ['id' => $id]),
+            'update_company_form',
+            [
+                'update_company_form[name]' => $newName,
+                'update_company_form[description]' => $newDescription,
+            ],
+            [
+                'update_company_form[name]' => $originalName,
+                'update_company_form[description]' => $originalDescription,
+            ]
+        );
         $this->assertResponseRedirects();
 
         $company = $this->finder->findById($id);
