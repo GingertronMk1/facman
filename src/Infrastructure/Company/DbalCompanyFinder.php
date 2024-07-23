@@ -82,4 +82,18 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
 
         return $qb;
     }
+
+    public function findByPrefix(string $prefix): CompanyModel
+    {
+        $qb = $this->getBaseQuery();
+        $qb->where('prefix = :prefix')->setParameter('prefix', $prefix);
+
+        try {
+            $result = $qb->fetchAssociative();
+        } catch (Throwable $e) {
+            throw CompanyFinderException::errorGettingRows($e);
+        }
+
+        return $this->createFromRow($result);
+    }
 }

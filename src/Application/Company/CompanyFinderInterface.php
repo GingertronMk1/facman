@@ -14,6 +14,11 @@ interface CompanyFinderInterface
     public function findById(CompanyId $id): CompanyModel;
 
     /**
+     * @throws CompanyFinderException
+     */
+    public function findByPrefix(string $prefix): CompanyModel;
+
+    /**
      * @return array<CompanyModel>
      *
      * @throws CompanyFinderException

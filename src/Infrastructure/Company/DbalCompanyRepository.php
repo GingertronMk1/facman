@@ -16,6 +16,7 @@ use Throwable;
 class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRepositoryInterface
 {
     protected string $tableName = 'companies';
+    protected string $exceptionClass = CompanyRepositoryException::class;
 
     public function generateId(): CompanyId
     {

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-./bin/docker/app/exec echo '' > ./var/app.db \
+./bin/docker/app/exec echo '' > ./var/data.db \
     && ./bin/docker/app/console doctrine:migrations:migrate -e test --no-interaction \
     && ./bin/docker/app/exec vendor/bin/phpunit "$@"
