@@ -6,7 +6,10 @@
          backupGlobals="false"
          colors="true"
          bootstrap="tests/bootstrap.php"
->
+         beStrictAboutCoverageMetadata="true"
+         beStrictAboutOutputDuringTests="true"
+         failOnRisky="true"
+         failOnWarning="true">
     <php>
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
@@ -21,6 +24,18 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+
+    <coverage>
+        <report>
+            <clover outputFile=".coverage/clover.xml"/>
+            <cobertura outputFile=".coverage/cobertura.xml"/>
+            <crap4j outputFile=".coverage/crap4j.xml" threshold="50"/>
+            <html outputDirectory=".coverage/html-coverage" lowUpperBound="50" highLowerBound="90"/>
+            <php outputFile=".coverage/coverage.php"/>
+            <text outputFile=".coverage/coverage.txt" showUncoveredFiles="false" showOnlySummary="true"/>
+            <xml outputDirectory=".coverage/xml-coverage"/>
+        </report>
+    </coverage>
 
     <extensions>
     </extensions>

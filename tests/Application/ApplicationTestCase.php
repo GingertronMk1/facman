@@ -33,8 +33,9 @@ class ApplicationTestCase extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         $form = $response->filterXPath("//form[@name='{$formName}']")->form();
+        $originalFormValues = $form->getValues();
         foreach($oldData as $oldDataKey => $oldDataValue) {
-            $this->assertEquals($oldDataValue, $form->get($oldDataKey));
+            $this->assertEquals($oldDataValue, $originalFormValues[$oldDataKey]);
         }
         $form->setValues($newData);
         $this->client->submit($form);

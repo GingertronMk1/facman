@@ -32,21 +32,16 @@ class CompanyControllerTest extends ApplicationTestCase
 
     public function testCreate(): void
     {
-        $crawler = $this->client->request(
-            'GET',
-            $this->router->generate('company.create')
-        );
         $testPrefix = 'CTC';
-
-        $this->assertResponseIsSuccessful();
-        $form = $crawler->filterXPath('//form[@name=\'create_company_form\']')->form();
-        $form->setValues([
-            'create_company_form[name]' => 'Create Test Company',
-            'create_company_form[prefix]' => $testPrefix,
-            'create_company_form[description]' => 'Test Company',
-
-        ]);
-        $this->client->submit($form);
+        $this->checkForm(
+            $this->router->generate('company.create'),
+            'create_company_form',
+            [
+                'create_company_form[name]' => 'Create Test Company',
+                'create_company_form[prefix]' => $testPrefix,
+                'create_company_form[description]' => 'Test Company',
+            ]
+        );
         $this->assertResponseRedirects();
 
         $company = $this->finder->findByPrefix($testPrefix);

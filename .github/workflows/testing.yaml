@@ -36,3 +36,6 @@ jobs:
             - name: Stan
               run: ./bin/docker/app/composer stan
               if: always()
+            - name: PHPUnit With Coverage
+              run: ./bin/docker/app/phpunit-with-coverage
+              if: always()
