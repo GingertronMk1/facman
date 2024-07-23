@@ -74,7 +74,7 @@
             "@auto-scripts"
         ],
         "stan": "./vendor/bin/phpstan",
-        "cs-fix": "./vendor/bin/php-cs-fixer fix",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix --verbose",
         "check": [
             "@cs-fix",
             "@stan"

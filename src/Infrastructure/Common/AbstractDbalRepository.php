@@ -8,6 +8,7 @@ use App\Domain\Common\Exception\AbstractRepositoryException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
+use LogicException;
 use Throwable;
 
 abstract class AbstractDbalRepository
@@ -29,6 +30,7 @@ abstract class AbstractDbalRepository
     /**
      * @throws InvalidArgumentException
      * @throws AbstractRepositoryException
+     * @throws LogicException
      */
     protected function storeMappedEntity(AbstractMappedEntity $entity): bool
     {
@@ -58,6 +60,7 @@ abstract class AbstractDbalRepository
     /**
      * @throws InvalidArgumentException
      * @throws AbstractRepositoryException
+     * @throws LogicException
      */
     protected function updateMappedEntity(AbstractMappedEntity $entity): bool
     {

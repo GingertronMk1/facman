@@ -11,6 +11,7 @@ use App\Domain\Company\CompanyRepositoryInterface;
 use App\Domain\Company\ValueObject\CompanyId;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
+use LogicException;
 use Throwable;
 
 class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRepositoryInterface
@@ -65,6 +66,7 @@ class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRep
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function store(CompanyEntity $entity): CompanyId
     {
@@ -76,6 +78,7 @@ class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRep
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function update(CompanyEntity $entity): CompanyId
     {

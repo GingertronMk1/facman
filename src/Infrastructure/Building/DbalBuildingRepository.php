@@ -10,6 +10,7 @@ use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
+use LogicException;
 
 class DbalBuildingRepository extends AbstractDbalRepository implements BuildingRepositoryInterface
 {
@@ -23,6 +24,7 @@ class DbalBuildingRepository extends AbstractDbalRepository implements BuildingR
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function store(BuildingEntity $entity): BuildingId
     {
@@ -34,6 +36,7 @@ class DbalBuildingRepository extends AbstractDbalRepository implements BuildingR
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function update(BuildingEntity $entity): BuildingId
     {

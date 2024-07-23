@@ -11,6 +11,7 @@ use App\Domain\JobStatus\JobStatusRepositoryInterface;
 use App\Domain\JobStatus\ValueObject\JobStatusId;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
+use LogicException;
 
 class DbalJobStatusRepository extends AbstractDbalRepository implements JobStatusRepositoryInterface
 {
@@ -25,6 +26,7 @@ class DbalJobStatusRepository extends AbstractDbalRepository implements JobStatu
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function store(JobStatusEntity $entity): JobStatusId
     {
@@ -36,6 +38,7 @@ class DbalJobStatusRepository extends AbstractDbalRepository implements JobStatu
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function update(JobStatusEntity $entity): JobStatusId
     {

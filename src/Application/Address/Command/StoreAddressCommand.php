@@ -12,12 +12,12 @@ class StoreAddressCommand
 {
     public function __construct(
         public AddressTypeEnum $addressType = AddressTypeEnum::MAIN,
-        public string $line1 = '',
-        public string $line2 = '',
-        public string $line3 = '',
-        public string $postcode = '',
-        public string $city = '',
-        public string $country = '',
+        public ?string $line1 = '',
+        public ?string $line2 = '',
+        public ?string $line3 = '',
+        public ?string $postcode = '',
+        public ?string $city = '',
+        public ?string $country = '',
     ) {}
 
     public function toEntity(AbstractId $addresseeId, string $addresseeType): AddressEntity

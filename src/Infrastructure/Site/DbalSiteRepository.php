@@ -6,14 +6,17 @@ namespace App\Infrastructure\Site;
 
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Site\SiteEntity;
+use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 use App\Infrastructure\Common\AbstractDbalRepository;
 use InvalidArgumentException;
+use LogicException;
 
 class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositoryInterface
 {
     protected string $tableName = 'sites';
+    protected string $exceptionClass = SiteRepositoryException::class;
 
     public function generateId(): SiteId
     {
@@ -23,6 +26,7 @@ class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositor
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function store(SiteEntity $entity): SiteId
     {
@@ -34,6 +38,7 @@ class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositor
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
+     * @throws LogicException
      */
     public function update(SiteEntity $entity): SiteId
     {

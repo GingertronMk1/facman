@@ -5,7 +5,6 @@ parameters:
         - config/
         - public/
         - src/
-        - tests/
     exceptions:
         check:
             missingCheckedExceptionInThrows: true

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Common;
 
+use LogicException;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -13,6 +14,8 @@ abstract class AbstractMappedEntity
 
     /**
      * @return array<string, int|string>
+     *
+     * @throws LogicException
      */
     public function getMappedData(): array
     {
@@ -23,7 +26,13 @@ abstract class AbstractMappedEntity
         );
         $mappedData = [];
         foreach ($thisProperties as $property) {
-            $mappedData[$property->getName()] = $property->getValue($this);
+            $propertyName = $property->getName();
+            $replacedName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $propertyName);
+            if (!$replacedName) {
+                throw new LogicException("{$propertyName} could not be tableised.");
+            }
+            $tabledName = strtolower($replacedName);
+            $mappedData[$tabledName] = $property->getValue($this);
         }
 
         return $mappedData;

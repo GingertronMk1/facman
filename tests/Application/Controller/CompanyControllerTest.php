@@ -6,13 +6,12 @@ use App\Application\Company\CompanyFinderInterface;
 use App\Domain\Company\CompanyEntity;
 use App\Domain\Company\CompanyRepositoryInterface;
 use App\Tests\Application\ApplicationTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 /**
  * @internal
- *
- * @coversNothing
  */
-class CompanyControllerTest extends ApplicationTestCase
+final class CompanyControllerTest extends ApplicationTestCase
 {
     private CompanyFinderInterface $finder;
     private CompanyRepositoryInterface $repository;
@@ -24,6 +23,7 @@ class CompanyControllerTest extends ApplicationTestCase
         $this->repository = $this->getContainer()->get(CompanyRepositoryInterface::class);
     }
 
+    #[Test]
     public function testIndex(): void
     {
         $crawler = $this->client->request(
@@ -34,6 +34,7 @@ class CompanyControllerTest extends ApplicationTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    #[Test]
     public function testCreate(): void
     {
         $testPrefix = 'CTC';
