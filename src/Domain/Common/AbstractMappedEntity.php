@@ -2,6 +2,7 @@
 
 namespace App\Domain\Common;
 
+use BackedEnum;
 use LogicException;
 use ReflectionClass;
 use ReflectionProperty;
@@ -32,7 +33,13 @@ abstract class AbstractMappedEntity
                 throw new LogicException("{$propertyName} could not be tableised.");
             }
             $tabledName = strtolower($replacedName);
-            $mappedData[$tabledName] = $property->getValue($this);
+
+            $propertyValue = $property->getValue($this);
+            if ($propertyValue instanceof BackedEnum) {
+                $mappedData[$tabledName] = $propertyValue->value;
+            } else {
+                $mappedData[$tabledName] = $propertyValue;
+            }
         }
 
         return $mappedData;
