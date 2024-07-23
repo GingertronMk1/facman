@@ -44,6 +44,20 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
         return array_map(fn ($row) => $this->createFromRow($row), $rows);
     }
 
+    public function findByPrefix(string $prefix): CompanyModel
+    {
+        $qb = $this->getBaseQuery();
+        $qb->where('prefix = :prefix')->setParameter('prefix', $prefix);
+
+        try {
+            $result = $qb->fetchAssociative();
+        } catch (Throwable $e) {
+            throw CompanyFinderException::errorGettingRows($e);
+        }
+
+        return $this->createFromRow($result);
+    }
+
     /**
      * @param array<string, false|mixed> $row
      *
@@ -81,19 +95,5 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
         $qb->select('*')->from('companies');
 
         return $qb;
-    }
-
-    public function findByPrefix(string $prefix): CompanyModel
-    {
-        $qb = $this->getBaseQuery();
-        $qb->where('prefix = :prefix')->setParameter('prefix', $prefix);
-
-        try {
-            $result = $qb->fetchAssociative();
-        } catch (Throwable $e) {
-            throw CompanyFinderException::errorGettingRows($e);
-        }
-
-        return $this->createFromRow($result);
     }
 }
