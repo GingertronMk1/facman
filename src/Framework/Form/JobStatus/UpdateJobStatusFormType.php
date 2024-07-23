@@ -6,6 +6,5 @@ namespace App\Framework\Form\JobStatus;
 
 class UpdateJobStatusFormType extends CreateJobStatusFormType
 {
-    public function __construct(
-    ) {}
+
 }

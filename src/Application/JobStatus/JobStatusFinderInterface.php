@@ -13,5 +13,5 @@ interface JobStatusFinderInterface
     /**
      * @return array<JobStatusModel>
      */
-    public function findAll(): array;
+    public function all(): array;
 }

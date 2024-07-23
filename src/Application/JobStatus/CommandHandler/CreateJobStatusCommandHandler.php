@@ -20,7 +20,7 @@ readonly class CreateJobStatusCommandHandler
         $entity = new JobStatusEntity(
             id: $this->jobStatusRepositoryInterface->generateId(),
             name: $command->name,
-            description: $command->description,
+            description: $command->description ?? '',
             colour: $command->colour,
         );
 

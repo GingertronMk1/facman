@@ -39,7 +39,7 @@ class DbalJobStatusFinder implements JobStatusFinderInterface
      * @throws JobStatusFinderException
      * @throws Exception
      */
-    public function findAll(): array
+    public function all(): array
     {
         $qb = $this->getBaseQuery();
 

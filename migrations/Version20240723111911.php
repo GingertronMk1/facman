@@ -25,6 +25,9 @@ final class Version20240723111911 extends AbstractMigration
         $table->addColumn('name', 'string');
         $table->addColumn('colour', 'string');
         $table->addColumn('description', 'string', ['notnull' => false]);
+        $table->addColumn('created_at', 'datetime');
+        $table->addColumn('updated_at', 'datetime');
+        $table->addColumn('deleted_at', 'datetime', ['notnull' => false]);
         $table->setPrimaryKey(['id']);
     }
 

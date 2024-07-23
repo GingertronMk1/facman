@@ -4,6 +4,7 @@ namespace App\Framework\CliCommand;
 
 use App\Application\Common\ClockInterface;
 use App\Application\Common\Exception\AbstractFinderException;
+use App\Domain\Common\AbstractMappedEntity;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Common\ValueObject\AbstractUuidId;
 use App\Infrastructure\Common\AbstractDbalRepository;
@@ -173,6 +174,7 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
+                'extends' => AbstractMappedEntity::class
             ],
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
                 'kind' => 'interface',
@@ -250,9 +252,11 @@ class CreateEntityCliCommand extends Command
             ],
             'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Create'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
                 'extends' => AbstractType::class,
+                'constructor' => false,
             ],
             'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
                 'extends' => 'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Create'.self::CLASSNAME_PLACEHOLDER.'FormType',
+                'constructor' => false,
             ],
         ];
     }
