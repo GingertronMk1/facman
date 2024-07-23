@@ -12,12 +12,11 @@ use App\Application\Floor\FloorModel;
 use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\ValueObject\DateTime;
 use App\Domain\Floor\ValueObject\FloorId;
-use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Throwable;
 
-readonly class DbalFloorFinder extends AbstractDbalRepository implements FloorFinderInterface
+class DbalFloorFinder implements FloorFinderInterface
 {
     public function __construct(
         private Connection $connection,

@@ -5,30 +5,37 @@ declare(strict_types=1);
 namespace App\Infrastructure\User;
 
 use App\Application\Common\ClockInterface;
+use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\User\UserEntity;
 use App\Domain\User\UserRepositoryException;
 use App\Domain\User\UserRepositoryInterface;
 use App\Domain\User\ValueObject\UserId;
+use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\QueryBuilder;
+use InvalidArgumentException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Throwable;
 
-readonly class DbalUserRepository implements UserRepositoryInterface
+class DbalUserRepository extends AbstractDbalRepository implements UserRepositoryInterface
 {
     private const TABLE = 'users';
 
     public function __construct(
-        private Connection $connection,
-        private UserPasswordHasherInterface $hasher,
-        private ClockInterface $clock
-    ) {}
+        private readonly UserPasswordHasherInterface $hasher,
+        Connection $connection,
+        ClockInterface $clock
+    ) {
+        parent::__construct($connection, $clock);
+    }
 
     public function generateId(): UserId
     {
         return UserId::generate();
     }
 
+    /**
+     * @throws AbstractRepositoryException
+     * @throws InvalidArgumentException
+     */
     public function store(UserEntity $entity): UserId
     {
         $qb = $this->connection->createQueryBuilder();
@@ -49,11 +56,15 @@ readonly class DbalUserRepository implements UserRepositoryInterface
             ])
         ;
 
-        $this->executeAndCheck($qb);
+        $this->executeAndCheck($qb, UserRepositoryException::class);
 
         return $entity->id;
     }
 
+    /**
+     * @throws AbstractRepositoryException
+     * @throws InvalidArgumentException
+     */
     public function update(UserEntity $entity): UserId
     {
         $qb = $this->connection->createQueryBuilder();
@@ -75,24 +86,8 @@ readonly class DbalUserRepository implements UserRepositoryInterface
             ])
         ;
 
-        $this->executeAndCheck($qb);
+        $this->executeAndCheck($qb, UserRepositoryException::class);
 
         return $entity->id;
-    }
-
-    /**
-     * @throws UserRepositoryException
-     */
-    private function executeAndCheck(QueryBuilder $qb): void
-    {
-        try {
-            $rowsAffected = $qb->executeStatement();
-        } catch (Throwable $e) {
-            throw UserRepositoryException::errorUpdatingRows(previous: $e);
-        }
-
-        if (1 !== $rowsAffected) {
-            throw UserRepositoryException::wrongNumberOfRows($rowsAffected);
-        }
     }
 }

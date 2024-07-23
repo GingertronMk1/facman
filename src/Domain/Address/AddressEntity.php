@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Address;
 
+use App\Domain\Common\AbstractMappedEntity;
 use App\Domain\Common\ValueObject\AbstractId;
 
-class AddressEntity
+class AddressEntity extends AbstractMappedEntity
 {
     public function __construct(
         public AbstractId $addresseeId,
@@ -19,4 +20,12 @@ class AddressEntity
         public string $city = '',
         public string $country = '',
     ) {}
+
+    public function getIdentifierColumns(): array
+    {
+        return [
+            'addressee_id' => (string) $this->addresseeId,
+            'addressee_type' => $this->addresseeType,
+        ];
+    }
 }

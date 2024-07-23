@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Floor;
+namespace App\Domain\JobStatus;
 
-use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\AbstractMappedEntity;
-use App\Domain\Floor\ValueObject\FloorId;
+use App\Domain\JobStatus\ValueObject\JobStatusId;
 
-class FloorEntity extends AbstractMappedEntity
+class JobStatusEntity extends AbstractMappedEntity
 {
     public function __construct(
-        public FloorId $id,
+        public JobStatusId $id,
         public string $name,
         public string $description,
-        public BuildingId $buildingId
+        public string $colour
     ) {}
 
     public function getIdentifierColumns(): array
