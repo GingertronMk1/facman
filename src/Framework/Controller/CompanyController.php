@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Framework\Controller;
 
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\Company\Command\CreateCompanyCommand;
 use App\Application\Company\Command\UpdateCompanyCommand;
 use App\Application\Company\CommandHandler\CreateCompanyCommandHandler;
 use App\Application\Company\CommandHandler\UpdateCompanyCommandHandler;
 use App\Application\Company\CompanyFinderException;
 use App\Application\Company\CompanyFinderInterface;
-use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\ValueObject\CompanyId;
 use App\Framework\Form\Company\CreateCompanyFormType;
 use App\Framework\Form\Company\UpdateCompanyFormType;
 use InvalidArgumentException;
-use Symfony\Component\Form\Exception\LogicException;
-use Symfony\Component\HttpFoundation\Request;
+use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -39,44 +40,29 @@ class CompanyController extends AbstractController
     }
 
     /**
-     * @throws CompanyRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
-     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateCompanyCommandHandler $handler,
-        Request $request
     ): Response {
         return $this->handleForm(
             $handler,
             new CreateCompanyCommand(),
             CreateCompanyFormType::class,
-            $request,
             $this->generateUrl('company.index'),
             'company/create.html.twig'
         );
-        //        $command = new CreateCompanyCommand();
-        //        $form = $this->createForm(CreateCompanyFormType::class, $command);
-        //        $form->handleRequest($request);
-        //
-        //        if ($form->isSubmitted() && $form->isValid()) {
-        //            $handler->handle($command);
-        //
-        //            return $this->redirectToRoute('company.index');
-        //        }
-        //
-        //        return $this->render(
-        //            'company/create.html.twig',
-        //            [
-        //                'form' => $form,
-        //            ]
-        //        );
     }
 
     /**
-     * @throws CompanyRepositoryException
+     * @throws CommandHandlerException
      * @throws CompanyFinderException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
      * @throws InvalidArgumentException
      */
@@ -85,25 +71,16 @@ class CompanyController extends AbstractController
         UpdateCompanyCommandHandler $handler,
         CompanyFinderInterface $finder,
         string $id,
-        Request $request
     ): Response {
         $id = CompanyId::fromString($id);
         $company = $finder->findById($id);
-        $command = UpdateCompanyCommand::fromModel($company);
-        $form = $this->createForm(UpdateCompanyFormType::class, $command);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('company.index');
-        }
-
-        return $this->render(
-            'company/update.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            $handler,
+            UpdateCompanyCommand::fromModel($company),
+            UpdateCompanyFormType::class,
+            $this->generateUrl('company.index'),
+            'company/update.html.twig'
         );
     }
 }

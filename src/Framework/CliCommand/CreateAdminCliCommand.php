@@ -2,6 +2,7 @@
 
 namespace App\Framework\CliCommand;
 
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\User\Command\CreateUserCommand;
 use App\Application\User\CommandHandler\CreateUserCommandHandler;
 use App\Domain\User\UserRepositoryException;
@@ -28,6 +29,7 @@ class CreateAdminCliCommand extends Command
     /**
      * @throws InvalidArgumentException
      * @throws UserRepositoryException
+     * @throws CommandHandlerException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

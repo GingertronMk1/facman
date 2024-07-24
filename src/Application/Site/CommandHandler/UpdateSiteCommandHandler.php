@@ -21,6 +21,7 @@ readonly class UpdateSiteCommandHandler implements CommandHandlerInterface
 
     /**
      * @throws SiteRepositoryException
+     * @throws CommandHandlerException
      */
     public function handle(CommandInterface $command, mixed ...$args): SiteId
     {

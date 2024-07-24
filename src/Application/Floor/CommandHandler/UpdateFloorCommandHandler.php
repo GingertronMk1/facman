@@ -21,6 +21,7 @@ readonly class UpdateFloorCommandHandler implements CommandHandlerInterface
 
     /**
      * @throws FloorRepositoryException
+     * @throws CommandHandlerException
      */
     public function handle(CommandInterface $command, mixed ...$args): FloorId
     {

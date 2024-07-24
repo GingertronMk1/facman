@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Framework\Controller;
 
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\JobStatus\Command\CreateJobStatusCommand;
 use App\Application\JobStatus\Command\UpdateJobStatusCommand;
 use App\Application\JobStatus\CommandHandler\CreateJobStatusCommandHandler;
 use App\Application\JobStatus\CommandHandler\UpdateJobStatusCommandHandler;
 use App\Application\JobStatus\JobStatusFinderException;
 use App\Application\JobStatus\JobStatusFinderInterface;
-use App\Domain\JobStatus\JobStatusRepositoryException;
 use App\Domain\JobStatus\ValueObject\JobStatusId;
 use App\Framework\Form\JobStatus\CreateJobStatusFormType;
 use App\Framework\Form\JobStatus\UpdateJobStatusFormType;
 use InvalidArgumentException;
-use Symfony\Component\Form\Exception\LogicException;
-use Symfony\Component\HttpFoundation\Request;
+use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -39,36 +40,28 @@ class JobStatusController extends AbstractController
     }
 
     /**
-     * @throws JobStatusRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
-     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateJobStatusCommandHandler $handler,
-        Request $request
     ): Response {
-        $command = new CreateJobStatusCommand();
-        $form = $this->createForm(CreateJobStatusFormType::class, $command);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('job-status.index');
-        }
-
-        return $this->render(
-            'job-status/create.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            handler: $handler,
+            command: new CreateJobStatusCommand(),
+            formClass: CreateJobStatusFormType::class,
+            redirectUrl: $this->generateUrl('job-status.index'),
+            template: 'job-status/create.html.twig'
         );
     }
 
     /**
-     * @throws JobStatusRepositoryException
-     * @throws JobStatusFinderException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
      * @throws InvalidArgumentException
      */
@@ -77,25 +70,16 @@ class JobStatusController extends AbstractController
         UpdateJobStatusCommandHandler $handler,
         JobStatusFinderInterface $finder,
         string $id,
-        Request $request
     ): Response {
         $id = JobStatusId::fromString($id);
         $jobStatus = $finder->findById($id);
-        $command = UpdateJobStatusCommand::fromModel($jobStatus);
-        $form = $this->createForm(UpdateJobStatusFormType::class, $command);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('job-status.index');
-        }
-
-        return $this->render(
-            'job-status/update.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            handler: $handler,
+            command: UpdateJobStatusCommand::fromModel($jobStatus),
+            formClass: UpdateJobStatusFormType::class,
+            redirectUrl: $this->generateUrl('job-status.index'),
+            template: 'job-status/update.html.twig'
         );
     }
 }

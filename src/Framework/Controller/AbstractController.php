@@ -3,22 +3,37 @@
 namespace App\Framework\Controller;
 
 use App\Application\Common\CommandHandlerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use App\Application\Common\CommandInterface;
+use App\Application\Common\Exception\CommandHandlerException;
+use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+abstract class AbstractController extends SymfonyAbstractController
 {
+    /**
+     * @param array<string, mixed> $twigContext
+     *
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws LogicException
+     */
     protected function handleForm(
         CommandHandlerInterface $handler,
-        mixed $command,
+        CommandInterface $command,
         string $formClass,
-        Request $request,
         string $redirectUrl,
         string $template,
         array $twigContext = []
     ): Response {
+        /** @var RequestStack $stack */
+        $stack = $this->container->get('request_stack');
         $form = $this->createForm($formClass, $command);
-        $form->handleRequest($request);
+        $form->handleRequest($stack->getCurrentRequest());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $handler->handle($command);

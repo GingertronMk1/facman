@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\Framework\Controller;
 
 use App\Application\Common\Exception\AbstractFinderException;
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\Floor\Command\CreateFloorCommand;
 use App\Application\Floor\Command\UpdateFloorCommand;
 use App\Application\Floor\CommandHandler\CreateFloorCommandHandler;
 use App\Application\Floor\CommandHandler\UpdateFloorCommandHandler;
 use App\Application\Floor\FloorFinderException;
 use App\Application\Floor\FloorFinderInterface;
-use App\Domain\Common\Exception\AbstractRepositoryException;
-use App\Domain\Floor\FloorRepositoryException;
 use App\Domain\Floor\ValueObject\FloorId;
 use App\Framework\Form\Floor\CreateFloorFormType;
 use App\Framework\Form\Floor\UpdateFloorFormType;
 use InvalidArgumentException;
-use Symfony\Component\Form\Exception\LogicException;
-use Symfony\Component\HttpFoundation\Request;
+use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -26,27 +26,22 @@ use Symfony\Component\Routing\Attribute\Route;
 class FloorController extends AbstractController
 {
     /**
-     * @throws FloorRepositoryException
-     * @throws AbstractRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
-     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateFloorCommandHandler $handler,
-        Request $request
     ): Response {
-        $command = new CreateFloorCommand();
-        $form = $this->createForm(CreateFloorFormType::class, $command);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('floor.index');
-        }
-
-        return $this->render('floor/create.html.twig', ['form' => $form]);
+        return $this->handleForm(
+            handler: $handler,
+            command: new CreateFloorCommand(),
+            formClass: CreateFloorFormType::class,
+            redirectUrl: $this->generateUrl('floor.index'),
+            template: 'floor/create.html.twig'
+        );
     }
 
     /**
@@ -66,10 +61,10 @@ class FloorController extends AbstractController
     }
 
     /**
-     * @throws FloorRepositoryException
-     * @throws FloorFinderException
      * @throws AbstractFinderException
-     * @throws AbstractRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
      * @throws InvalidArgumentException
      */
@@ -78,25 +73,16 @@ class FloorController extends AbstractController
         UpdateFloorCommandHandler $handler,
         FloorFinderInterface $finder,
         string $id,
-        Request $request
     ): Response {
         $id = FloorId::fromString($id);
         $floor = $finder->findById($id);
-        $command = UpdateFloorCommand::fromModel($floor);
-        $form = $this->createForm(UpdateFloorFormType::class, $command);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('floor.index');
-        }
-
-        return $this->render(
-            'floor/update.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            handler: $handler,
+            command: UpdateFloorCommand::fromModel($floor),
+            formClass: UpdateFloorFormType::class,
+            redirectUrl: $this->generateUrl('floor.index'),
+            template: 'floor/update.html.twig'
         );
     }
 }

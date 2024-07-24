@@ -9,6 +9,7 @@ use App\Application\Common\CommandInterface;
 use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\JobType\Command\UpdateJobTypeCommand;
 use App\Domain\Common\ValueObject\AbstractId;
+use App\Domain\JobType\JobTypeEntity;
 use App\Domain\JobType\JobTypeRepositoryInterface;
 
 readonly class UpdateJobTypeCommandHandler implements CommandHandlerInterface
@@ -23,6 +24,13 @@ readonly class UpdateJobTypeCommandHandler implements CommandHandlerInterface
             throw CommandHandlerException::invalidCommandPassed($command);
         }
 
-        return null;
+        $entity = new JobTypeEntity(
+            id: $command->id,
+            name: $command->name,
+            description: $command->description ?? '',
+            colour: $command->colour,
+        );
+
+        return $this->jobTypeRepositoryInterface->update($entity);
     }
 }

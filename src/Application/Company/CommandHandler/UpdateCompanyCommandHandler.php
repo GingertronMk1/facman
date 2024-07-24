@@ -21,6 +21,7 @@ readonly class UpdateCompanyCommandHandler implements CommandHandlerInterface
 
     /**
      * @throws CompanyRepositoryException
+     * @throws CommandHandlerException
      */
     public function handle(CommandInterface $command, mixed ...$args): CompanyId
     {

@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Framework\Controller;
 
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\Site\Command\CreateSiteCommand;
 use App\Application\Site\Command\UpdateSiteCommand;
 use App\Application\Site\CommandHandler\CreateSiteCommandHandler;
 use App\Application\Site\CommandHandler\UpdateSiteCommandHandler;
 use App\Application\Site\SiteFinderException;
 use App\Application\Site\SiteFinderInterface;
-use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\ValueObject\SiteId;
 use App\Framework\Form\Site\CreateSiteFormType;
 use App\Framework\Form\Site\UpdateSiteFormType;
 use InvalidArgumentException;
-use Symfony\Component\Form\Exception\LogicException;
-use Symfony\Component\HttpFoundation\Request;
+use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -24,26 +25,22 @@ use Symfony\Component\Routing\Attribute\Route;
 class SiteController extends AbstractController
 {
     /**
-     * @throws SiteRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
-     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateSiteCommandHandler $handler,
-        Request $request
     ): Response {
-        $command = new CreateSiteCommand();
-        $form = $this->createForm(CreateSiteFormType::class, $command);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('site.index');
-        }
-
-        return $this->render('site/create.html.twig', ['form' => $form]);
+        return $this->handleForm(
+            handler: $handler,
+            command: new CreateSiteCommand(),
+            formClass: CreateSiteFormType::class,
+            redirectUrl: $this->generateUrl('site.index'),
+            template: 'site/create.html.twig'
+        );
     }
 
     /**
@@ -62,8 +59,10 @@ class SiteController extends AbstractController
     }
 
     /**
-     * @throws SiteRepositoryException
+     * @throws CommandHandlerException
      * @throws SiteFinderException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
      * @throws InvalidArgumentException
      */
@@ -72,25 +71,16 @@ class SiteController extends AbstractController
         UpdateSiteCommandHandler $handler,
         SiteFinderInterface $finder,
         string $id,
-        Request $request
     ): Response {
         $id = SiteId::fromString($id);
         $site = $finder->findById($id);
-        $command = UpdateSiteCommand::fromModel($site);
-        $form = $this->createForm(UpdateSiteFormType::class, $command);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('site.index');
-        }
-
-        return $this->render(
-            'site/update.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            handler: $handler,
+            command: UpdateSiteCommand::fromModel($site),
+            formClass: UpdateSiteFormType::class,
+            redirectUrl: $this->generateUrl('site.index'),
+            template: 'site/update.html.twig'
         );
     }
 }

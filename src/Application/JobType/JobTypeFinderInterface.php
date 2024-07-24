@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Application\JobType;
 
-use App\Application\JobStatus\JobStatusModel;
 use App\Domain\JobType\ValueObject\JobTypeId;
 
 interface JobTypeFinderInterface
@@ -12,7 +11,7 @@ interface JobTypeFinderInterface
     public function findById(JobTypeId $id): JobTypeModel;
 
     /**
-     * @return array<JobStatusModel>
+     * @return array<JobTypeModel>
      */
     public function all(): array;
 }

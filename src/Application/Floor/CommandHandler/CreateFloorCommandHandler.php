@@ -23,6 +23,8 @@ readonly class CreateFloorCommandHandler implements CommandHandlerInterface
     /**
      * @throws FloorRepositoryException
      * @throws InvalidArgumentException
+     * @throws CommandHandlerException
+     * @throws CommandHandlerException
      */
     public function handle(CommandInterface $command, mixed ...$args): FloorId
     {

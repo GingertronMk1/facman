@@ -21,6 +21,7 @@ readonly class UpdateUserCommandHandler implements CommandHandlerInterface
 
     /**
      * @throws UserRepositoryException
+     * @throws CommandHandlerException
      */
     public function handle(CommandInterface $command, mixed ...$args): UserId
     {

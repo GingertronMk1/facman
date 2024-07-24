@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    <h1 class="col">Companies</h1>
+    <a href="{{ path('job-type.create') }}" class="btn btn-primary col-1 my-auto">Add <i class="fa-solid fa-plus"></i></a>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row mt-3">
+        <div class="col-2">Name</div>
+        <div class="col">Description</div>
+        <div class="col-1">Colour</div>
+        <div class="col-2">Created At</div>
+        <div class="col-2">Updated At</div>
+        <div class="col-1">Actions</div>
+    </div>
+{% for type in types %}
+    <div class="row mt-3">
+        <div class="col-2">{{ type.name }}</div>
+        <div class="col">{{ type.description }}</div>
+        <div class="col-1" style="
+                background-color: {{ type.colour }};
+                color: {{ type.colour }}
+                ">
+            {{ type.colour }}
+        </div>
+        <div class="col-2">{{ type.createdAt|date('d/m/Y H:i') }}</div>
+        <div class="col-2">{{ type.updatedAt|date('d/m/Y H:i') }}</div>
+        <div class="col-1 d-flex"><a class="ms-auto btn btn-outline-secondary" href="{{ path('job-type.update', {'id': type.id}) }}">Edit</a></div>
+    </div>
+{% endfor %}
+
+{% endblock %}

@@ -26,6 +26,9 @@ readonly class CreateSiteCommandHandler implements CommandHandlerInterface
     /**
      * @throws SiteRepositoryException
      * @throws InvalidArgumentException
+     * @throws CommandHandlerException
+     * @throws CommandHandlerException
+     * @throws CommandHandlerException
      */
     public function handle(CommandInterface $command, mixed ...$args): SiteId
     {

@@ -11,14 +11,14 @@ use App\Application\Building\Command\UpdateBuildingCommand;
 use App\Application\Building\CommandHandler\CreateBuildingCommandHandler;
 use App\Application\Building\CommandHandler\UpdateBuildingCommandHandler;
 use App\Application\Common\Exception\AbstractFinderException;
-use App\Domain\Building\BuildingRepositoryException;
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Domain\Building\ValueObject\BuildingId;
-use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Framework\Form\Building\CreateBuildingFormType;
 use App\Framework\Form\Building\UpdateBuildingFormType;
 use InvalidArgumentException;
-use Symfony\Component\Form\Exception\LogicException;
-use Symfony\Component\HttpFoundation\Request;
+use LogicException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -26,27 +26,22 @@ use Symfony\Component\Routing\Attribute\Route;
 class BuildingController extends AbstractController
 {
     /**
-     * @throws BuildingRepositoryException
-     * @throws AbstractRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
-     * @throws InvalidArgumentException
      */
     #[Route(path: '/create', name: 'create', methods: ['GET', 'POST'])]
     public function create(
         CreateBuildingCommandHandler $handler,
-        Request $request
     ): Response {
-        $command = new CreateBuildingCommand();
-        $form = $this->createForm(CreateBuildingFormType::class, $command);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('building.index');
-        }
-
-        return $this->render('building/create.html.twig', ['form' => $form]);
+        return $this->handleForm(
+            handler: $handler,
+            command: new CreateBuildingCommand(),
+            formClass: CreateBuildingFormType::class,
+            redirectUrl: $this->generateUrl('building.index'),
+            template: 'building/create.html.twig'
+        );
     }
 
     /**
@@ -66,10 +61,10 @@ class BuildingController extends AbstractController
     }
 
     /**
-     * @throws BuildingRepositoryException
-     * @throws BuildingFinderException
      * @throws AbstractFinderException
-     * @throws AbstractRepositoryException
+     * @throws CommandHandlerException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws LogicException
      * @throws InvalidArgumentException
      */
@@ -78,25 +73,16 @@ class BuildingController extends AbstractController
         UpdateBuildingCommandHandler $handler,
         BuildingFinderInterface $finder,
         string $id,
-        Request $request
     ): Response {
         $id = BuildingId::fromString($id);
         $building = $finder->findById($id);
-        $command = UpdateBuildingCommand::fromModel($building);
-        $form = $this->createForm(UpdateBuildingFormType::class, $command);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('building.index');
-        }
-
-        return $this->render(
-            'building/update.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            handler: $handler,
+            command: UpdateBuildingCommand::fromModel($building),
+            formClass: UpdateBuildingFormType::class,
+            redirectUrl: $this->generateUrl('building.index'),
+            template: 'building/update.html.twig'
         );
     }
 }
