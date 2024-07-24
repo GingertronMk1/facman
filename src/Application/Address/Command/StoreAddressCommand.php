@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Address\Command;
 
-use App\Domain\Address\AddressEntity;
 use App\Domain\Address\AddressTypeEnum;
-use App\Domain\Common\ValueObject\AbstractId;
 
 class StoreAddressCommand
 {

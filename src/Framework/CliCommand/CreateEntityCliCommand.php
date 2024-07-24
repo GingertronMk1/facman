@@ -2,17 +2,15 @@
 
 namespace App\Framework\CliCommand;
 
-use App\Application\Common\ClockInterface;
 use App\Application\Common\Exception\AbstractFinderException;
 use App\Domain\Common\AbstractMappedEntity;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Common\ValueObject\AbstractUuidId;
+use App\Infrastructure\Common\AbstractDbalFinder;
 use App\Infrastructure\Common\AbstractDbalRepository;
-use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use InvalidArgumentException;
-use JsonSerializable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -224,24 +222,18 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
-                'implements' => [JsonSerializable::class],
             ],
             'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
-                'kind' => 'readonly class',
-                'attributes' => [
-                    Connection::class => 'private',
-                ],
-                'extends' => AbstractDbalRepository::class,
+                'kind' => 'class',
+                'extends' => AbstractDbalFinder::class,
+                'constructor' => false,
                 'implements' => [
                     'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface',
                 ],
             ],
             'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
-                'kind' => 'readonly class',
-                'attributes' => [
-                    Connection::class => 'private',
-                    ClockInterface::class => 'private',
-                ],
+                'kind' => 'class',
+                'constructor' => false,
                 'extends' => AbstractDbalRepository::class,
                 'implements' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',

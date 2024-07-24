@@ -15,9 +15,6 @@ use Throwable;
 
 class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRepositoryInterface
 {
-    protected string $tableName = 'companies';
-    protected string $exceptionClass = CompanyRepositoryException::class;
-
     public function generateId(): CompanyId
     {
         return CompanyId::generate();
@@ -26,7 +23,7 @@ class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRep
     public function generatePrefix(string $companyName): string
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->select('prefix')->from($this->tableName);
+        $qb->select('prefix')->from($this->getTableName());
 
         try {
             $companyPrefixes = $qb->fetchFirstColumn();
@@ -82,5 +79,15 @@ class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRep
         $this->updateMappedEntity($entity);
 
         return $entity->id;
+    }
+
+    protected function getTableName(): string
+    {
+        return 'companies';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return CompanyRepositoryException::class;
     }
 }

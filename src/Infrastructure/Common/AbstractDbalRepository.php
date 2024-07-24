@@ -12,14 +12,14 @@ use Throwable;
 
 abstract class AbstractDbalRepository
 {
-    protected string $tableName;
-
-    protected string $exceptionClass;
-
     public function __construct(
         protected readonly Connection $connection,
         protected readonly ClockInterface $clock
     ) {}
+
+    abstract protected function getTableName(): string;
+
+    abstract protected function getExceptionClass(): string;
 
     protected function getQueryBuilder(): QueryBuilder
     {
@@ -33,7 +33,7 @@ abstract class AbstractDbalRepository
     protected function storeMappedEntity(AbstractMappedEntity $entity): bool
     {
         $qb = $this->getQueryBuilder();
-        $qb->insert($this->tableName);
+        $qb->insert($this->getTableName());
 
         foreach ($entity->getMappedData() as $key => $value) {
             $qb->setValue($key, ":{$key}")
@@ -50,7 +50,7 @@ abstract class AbstractDbalRepository
 
         $qb->setParameter('now', (string) $this->clock->getTime());
 
-        $this->executeAndCheck($qb, $this->exceptionClass);
+        $this->executeAndCheck($qb, $this->getExceptionClass());
 
         return true;
     }
@@ -62,7 +62,7 @@ abstract class AbstractDbalRepository
     protected function updateMappedEntity(AbstractMappedEntity $entity): bool
     {
         $qb = $this->getQueryBuilder();
-        $qb->update($this->tableName);
+        $qb->update($this->getTableName());
 
         foreach ($entity->getIdentifierColumns() as $idColKey => $idColVal) {
             $qb->andWhere("{$idColKey} = :{$idColKey}")
@@ -82,7 +82,7 @@ abstract class AbstractDbalRepository
 
         $qb->setParameter('now', (string) $this->clock->getTime());
 
-        $this->executeAndCheck($qb, $this->exceptionClass);
+        $this->executeAndCheck($qb, $this->getExceptionClass());
 
         return true;
     }

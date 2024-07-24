@@ -14,9 +14,6 @@ use InvalidArgumentException;
 
 class DbalBuildingRepository extends AbstractDbalRepository implements BuildingRepositoryInterface
 {
-    protected string $tableName = 'buildings';
-    protected string $exceptionClass = BuildingRepositoryException::class;
-
     public function generateId(): BuildingId
     {
         return BuildingId::generate();
@@ -42,5 +39,15 @@ class DbalBuildingRepository extends AbstractDbalRepository implements BuildingR
         $this->updateMappedEntity($entity);
 
         return $entity->id;
+    }
+
+    protected function getTableName(): string
+    {
+        return 'buildings';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return BuildingRepositoryException::class;
     }
 }

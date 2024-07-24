@@ -6,7 +6,6 @@ namespace App\Application\Address;
 
 use App\Domain\Address\AddressTypeEnum;
 use App\Domain\Common\ValueObject\DateTime;
-use JsonSerializable;
 
 readonly class AddressModel
 {

@@ -13,9 +13,6 @@ use InvalidArgumentException;
 
 class DbalAddressRepository extends AbstractDbalRepository implements AddressRepositoryInterface
 {
-    protected string $tableName = 'addresses';
-    protected string $exceptionClass = AddressRepositoryException::class;
-
     /**
      * @throws AbstractRepositoryException
      * @throws InvalidArgumentException
@@ -32,5 +29,15 @@ class DbalAddressRepository extends AbstractDbalRepository implements AddressRep
     public function update(AddressEntity $addressEntity): void
     {
         $this->updateMappedEntity($addressEntity);
+    }
+
+    protected function getTableName(): string
+    {
+        return 'addresses';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return AddressRepositoryException::class;
     }
 }

@@ -14,9 +14,6 @@ use InvalidArgumentException;
 
 class DbalFloorRepository extends AbstractDbalRepository implements FloorRepositoryInterface
 {
-    protected string $tableName = 'floors';
-    protected string $exceptionClass = FloorRepositoryException::class;
-
     public function generateId(): FloorId
     {
         return FloorId::generate();
@@ -42,5 +39,15 @@ class DbalFloorRepository extends AbstractDbalRepository implements FloorReposit
         $this->updateMappedEntity($entity);
 
         return $entity->id;
+    }
+
+    protected function getTableName(): string
+    {
+        return 'floors';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return FloorRepositoryException::class;
     }
 }

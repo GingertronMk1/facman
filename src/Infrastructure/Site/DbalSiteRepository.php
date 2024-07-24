@@ -14,9 +14,6 @@ use InvalidArgumentException;
 
 class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositoryInterface
 {
-    protected string $tableName = 'sites';
-    protected string $exceptionClass = SiteRepositoryException::class;
-
     public function generateId(): SiteId
     {
         return SiteId::generate();
@@ -42,5 +39,15 @@ class DbalSiteRepository extends AbstractDbalRepository implements SiteRepositor
         $this->updateMappedEntity($entity);
 
         return $entity->id;
+    }
+
+    protected function getTableName(): string
+    {
+        return 'sites';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return SiteRepositoryException::class;
     }
 }

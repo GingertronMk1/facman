@@ -14,9 +14,6 @@ use InvalidArgumentException;
 
 class DbalJobStatusRepository extends AbstractDbalRepository implements JobStatusRepositoryInterface
 {
-    protected string $tableName = 'job_statuses';
-    protected string $exceptionClass = JobStatusRepositoryException::class;
-
     public function generateId(): JobStatusId
     {
         return JobStatusId::generate();
@@ -42,5 +39,15 @@ class DbalJobStatusRepository extends AbstractDbalRepository implements JobStatu
         $this->updateMappedEntity($entity);
 
         return $entity->id;
+    }
+
+    protected function getTableName(): string
+    {
+        return 'job_statuses';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return JobStatusRepositoryException::class;
     }
 }
