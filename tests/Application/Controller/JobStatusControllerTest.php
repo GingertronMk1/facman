@@ -7,6 +7,7 @@ use App\Application\JobStatus\JobStatusModel;
 use App\Domain\JobStatus\JobStatusEntity;
 use App\Domain\JobStatus\JobStatusRepositoryInterface;
 use App\Tests\Application\ApplicationTestCase;
+use LogicException;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
@@ -30,6 +31,7 @@ final class JobStatusControllerTest extends ApplicationTestCase
      * @throws ServiceCircularReferenceException
      * @throws ServiceNotFoundException
      * @throws TypeError
+     * @throws LogicException
      */
     protected function setUp(): void
     {
