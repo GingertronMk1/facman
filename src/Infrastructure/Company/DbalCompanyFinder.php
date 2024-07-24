@@ -65,7 +65,7 @@ readonly class DbalCompanyFinder implements CompanyFinderInterface
      */
     private function createFromRow(array|false $row): CompanyModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw new CompanyFinderException('No rows found');
         }
 

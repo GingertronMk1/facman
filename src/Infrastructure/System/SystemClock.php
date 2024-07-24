@@ -15,7 +15,7 @@ class SystemClock implements ClockInterface
     public function getTime(?string $modifier = null): DateTime
     {
         $initialDateTime = new DateTimeImmutable();
-        if ($modifier) {
+        if (!is_null($modifier)) {
             $initialDateTime = $initialDateTime->modify($modifier);
         }
 

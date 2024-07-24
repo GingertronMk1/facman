@@ -31,7 +31,7 @@ readonly class CreateFloorCommandHandler implements CommandHandlerInterface
         if (!$command instanceof CreateFloorCommand) {
             throw CommandHandlerException::invalidCommandPassed($command);
         }
-        if (!$command->building) {
+        if (is_null($command->building)) {
             throw new CommandHandlerException('No building ID given');
         }
         $entity = new FloorEntity(

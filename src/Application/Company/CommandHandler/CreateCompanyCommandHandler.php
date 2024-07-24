@@ -29,7 +29,7 @@ readonly class CreateCompanyCommandHandler implements CommandHandlerInterface
             throw CommandHandlerException::invalidCommandPassed($command);
         }
         $prefix = $command->prefix;
-        if (empty($prefix)) {
+        if (!is_string($prefix) || strlen($prefix) < 1) {
             $prefix = $this->companyRepositoryInterface->generatePrefix($command->name);
         }
         $entity = new CompanyEntity(

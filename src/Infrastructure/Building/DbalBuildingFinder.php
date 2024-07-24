@@ -77,7 +77,7 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
     private function createFromRow(array|false $row): BuildingModel
     {
         try {
-            if (!$row) {
+            if (!is_array($row)) {
                 throw new BuildingFinderException('No rows found');
             }
 

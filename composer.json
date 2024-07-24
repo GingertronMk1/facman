@@ -83,7 +83,8 @@
         "check": [
             "@cs-fix",
             "@stan"
-        ]
+        ],
+        "phpunit": ""
     },
     "conflict": {
         "symfony/symfony": "*"

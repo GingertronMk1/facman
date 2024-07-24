@@ -33,7 +33,7 @@ readonly class CreateBuildingCommandHandler implements CommandHandlerInterface
         if (!$command instanceof CreateBuildingCommand) {
             throw CommandHandlerException::invalidCommandPassed($command);
         }
-        if (!$command->site?->id) {
+        if (is_null($command->site?->id)) {
             throw new CommandHandlerException('No site ID passed in');
         }
         $id = $this->buildingRepositoryInterface->generateId();
@@ -44,7 +44,7 @@ readonly class CreateBuildingCommandHandler implements CommandHandlerInterface
             siteId: $command->site->id,
         );
 
-        if ($command->address) {
+        if (!is_null($command->address)) {
             $this->createAddressCommandHandler->handle($command->address, $id, BuildingModel::class);
         }
 

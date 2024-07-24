@@ -46,7 +46,7 @@ readonly class CreateSiteCommandHandler implements CommandHandlerInterface
             companyId: $command->company->id
         );
 
-        if ($command->address) {
+        if (!is_null($command->address)) {
             $this->storeAddressCommandHandler->handle($command->address, $id, SiteModel::class);
         }
 

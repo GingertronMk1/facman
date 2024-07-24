@@ -103,7 +103,7 @@ readonly class DbalUserFinder implements UserFinderInterface
      */
     private function createFromRow(array|false $row): UserModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw UserFinderException::notFound();
         }
 

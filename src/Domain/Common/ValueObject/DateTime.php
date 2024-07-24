@@ -24,7 +24,7 @@ class DateTime implements Stringable, JsonSerializable
     private function __construct(
         string $date
     ) {
-        if (!DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $date)) {
+        if (!DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $date) instanceof DateTimeImmutable) {
             throw new InvalidArgumentException('Invalid date provided: '.$date.'. Format: '.self::FORMAT_MICROSECONDS.'.');
         }
 
@@ -61,7 +61,7 @@ class DateTime implements Stringable, JsonSerializable
 
         $dateTimeImmutable = DateTimeImmutable::createFromFormat($dateFormat, $dateString);
 
-        if (!$dateTimeImmutable) {
+        if (!$dateTimeImmutable instanceof DateTimeImmutable) {
             throw new InvalidArgumentException("Invalid date string `{$dateString}`.");
         }
 
@@ -92,7 +92,16 @@ class DateTime implements Stringable, JsonSerializable
         $length = strlen((string) $timestamp);
 
         switch ($length) {
-            case $length <= 10: // seconds
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10: // seconds
                 $immutable = DateTimeImmutable::createFromFormat('U', (string) $timestamp);
 
                 break;
@@ -117,7 +126,7 @@ class DateTime implements Stringable, JsonSerializable
                 throw new InvalidArgumentException('Invalid integer format');
         }
 
-        if (!$immutable) {
+        if (!$immutable instanceof DateTimeImmutable) {
             throw new InvalidArgumentException("Invalid timestamp `{$timestamp}`.");
         }
 
@@ -146,7 +155,7 @@ class DateTime implements Stringable, JsonSerializable
     public function toDateTimeImmutable(): DateTimeImmutable
     {
         $returnVal = DateTimeImmutable::createFromFormat(self::FORMAT_MICROSECONDS, $this->date);
-        if (!$returnVal) {
+        if (!$returnVal instanceof DateTimeImmutable) {
             throw new Exception("Invalid date {$this->date}");
         }
 

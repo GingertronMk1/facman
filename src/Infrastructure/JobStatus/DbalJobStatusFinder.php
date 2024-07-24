@@ -64,7 +64,7 @@ class DbalJobStatusFinder implements JobStatusFinderInterface
      */
     private function createFromRow(array|false $row): JobStatusModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw JobStatusFinderException::errorCreatingModel();
         }
 

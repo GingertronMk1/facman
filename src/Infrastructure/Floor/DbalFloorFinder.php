@@ -75,7 +75,7 @@ class DbalFloorFinder implements FloorFinderInterface
      */
     private function createFromRow(array|false $row): FloorModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw new FloorFinderException('No rows found');
         }
 

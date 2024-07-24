@@ -18,8 +18,13 @@ use App\Domain\Site\SiteEntity;
 use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Exception;
+use LogicException;
+use PHPUnit\Framework\ExpectationFailedException;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\AbstractBrowser;
+use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -29,8 +34,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ApplicationTestCase extends WebTestCase
 {
-    protected const COMPANY_ID = '0190e1b8-e7dc-7d6a-9f13-d4360dd2f2d1';
-    protected KernelBrowser $client;
+    protected AbstractBrowser $client;
     protected UrlGeneratorInterface $router;
 
     public static function setUpBeforeClass(): void
@@ -39,43 +43,61 @@ class ApplicationTestCase extends WebTestCase
         self::bootKernel();
     }
 
-    protected function setUp(): void
+    /**
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
+     * @throws LogicException
+     */
+    protected function stUp(): void
     {
-        $client = $this->getContainer()->get('test.client');
-        $this->client = self::getClient($client);
+        /** @var ?AbstractBrowser $client */
+        $client = self::getContainer()->get('test.client');
+        $browser = self::getClient($client);
+        if (is_null($browser)) {
+            throw new LogicException('No browser found');
+        }
+        $this->client = $browser;
 
         /** @var UrlGeneratorInterface $router */
-        $router = $this->getContainer()->get(UrlGeneratorInterface::class);
+        $router = self::getContainer()->get(UrlGeneratorInterface::class);
         $this->router = $router;
     }
 
     /**
-     * @param string               $route    The generated route for the form
-     * @param string               $formName The name of the form
-     * @param array<string, mixed> $newData  The data to add to the form
-     * @param array<string, mixed> $oldData  The data that should be present in the form already
+     * @param array<string, mixed> $routeParameters
+     * @param array<string, mixed> $newData         The data to add to the form
+     * @param array<string, mixed> $oldData         The data that should be present in the form already
+     *
+     * @throws ExpectationFailedException
      */
     protected function checkForm(
         string $route,
+        array $routeParameters,
         string $formName,
         array $newData,
         array $oldData = []
     ): void {
-        $response = $this->client->request('GET', $route);
-        $this->assertResponseIsSuccessful();
+        try {
+            $response = $this->client->request('GET', $this->router->generate($route, $routeParameters));
+            self::assertResponseIsSuccessful();
 
-        $form = $response->filterXPath("//form[@name='{$formName}']")->form();
-        $originalFormValues = $form->getValues();
-        foreach ($oldData as $oldDataKey => $oldDataValue) {
-            $this->assertEquals($oldDataValue, $originalFormValues[$oldDataKey]);
+            $form = $response->filterXPath("//form[@name='{$formName}']")->form();
+            $originalFormValues = $form->getValues();
+            foreach ($oldData as $oldDataKey => $oldDataValue) {
+                self::assertEquals($oldDataValue, $originalFormValues[$oldDataKey]);
+            }
+            $form->setValues($newData);
+            $this->client->submit($form);
+        } catch (Exception $e) {
+            throw new ExpectationFailedException('Something went wrong', previous: $e);
         }
-        $form->setValues($newData);
-        $this->client->submit($form);
     }
 
     /**
      * Create a Company.
      *
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      * @throws CompanyRepositoryException
      */
     protected static function createCompany(): CompanyId
@@ -95,6 +117,8 @@ class ApplicationTestCase extends WebTestCase
     /**
      * @throws CompanyRepositoryException
      * @throws SiteRepositoryException
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
     protected static function createSite(): SiteId
     {
@@ -116,6 +140,8 @@ class ApplicationTestCase extends WebTestCase
      * @throws CompanyRepositoryException
      * @throws SiteRepositoryException
      * @throws BuildingRepositoryException
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
     protected static function createBuilding(): BuildingId
     {
@@ -138,6 +164,8 @@ class ApplicationTestCase extends WebTestCase
      * @throws CompanyRepositoryException
      * @throws FloorRepositoryException
      * @throws SiteRepositoryException
+     * @throws ServiceCircularReferenceException
+     * @throws ServiceNotFoundException
      */
     protected static function createFloor(): FloorId
     {

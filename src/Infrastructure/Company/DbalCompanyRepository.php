@@ -33,7 +33,7 @@ class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRep
 
         $companyNameWords = preg_split('/\s+/', $companyName);
 
-        if (!$companyNameWords) {
+        if (!is_array($companyNameWords)) {
             throw CompanyRepositoryException::errorGeneratingPrefix();
         }
         $numLetters = 1;
@@ -54,7 +54,7 @@ class DbalCompanyRepository extends AbstractDbalRepository implements CompanyRep
                 throw CompanyRepositoryException::errorGeneratingPrefix();
             }
             ++$numLetters;
-        } while (!empty($prefix) && in_array($prefix, $companyPrefixes));
+        } while (in_array($prefix, $companyPrefixes, true));
 
         return $prefix;
     }

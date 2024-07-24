@@ -57,7 +57,7 @@ class DbalJobTypeFinder extends AbstractDbalFinder implements JobTypeFinderInter
      */
     private function createFromRow(array|false $row): JobTypeModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw JobTypeFinderException::errorCreatingModel();
         }
 

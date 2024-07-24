@@ -27,7 +27,7 @@ abstract class AbstractMappedEntity
         foreach ($thisProperties as $property) {
             $propertyName = $property->getName();
             $replacedName = preg_replace('/([a-z])([A-Z])/', '$1_$2', $propertyName);
-            if (!$replacedName) {
+            if (!is_string($replacedName)) {
                 $replacedName = $propertyName;
             }
             $tabledName = strtolower($replacedName);

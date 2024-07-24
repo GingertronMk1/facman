@@ -75,7 +75,7 @@ readonly class DbalSiteFinder implements SiteFinderInterface
      */
     private function createFromRow(array|false $row): SiteModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw new SiteFinderException('No rows found');
         }
 

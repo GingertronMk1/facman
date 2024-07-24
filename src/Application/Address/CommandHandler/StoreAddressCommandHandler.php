@@ -42,7 +42,7 @@ readonly class StoreAddressCommandHandler implements CommandHandlerInterface
             }
         }
 
-        if (!($addresseeId && $addresseeType)) {
+        if (!($addresseeId instanceof AbstractId && is_string($addresseeType))) {
             throw new CommandHandlerException('No type or ID given');
         }
 

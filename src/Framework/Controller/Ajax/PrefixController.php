@@ -20,7 +20,7 @@ class PrefixController extends AbstractController
     public function __invoke(Request $request, CompanyRepositoryInterface $repository): JsonResponse
     {
         $companyName = $request->get('companyName', '');
-        if (empty($companyName)) {
+        if ('' === $companyName) {
             return new JsonResponse(['prefix' => '']);
         }
 
