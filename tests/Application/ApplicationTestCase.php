@@ -2,6 +2,22 @@
 
 namespace App\Tests\Application;
 
+use App\Domain\Building\BuildingEntity;
+use App\Domain\Building\BuildingRepositoryException;
+use App\Domain\Building\BuildingRepositoryInterface;
+use App\Domain\Building\ValueObject\BuildingId;
+use App\Domain\Company\CompanyEntity;
+use App\Domain\Company\CompanyRepositoryException;
+use App\Domain\Company\CompanyRepositoryInterface;
+use App\Domain\Company\ValueObject\CompanyId;
+use App\Domain\Floor\FloorEntity;
+use App\Domain\Floor\FloorRepositoryException;
+use App\Domain\Floor\FloorRepositoryInterface;
+use App\Domain\Floor\ValueObject\FloorId;
+use App\Domain\Site\SiteEntity;
+use App\Domain\Site\SiteRepositoryException;
+use App\Domain\Site\SiteRepositoryInterface;
+use App\Domain\Site\ValueObject\SiteId;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -13,6 +29,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ApplicationTestCase extends WebTestCase
 {
+    protected const COMPANY_ID = '0190e1b8-e7dc-7d6a-9f13-d4360dd2f2d1';
     protected KernelBrowser $client;
     protected UrlGeneratorInterface $router;
 
@@ -54,5 +71,87 @@ class ApplicationTestCase extends WebTestCase
         }
         $form->setValues($newData);
         $this->client->submit($form);
+    }
+
+    /**
+     * Create a Company.
+     *
+     * @throws CompanyRepositoryException
+     */
+    protected static function createCompany(): CompanyId
+    {
+        /** @var CompanyRepositoryInterface $companyRepository */
+        $companyRepository = self::getContainer()->get(CompanyRepositoryInterface::class);
+        $company = new CompanyEntity(
+            id: $companyRepository->generateId(),
+            name: 'Test Company',
+            description: 'Test Company',
+            prefix: static::class.time()
+        );
+
+        return $companyRepository->store($company);
+    }
+
+    /**
+     * @throws CompanyRepositoryException
+     * @throws SiteRepositoryException
+     */
+    protected static function createSite(): SiteId
+    {
+        $companyId = self::createCompany();
+
+        /** @var SiteRepositoryInterface $siteRepository */
+        $siteRepository = self::getContainer()->get(SiteRepositoryInterface::class);
+        $site = new SiteEntity(
+            id: $siteRepository->generateId(),
+            name: 'Test Site',
+            description: 'Test Site',
+            companyId: $companyId
+        );
+
+        return $siteRepository->store($site);
+    }
+
+    /**
+     * @throws CompanyRepositoryException
+     * @throws SiteRepositoryException
+     * @throws BuildingRepositoryException
+     */
+    protected static function createBuilding(): BuildingId
+    {
+        $siteId = self::createSite();
+
+        /** @var BuildingRepositoryInterface $buildingRepository */
+        $buildingRepository = self::getContainer()->get(BuildingRepositoryInterface::class);
+        $building = new BuildingEntity(
+            id: $buildingRepository->generateId(),
+            name: 'Test Building',
+            description: 'Test Building',
+            siteId: $siteId,
+        );
+
+        return $buildingRepository->store($building);
+    }
+
+    /**
+     * @throws BuildingRepositoryException
+     * @throws CompanyRepositoryException
+     * @throws FloorRepositoryException
+     * @throws SiteRepositoryException
+     */
+    protected static function createFloor(): FloorId
+    {
+        $buildingId = self::createBuilding();
+
+        /** @var FloorRepositoryInterface $floorRepository */
+        $floorRepository = self::getContainer()->get(FloorRepositoryInterface::class);
+        $floor = new FloorEntity(
+            id: $floorRepository->generateId(),
+            name: 'Test Floor',
+            description: 'Test Floor',
+            buildingId: $buildingId
+        );
+
+        return $floorRepository->store($floor);
     }
 }

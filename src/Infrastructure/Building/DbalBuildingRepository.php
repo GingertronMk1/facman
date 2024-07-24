@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Building;
 
 use App\Domain\Building\BuildingEntity;
+use App\Domain\Building\BuildingRepositoryException;
 use App\Domain\Building\BuildingRepositoryInterface;
 use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\Exception\AbstractRepositoryException;
@@ -14,6 +15,7 @@ use InvalidArgumentException;
 class DbalBuildingRepository extends AbstractDbalRepository implements BuildingRepositoryInterface
 {
     protected string $tableName = 'buildings';
+    protected string $exceptionClass = BuildingRepositoryException::class;
 
     public function generateId(): BuildingId
     {

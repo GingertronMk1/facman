@@ -19,19 +19,4 @@ class StoreAddressCommand
         public ?string $city = '',
         public ?string $country = '',
     ) {}
-
-    public function toEntity(AbstractId $addresseeId, string $addresseeType): AddressEntity
-    {
-        return new AddressEntity(
-            addresseeId: $addresseeId,
-            addresseeType: $addresseeType,
-            addressType: $this->addressType,
-            line1: $this->line1,
-            line2: $this->line2,
-            line3: $this->line3,
-            postcode: $this->postcode,
-            city: $this->city,
-            country: $this->country,
-        );
-    }
 }

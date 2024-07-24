@@ -6,6 +6,7 @@ namespace App\Infrastructure\Floor;
 
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Floor\FloorEntity;
+use App\Domain\Floor\FloorRepositoryException;
 use App\Domain\Floor\FloorRepositoryInterface;
 use App\Domain\Floor\ValueObject\FloorId;
 use App\Infrastructure\Common\AbstractDbalRepository;
@@ -14,6 +15,7 @@ use InvalidArgumentException;
 class DbalFloorRepository extends AbstractDbalRepository implements FloorRepositoryInterface
 {
     protected string $tableName = 'floors';
+    protected string $exceptionClass = FloorRepositoryException::class;
 
     public function generateId(): FloorId
     {

@@ -52,6 +52,22 @@ class DbalFloorFinder implements FloorFinderInterface
         return array_map(fn ($row) => $this->createFromRow($row), $rows);
     }
 
+    public function allForBuilding(BuildingId $buildingId): array
+    {
+        $qb = $this->getBaseQuery();
+        $qb->where('building_id = :building_id')
+            ->setParameter('building_id', (string) $buildingId)
+        ;
+
+        try {
+            $rows = $qb->fetchAllAssociative();
+        } catch (Throwable $e) {
+            throw BuildingFinderException::errorGettingRows($e);
+        }
+
+        return array_map(fn ($row) => $this->createFromRow($row), $rows);
+    }
+
     /**
      * @param array<string, mixed>|false $row
      *
