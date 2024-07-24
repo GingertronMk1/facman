@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 
-./bin/docker/app/phpunit --coverage-text
+./bin/docker/app/phpunit --coverage-filter src \
+  && cat .coverage/coverage.txt

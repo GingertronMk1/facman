@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Application\Floor\Command;
 
 use App\Application\Building\BuildingModel;
+use App\Application\Common\CommandInterface;
 use App\Application\Floor\FloorModel;
 use App\Domain\Floor\ValueObject\FloorId;
 
-class UpdateFloorCommand
+class UpdateFloorCommand implements CommandInterface
 {
     private function __construct(
         public FloorId $id,

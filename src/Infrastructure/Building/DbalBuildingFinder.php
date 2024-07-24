@@ -53,6 +53,22 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
         return array_map(fn ($row) => $this->createFromRow($row), $rows);
     }
 
+    public function allForSite(SiteId $siteId): array
+    {
+        $qb = $this->getBaseQuery();
+        $qb->where('site_id = :site_id')
+            ->setParameter('site_id', (string) $siteId)
+        ;
+
+        try {
+            $rows = $qb->fetchAllAssociative();
+        } catch (Throwable $e) {
+            throw BuildingFinderException::errorGettingRows($e);
+        }
+
+        return array_map(fn ($row) => $this->createFromRow($row), $rows);
+    }
+
     /**
      * @param array<string, mixed>|false $row
      *
@@ -61,7 +77,7 @@ readonly class DbalBuildingFinder implements BuildingFinderInterface
     private function createFromRow(array|false $row): BuildingModel
     {
         try {
-            if (!$row) {
+            if (!is_array($row)) {
                 throw new BuildingFinderException('No rows found');
             }
 

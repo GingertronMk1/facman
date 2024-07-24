@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Application\Company\Command;
 
+use App\Application\Common\CommandInterface;
 use App\Application\Company\CompanyModel;
 use App\Domain\Company\ValueObject\CompanyId;
 
-class UpdateCompanyCommand
+class UpdateCompanyCommand implements CommandInterface
 {
     private function __construct(
         public CompanyId $id,

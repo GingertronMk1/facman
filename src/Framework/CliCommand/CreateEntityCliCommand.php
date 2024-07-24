@@ -2,16 +2,15 @@
 
 namespace App\Framework\CliCommand;
 
-use App\Application\Common\ClockInterface;
 use App\Application\Common\Exception\AbstractFinderException;
+use App\Domain\Common\AbstractMappedEntity;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 use App\Domain\Common\ValueObject\AbstractUuidId;
+use App\Infrastructure\Common\AbstractDbalFinder;
 use App\Infrastructure\Common\AbstractDbalRepository;
-use Doctrine\DBAL\Connection;
 use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use InvalidArgumentException;
-use JsonSerializable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -93,7 +92,7 @@ class CreateEntityCliCommand extends Command
     {
         $lastBackslash = strrpos($className, '\\');
 
-        if (!$lastBackslash) {
+        if (!is_int($lastBackslash)) {
             throw new InvalidArgumentException("No backslash found in {$className}.");
         }
 
@@ -123,11 +122,13 @@ class CreateEntityCliCommand extends Command
         $kind = $properties['kind'] ?? 'class';
         $idLine = "{$kind} {$className}";
 
-        if ($extends = $properties['extends'] ?? false) {
+        $extends = $properties['extends'] ?? false;
+        if (is_string($extends)) {
             $idLine .= " extends \\{$extends}";
         }
 
-        if ($implements = $properties['implements'] ?? false) {
+        $implements = $properties['implements'] ?? false;
+        if (is_array($implements)) {
             $implements = implode(
                 ', ',
                 array_map(
@@ -141,7 +142,8 @@ class CreateEntityCliCommand extends Command
         $markup[] = $idLine;
         $markup[] = '{';
 
-        if ('interface' !== $kind && ($properties['constructor'] ?? true)) {
+        $constructor = (bool) ($properties['constructor'] ?? true);
+        if ('interface' !== $kind && $constructor) {
             $markup[] = 'public function __construct(';
             foreach ($properties['attributes'] ?? [] as $class => $type) {
                 ['classBaseName' => $attrClassName] = $this->getBaseNameAndNameSpace($class);
@@ -173,6 +175,7 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
+                'extends' => AbstractMappedEntity::class,
             ],
             'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface' => [
                 'kind' => 'interface',
@@ -222,24 +225,18 @@ class CreateEntityCliCommand extends Command
                 'attributes' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\ValueObject\\'.self::CLASSNAME_PLACEHOLDER.'Id' => 'public',
                 ],
-                'implements' => JsonSerializable::class,
             ],
             'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Finder' => [
-                'kind' => 'readonly class',
-                'attributes' => [
-                    Connection::class => 'private',
-                ],
-                'extends' => AbstractDbalRepository::class,
+                'kind' => 'class',
+                'extends' => AbstractDbalFinder::class,
+                'constructor' => false,
                 'implements' => [
                     'App\Application\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'FinderInterface',
                 ],
             ],
             'App\Infrastructure\\'.self::CLASSNAME_PLACEHOLDER.'\Dbal'.self::CLASSNAME_PLACEHOLDER.'Repository' => [
-                'kind' => 'readonly class',
-                'attributes' => [
-                    Connection::class => 'private',
-                    ClockInterface::class => 'private',
-                ],
+                'kind' => 'class',
+                'constructor' => false,
                 'extends' => AbstractDbalRepository::class,
                 'implements' => [
                     'App\Domain\\'.self::CLASSNAME_PLACEHOLDER.'\\'.self::CLASSNAME_PLACEHOLDER.'RepositoryInterface',
@@ -250,9 +247,11 @@ class CreateEntityCliCommand extends Command
             ],
             'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Create'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
                 'extends' => AbstractType::class,
+                'constructor' => false,
             ],
             'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Update'.self::CLASSNAME_PLACEHOLDER.'FormType' => [
                 'extends' => 'App\Framework\Form\\'.self::CLASSNAME_PLACEHOLDER.'\Create'.self::CLASSNAME_PLACEHOLDER.'FormType',
+                'constructor' => false,
             ],
         ];
     }

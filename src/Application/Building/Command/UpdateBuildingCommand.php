@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Application\Building\Command;
 
 use App\Application\Building\BuildingModel;
+use App\Application\Common\CommandInterface;
 use App\Application\Site\SiteModel;
 use App\Domain\Building\ValueObject\BuildingId;
 
-class UpdateBuildingCommand
+class UpdateBuildingCommand implements CommandInterface
 {
     private function __construct(
         public BuildingId $id,

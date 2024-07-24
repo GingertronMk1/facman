@@ -12,12 +12,11 @@ use App\Application\Floor\FloorModel;
 use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\ValueObject\DateTime;
 use App\Domain\Floor\ValueObject\FloorId;
-use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Throwable;
 
-readonly class DbalFloorFinder extends AbstractDbalRepository implements FloorFinderInterface
+class DbalFloorFinder implements FloorFinderInterface
 {
     public function __construct(
         private Connection $connection,
@@ -53,6 +52,22 @@ readonly class DbalFloorFinder extends AbstractDbalRepository implements FloorFi
         return array_map(fn ($row) => $this->createFromRow($row), $rows);
     }
 
+    public function allForBuilding(BuildingId $buildingId): array
+    {
+        $qb = $this->getBaseQuery();
+        $qb->where('building_id = :building_id')
+            ->setParameter('building_id', (string) $buildingId)
+        ;
+
+        try {
+            $rows = $qb->fetchAllAssociative();
+        } catch (Throwable $e) {
+            throw BuildingFinderException::errorGettingRows($e);
+        }
+
+        return array_map(fn ($row) => $this->createFromRow($row), $rows);
+    }
+
     /**
      * @param array<string, mixed>|false $row
      *
@@ -60,7 +75,7 @@ readonly class DbalFloorFinder extends AbstractDbalRepository implements FloorFi
      */
     private function createFromRow(array|false $row): FloorModel
     {
-        if (!$row) {
+        if (!is_array($row)) {
             throw new FloorFinderException('No rows found');
         }
 

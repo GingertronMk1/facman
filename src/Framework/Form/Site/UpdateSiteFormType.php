@@ -17,6 +17,7 @@ class UpdateSiteFormType extends CreateSiteFormType
         parent::buildForm($builder, $options);
         $builder
             ->remove('company')
+            ->remove('address')
         ;
     }
 }

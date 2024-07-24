@@ -6,6 +6,7 @@ namespace App\Application\Building;
 
 use App\Application\Common\Exception\AbstractFinderException;
 use App\Domain\Building\ValueObject\BuildingId;
+use App\Domain\Site\ValueObject\SiteId;
 
 interface BuildingFinderInterface
 {
@@ -20,4 +21,11 @@ interface BuildingFinderInterface
      * @throws AbstractFinderException
      */
     public function all(): array;
+
+    /**
+     * @return array<BuildingModel>
+     *
+     * @throws AbstractFinderException
+     */
+    public function allForSite(SiteId $siteId): array;
 }

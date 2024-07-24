@@ -4,8 +4,8 @@ namespace App\Framework\Controller\Ajax;
 
 use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\CompanyRepositoryInterface;
+use App\Framework\Controller\AbstractController;
 use InvalidArgumentException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,10 +17,10 @@ class PrefixController extends AbstractController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/', name: 'get', methods: ['GET'])]
-    public function get(Request $request, CompanyRepositoryInterface $repository): JsonResponse
+    public function __invoke(Request $request, CompanyRepositoryInterface $repository): JsonResponse
     {
         $companyName = $request->get('companyName', '');
-        if (empty($companyName)) {
+        if ('' === $companyName) {
             return new JsonResponse(['prefix' => '']);
         }
 

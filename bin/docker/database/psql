@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-source .env
+. .env
 
 ./bin/docker/database/exec sh -c "\
     PGPASSWORD=$POSTGRES_PASSWORD \

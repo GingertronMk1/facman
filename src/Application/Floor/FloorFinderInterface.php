@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Floor;
 
 use App\Application\Common\Exception\AbstractFinderException;
+use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Floor\ValueObject\FloorId;
 
 interface FloorFinderInterface
@@ -20,4 +21,11 @@ interface FloorFinderInterface
      * @throws AbstractFinderException
      */
     public function all(): array;
+
+    /**
+     * @return array<FloorModel>
+     *
+     * @throws AbstractFinderException
+     */
+    public function allForBuilding(BuildingId $buildingId): array;
 }

@@ -10,12 +10,11 @@ use App\Application\Address\AddressModel;
 use App\Domain\Address\AddressTypeEnum;
 use App\Domain\Common\ValueObject\AbstractId;
 use App\Domain\Common\ValueObject\DateTime;
-use App\Infrastructure\Common\AbstractDbalRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Throwable;
 
-readonly class DbalAddressFinder extends AbstractDbalRepository implements AddressFinderInterface
+readonly class DbalAddressFinder implements AddressFinderInterface
 {
     public function __construct(
         private Connection $connection,
