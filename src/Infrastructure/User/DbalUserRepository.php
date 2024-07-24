@@ -90,4 +90,14 @@ class DbalUserRepository extends AbstractDbalRepository implements UserRepositor
 
         return $entity->id;
     }
+
+    protected function getTableName(): string
+    {
+        return 'users';
+    }
+
+    protected function getExceptionClass(): string
+    {
+        return UserRepositoryException::class;
+    }
 }

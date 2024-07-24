@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application\JobStatus\Command;
 
-class CreateJobStatusCommand
+use App\Application\Common\CommandInterface;
+
+class CreateJobStatusCommand implements CommandInterface
 {
     public function __construct(
         public string $name = '',

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application\JobType\Command;
 
-use App\Domain\JobType\ValueObject\JobTypeId;
+use App\Application\Common\CommandInterface;
 
-class CreateJobTypeCommand
+class CreateJobTypeCommand implements CommandInterface
 {
     public function __construct(
         public string $name = '',

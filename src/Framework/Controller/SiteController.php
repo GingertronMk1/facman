@@ -15,7 +15,6 @@ use App\Domain\Site\ValueObject\SiteId;
 use App\Framework\Form\Site\CreateSiteFormType;
 use App\Framework\Form\Site\UpdateSiteFormType;
 use InvalidArgumentException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

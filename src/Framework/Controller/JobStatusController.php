@@ -15,7 +15,6 @@ use App\Domain\JobStatus\ValueObject\JobStatusId;
 use App\Framework\Form\JobStatus\CreateJobStatusFormType;
 use App\Framework\Form\JobStatus\UpdateJobStatusFormType;
 use InvalidArgumentException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

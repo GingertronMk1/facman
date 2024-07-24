@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Application\Site\CommandHandler;
 
-use App\Application\Site\Command\UpdateSiteCommand;
+use App\Application\Common\CommandHandlerInterface;
+use App\Application\Common\CommandInterface;
 use App\Domain\Site\SiteEntity;
 use App\Domain\Site\SiteRepositoryException;
 use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 
-readonly class UpdateSiteCommandHandler
+readonly class UpdateSiteCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private SiteRepositoryInterface $siteRepositoryInterface,
@@ -19,7 +20,7 @@ readonly class UpdateSiteCommandHandler
     /**
      * @throws SiteRepositoryException
      */
-    public function handle(UpdateSiteCommand $command): SiteId
+    public function handle(CommandInterface $command, mixed ...$args): SiteId
     {
         $entity = new SiteEntity(
             id: $command->id,

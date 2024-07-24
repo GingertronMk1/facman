@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Application\Company\CommandHandler;
 
-use App\Application\Company\Command\CreateCompanyCommand;
+use App\Application\Common\CommandHandlerInterface;
+use App\Application\Common\CommandInterface;
 use App\Domain\Company\CompanyEntity;
 use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\CompanyRepositoryInterface;
 use App\Domain\Company\ValueObject\CompanyId;
 
-readonly class CreateCompanyCommandHandler
+readonly class CreateCompanyCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private CompanyRepositoryInterface $companyRepositoryInterface,
@@ -19,7 +20,7 @@ readonly class CreateCompanyCommandHandler
     /**
      * @throws CompanyRepositoryException
      */
-    public function handle(CreateCompanyCommand $command): CompanyId
+    public function handle(CommandInterface $command, mixed ...$args): CompanyId
     {
         $prefix = $command->prefix;
         if (empty($prefix)) {

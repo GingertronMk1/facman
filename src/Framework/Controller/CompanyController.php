@@ -15,7 +15,6 @@ use App\Domain\Company\ValueObject\CompanyId;
 use App\Framework\Form\Company\CreateCompanyFormType;
 use App\Framework\Form\Company\UpdateCompanyFormType;
 use InvalidArgumentException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,22 +48,30 @@ class CompanyController extends AbstractController
         CreateCompanyCommandHandler $handler,
         Request $request
     ): Response {
-        $command = new CreateCompanyCommand();
-        $form = $this->createForm(CreateCompanyFormType::class, $command);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $handler->handle($command);
-
-            return $this->redirectToRoute('company.index');
-        }
-
-        return $this->render(
-            'company/create.html.twig',
-            [
-                'form' => $form,
-            ]
+        return $this->handleForm(
+            $handler,
+            new CreateCompanyCommand(),
+            CreateCompanyFormType::class,
+            $request,
+            $this->generateUrl('company.index'),
+            'company/create.html.twig'
         );
+        //        $command = new CreateCompanyCommand();
+        //        $form = $this->createForm(CreateCompanyFormType::class, $command);
+        //        $form->handleRequest($request);
+        //
+        //        if ($form->isSubmitted() && $form->isValid()) {
+        //            $handler->handle($command);
+        //
+        //            return $this->redirectToRoute('company.index');
+        //        }
+        //
+        //        return $this->render(
+        //            'company/create.html.twig',
+        //            [
+        //                'form' => $form,
+        //            ]
+        //        );
     }
 
     /**

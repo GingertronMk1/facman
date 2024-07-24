@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Application\Site\Command;
 
+use App\Application\Common\CommandInterface;
 use App\Application\Company\CompanyModel;
 use App\Application\Site\SiteModel;
 use App\Domain\Site\ValueObject\SiteId;
 
-class UpdateSiteCommand
+class UpdateSiteCommand implements CommandInterface
 {
     private function __construct(
         public SiteId $id,

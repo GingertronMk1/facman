@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Application\Address\Command;
 
+use App\Application\Common\CommandInterface;
 use App\Domain\Address\AddressTypeEnum;
 
-class StoreAddressCommand
+class StoreAddressCommand implements CommandInterface
 {
     public function __construct(
         public AddressTypeEnum $addressType = AddressTypeEnum::MAIN,
