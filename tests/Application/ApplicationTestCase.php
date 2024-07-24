@@ -48,7 +48,7 @@ class ApplicationTestCase extends WebTestCase
      * @throws ServiceNotFoundException
      * @throws LogicException
      */
-    protected function stUp(): void
+    protected function setUp(): void
     {
         /** @var ?AbstractBrowser $client */
         $client = self::getContainer()->get('test.client');
