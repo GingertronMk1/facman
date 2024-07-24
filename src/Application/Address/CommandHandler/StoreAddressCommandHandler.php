@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Application\Address\CommandHandler;
 
+use App\Application\Address\Command\StoreAddressCommand;
 use App\Application\Common\CommandHandlerInterface;
 use App\Application\Common\CommandInterface;
+use App\Application\Common\Exception\CommandHandlerException;
 use App\Domain\Address\AddressEntity;
 use App\Domain\Address\AddressRepositoryInterface;
 use App\Domain\Common\ValueObject\AbstractId;
-use LogicException;
 
 readonly class StoreAddressCommandHandler implements CommandHandlerInterface
 {
@@ -19,6 +20,10 @@ readonly class StoreAddressCommandHandler implements CommandHandlerInterface
 
     public function handle(CommandInterface $command, mixed ...$args): null
     {
+        if (!$command instanceof StoreAddressCommand) {
+            throw CommandHandlerException::invalidCommandPassed($command);
+        }
+
         $addresseeId = false;
         $addresseeType = false;
         // Getting addressId
@@ -38,7 +43,7 @@ readonly class StoreAddressCommandHandler implements CommandHandlerInterface
         }
 
         if (!($addresseeId && $addresseeType)) {
-            throw new LogicException('No type or ID given');
+            throw new CommandHandlerException('No type or ID given');
         }
 
         $addressEntity = new AddressEntity(

@@ -17,7 +17,7 @@ class PrefixController extends AbstractController
      * @throws InvalidArgumentException
      */
     #[Route(path: '/', name: 'get', methods: ['GET'])]
-    public function get(Request $request, CompanyRepositoryInterface $repository): JsonResponse
+    public function __invoke(Request $request, CompanyRepositoryInterface $repository): JsonResponse
     {
         $companyName = $request->get('companyName', '');
         if (empty($companyName)) {

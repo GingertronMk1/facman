@@ -6,6 +6,8 @@ namespace App\Application\Company\CommandHandler;
 
 use App\Application\Common\CommandHandlerInterface;
 use App\Application\Common\CommandInterface;
+use App\Application\Common\Exception\CommandHandlerException;
+use App\Application\Company\Command\CreateCompanyCommand;
 use App\Domain\Company\CompanyEntity;
 use App\Domain\Company\CompanyRepositoryException;
 use App\Domain\Company\CompanyRepositoryInterface;
@@ -22,6 +24,9 @@ readonly class CreateCompanyCommandHandler implements CommandHandlerInterface
      */
     public function handle(CommandInterface $command, mixed ...$args): CompanyId
     {
+        if (!$command instanceof CreateCompanyCommand) {
+            throw CommandHandlerException::invalidCommandPassed($command);
+        }
         $prefix = $command->prefix;
         if (empty($prefix)) {
             $prefix = $this->companyRepositoryInterface->generatePrefix($command->name);

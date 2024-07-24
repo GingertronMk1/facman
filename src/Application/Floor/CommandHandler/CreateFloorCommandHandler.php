@@ -6,6 +6,8 @@ namespace App\Application\Floor\CommandHandler;
 
 use App\Application\Common\CommandHandlerInterface;
 use App\Application\Common\CommandInterface;
+use App\Application\Common\Exception\CommandHandlerException;
+use App\Application\Floor\Command\CreateFloorCommand;
 use App\Domain\Floor\FloorEntity;
 use App\Domain\Floor\FloorRepositoryException;
 use App\Domain\Floor\FloorRepositoryInterface;
@@ -24,8 +26,11 @@ readonly class CreateFloorCommandHandler implements CommandHandlerInterface
      */
     public function handle(CommandInterface $command, mixed ...$args): FloorId
     {
+        if (!$command instanceof CreateFloorCommand) {
+            throw CommandHandlerException::invalidCommandPassed($command);
+        }
         if (!$command->building) {
-            throw new InvalidArgumentException('No building ID given');
+            throw new CommandHandlerException('No building ID given');
         }
         $entity = new FloorEntity(
             id: $this->floorRepositoryInterface->generateId(),
