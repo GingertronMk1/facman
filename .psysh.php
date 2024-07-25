@@ -1,7 +1,8 @@
 <?php 
-//
+
 // Automatically autoload Composer dependencies
-if (is_file(getcwd() . '/vendor/autoload.php')) {
-    require_once getcwd() . '/vendor/autoload.php';
+$autoloadLocation = getcwd() . '/vendor/autoload.php';
+if (is_file($autoloadLocation)) {
+    require_once $autoloadLocation;
 }
 
