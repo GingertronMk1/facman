@@ -6,7 +6,6 @@ namespace App\Application\Site\CommandHandler;
 
 use App\Application\Address\CommandHandler\StoreAddressCommandHandler;
 use App\Application\Common\CommandHandlerInterface;
-use App\Application\Common\CommandInterface;
 use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\Site\Command\CreateSiteCommand;
 use App\Application\Site\SiteModel;
@@ -16,6 +15,9 @@ use App\Domain\Site\SiteRepositoryInterface;
 use App\Domain\Site\ValueObject\SiteId;
 use InvalidArgumentException;
 
+/**
+ * @implements CommandHandlerInterface<CreateSiteCommand>
+ */
 readonly class CreateSiteCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
@@ -27,14 +29,9 @@ readonly class CreateSiteCommandHandler implements CommandHandlerInterface
      * @throws SiteRepositoryException
      * @throws InvalidArgumentException
      * @throws CommandHandlerException
-     * @throws CommandHandlerException
-     * @throws CommandHandlerException
      */
-    public function handle(CommandInterface $command, mixed ...$args): SiteId
+    public function handle(mixed $command, mixed ...$args): SiteId
     {
-        if (!$command instanceof CreateSiteCommand) {
-            throw CommandHandlerException::invalidCommandPassed($command);
-        }
         if (is_null($command->company)) {
             throw new CommandHandlerException('No company ID');
         }

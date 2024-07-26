@@ -6,24 +6,22 @@ namespace App\Application\Address\CommandHandler;
 
 use App\Application\Address\Command\StoreAddressCommand;
 use App\Application\Common\CommandHandlerInterface;
-use App\Application\Common\CommandInterface;
 use App\Application\Common\Exception\CommandHandlerException;
 use App\Domain\Address\AddressEntity;
 use App\Domain\Address\AddressRepositoryInterface;
 use App\Domain\Common\ValueObject\AbstractId;
 
+/**
+ * @implements CommandHandlerInterface<StoreAddressCommand>
+ */
 readonly class StoreAddressCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private AddressRepositoryInterface $addressRepositoryInterface,
     ) {}
 
-    public function handle(CommandInterface $command, mixed ...$args): null
+    public function handle(mixed $command, mixed ...$args): null
     {
-        if (!$command instanceof StoreAddressCommand) {
-            throw CommandHandlerException::invalidCommandPassed($command);
-        }
-
         $addresseeId = false;
         $addresseeType = false;
         // Getting addressId

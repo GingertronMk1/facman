@@ -6,7 +6,6 @@ namespace App\Application\Building\CommandHandler;
 
 use App\Application\Building\Command\UpdateBuildingCommand;
 use App\Application\Common\CommandHandlerInterface;
-use App\Application\Common\CommandInterface;
 use App\Application\Common\Exception\CommandHandlerException;
 use App\Domain\Building\BuildingEntity;
 use App\Domain\Building\BuildingRepositoryException;
@@ -14,6 +13,9 @@ use App\Domain\Building\BuildingRepositoryInterface;
 use App\Domain\Building\ValueObject\BuildingId;
 use App\Domain\Common\Exception\AbstractRepositoryException;
 
+/**
+ * @implements CommandHandlerInterface<UpdateBuildingCommand>
+ */
 readonly class UpdateBuildingCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
@@ -25,11 +27,8 @@ readonly class UpdateBuildingCommandHandler implements CommandHandlerInterface
      * @throws AbstractRepositoryException
      * @throws CommandHandlerException
      */
-    public function handle(CommandInterface $command, mixed ...$args): BuildingId
+    public function handle(mixed $command, mixed ...$args): BuildingId
     {
-        if (!$command instanceof UpdateBuildingCommand) {
-            throw CommandHandlerException::invalidCommandPassed($command);
-        }
         $entity = new BuildingEntity(
             id: $command->id,
             name: $command->name,

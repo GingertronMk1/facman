@@ -5,17 +5,21 @@ namespace App\Framework\Controller;
 use App\Application\Common\CommandHandlerInterface;
 use App\Application\Common\CommandInterface;
 use App\Application\Common\Exception\CommandHandlerException;
-use LogicException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as SymfonyAbstractController;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController extends SymfonyAbstractController
 {
     /**
-     * @param array<string, mixed> $twigContext
+     * @template T
+     *
+     * @param CommandHandlerInterface<T> $handler
+     * @param CommandInterface&T         $command
+     * @param array<string, mixed>       $twigContext
      *
      * @throws CommandHandlerException
      * @throws ContainerExceptionInterface

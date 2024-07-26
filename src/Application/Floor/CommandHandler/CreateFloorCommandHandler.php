@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Application\Floor\CommandHandler;
 
 use App\Application\Common\CommandHandlerInterface;
-use App\Application\Common\CommandInterface;
 use App\Application\Common\Exception\CommandHandlerException;
 use App\Application\Floor\Command\CreateFloorCommand;
 use App\Domain\Floor\FloorEntity;
@@ -14,6 +13,9 @@ use App\Domain\Floor\FloorRepositoryInterface;
 use App\Domain\Floor\ValueObject\FloorId;
 use InvalidArgumentException;
 
+/**
+ * @implements CommandHandlerInterface<CreateFloorCommand>
+ */
 readonly class CreateFloorCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
@@ -26,11 +28,8 @@ readonly class CreateFloorCommandHandler implements CommandHandlerInterface
      * @throws CommandHandlerException
      * @throws CommandHandlerException
      */
-    public function handle(CommandInterface $command, mixed ...$args): FloorId
+    public function handle(mixed $command, mixed ...$args): FloorId
     {
-        if (!$command instanceof CreateFloorCommand) {
-            throw CommandHandlerException::invalidCommandPassed($command);
-        }
         if (is_null($command->building)) {
             throw new CommandHandlerException('No building ID given');
         }
