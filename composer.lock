@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b51cd9d68a06c3b7674151a4db2998c8",
+    "content-hash": "4949f8df0cf8880a18bb0f8a4ebe32e1",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -1689,16 +1689,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v7.1.9",
+            "version": "v7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "18e0ba45a50032aa53dfebf830ec2980bb131591"
+                "reference": "2c926bc348184b4b235f2200fcbe8fcf3c8c5b8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/18e0ba45a50032aa53dfebf830ec2980bb131591",
-                "reference": "18e0ba45a50032aa53dfebf830ec2980bb131591",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/2c926bc348184b4b235f2200fcbe8fcf3c8c5b8a",
+                "reference": "2c926bc348184b4b235f2200fcbe8fcf3c8c5b8a",
                 "shasum": ""
             },
             "require": {
@@ -1726,6 +1726,7 @@
                 "doctrine/dbal": "^3.6|^4",
                 "predis/predis": "^1.1|^2.0",
                 "psr/simple-cache": "^1.0|^2.0|^3.0",
+                "symfony/clock": "^6.4|^7.0",
                 "symfony/config": "^6.4|^7.0",
                 "symfony/dependency-injection": "^6.4|^7.0",
                 "symfony/filesystem": "^6.4|^7.0",
@@ -1766,7 +1767,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v7.1.9"
+                "source": "https://github.com/symfony/cache/tree/v7.2.0"
             },
             "funding": [
                 {
@@ -1782,7 +1783,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-20T10:42:04+00:00"
+            "time": "2024-11-25T15:21:05+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -2730,16 +2731,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v7.1.6",
+            "version": "v7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "2cb89664897be33f78c65d3d2845954c8d7a43b8"
+                "reference": "6de263e5868b9a137602dd1e33e4d48bfae99c49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/2cb89664897be33f78c65d3d2845954c8d7a43b8",
-                "reference": "2cb89664897be33f78c65d3d2845954c8d7a43b8",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/6de263e5868b9a137602dd1e33e4d48bfae99c49",
+                "reference": "6de263e5868b9a137602dd1e33e4d48bfae99c49",
                 "shasum": ""
             },
             "require": {
@@ -2774,7 +2775,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.1.6"
+                "source": "https://github.com/symfony/finder/tree/v7.2.0"
             },
             "funding": [
                 {
@@ -2790,7 +2791,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-01T08:31:23+00:00"
+            "time": "2024-10-23T06:56:12+00:00"
         },
         {
             "name": "symfony/flex",
@@ -4075,16 +4076,16 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v7.1.9",
+            "version": "v7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "a27bb8e0cc3ca4baf17159d053910c9736c3aa4c"
+                "reference": "e10a2450fa957af6c448b9b93c9010a4e4c0725e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/a27bb8e0cc3ca4baf17159d053910c9736c3aa4c",
-                "reference": "a27bb8e0cc3ca4baf17159d053910c9736c3aa4c",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/e10a2450fa957af6c448b9b93c9010a4e4c0725e",
+                "reference": "e10a2450fa957af6c448b9b93c9010a4e4c0725e",
                 "shasum": ""
             },
             "require": {
@@ -4136,7 +4137,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v7.1.9"
+                "source": "https://github.com/symfony/routing/tree/v7.2.0"
             },
             "funding": [
                 {
@@ -4152,7 +4153,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-13T16:12:35+00:00"
+            "time": "2024-11-25T11:08:51+00:00"
         },
         {
             "name": "symfony/runtime",
@@ -8949,16 +8950,16 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v7.1.9",
+            "version": "v7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "6f26474e0e8ff746cb0abaddf9ebe0b067172fb1"
+                "reference": "8843019fa7140a4aa079f1a8d71fd010f61de5f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/6f26474e0e8ff746cb0abaddf9ebe0b067172fb1",
-                "reference": "6f26474e0e8ff746cb0abaddf9ebe0b067172fb1",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/8843019fa7140a4aa079f1a8d71fd010f61de5f2",
+                "reference": "8843019fa7140a4aa079f1a8d71fd010f61de5f2",
                 "shasum": ""
             },
             "require": {
@@ -8968,12 +8969,13 @@
                 "symfony/http-kernel": "^6.4|^7.0",
                 "symfony/routing": "^6.4|^7.0",
                 "symfony/twig-bundle": "^6.4|^7.0",
-                "twig/twig": "^3.10"
+                "twig/twig": "^3.12"
             },
             "conflict": {
                 "symfony/form": "<6.4",
                 "symfony/mailer": "<6.4",
-                "symfony/messenger": "<6.4"
+                "symfony/messenger": "<6.4",
+                "symfony/serializer": "<7.2"
             },
             "require-dev": {
                 "symfony/browser-kit": "^6.4|^7.0",
@@ -9010,7 +9012,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v7.1.9"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v7.2.0"
             },
             "funding": [
                 {
@@ -9026,7 +9028,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-19T10:11:44+00:00"
+            "time": "2024-11-19T10:12:55+00:00"
         },
         {
             "name": "theseer/tokenizer",
