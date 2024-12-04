@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d14fe64bc93b53c74f042f1b2748f2ae",
+    "content-hash": "98f1ca45ceb56bd1cbb8a467d2b28538",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -2012,16 +2012,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v7.1.8",
+            "version": "v7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "ff04e5b5ba043d2badfb308197b9e6b42883fcd5"
+                "reference": "23c8aae6d764e2bae02d2a99f7532a7f6ed619cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/ff04e5b5ba043d2badfb308197b9e6b42883fcd5",
-                "reference": "ff04e5b5ba043d2badfb308197b9e6b42883fcd5",
+                "url": "https://api.github.com/repos/symfony/console/zipball/23c8aae6d764e2bae02d2a99f7532a7f6ed619cf",
+                "reference": "23c8aae6d764e2bae02d2a99f7532a7f6ed619cf",
                 "shasum": ""
             },
             "require": {
@@ -2085,7 +2085,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v7.1.8"
+                "source": "https://github.com/symfony/console/tree/v7.2.0"
             },
             "funding": [
                 {
@@ -2101,7 +2101,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-06T14:23:19+00:00"
+            "time": "2024-11-06T14:24:19+00:00"
         },
         {
             "name": "symfony/dependency-injection",
