@@ -12,7 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.2",
         "psy/psysh": "@stable",
-        "symfony/console": "7.2.*",
+        "symfony/console": "7.3.*",
         "symfony/dotenv": "7.2.*",
         "symfony/flex": "^2",
         "symfony/form": "7.2.*",
