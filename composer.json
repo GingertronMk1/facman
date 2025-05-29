@@ -17,7 +17,7 @@
         "symfony/flex": "^2",
         "symfony/form": "7.2.*",
         "symfony/framework-bundle": "7.1.*",
-        "symfony/runtime": "7.2.*",
+        "symfony/runtime": "7.3.*",
         "symfony/security-bundle": "7.1.*",
         "symfony/twig-bundle": "7.2.*",
         "symfony/uid": "7.2.*",
