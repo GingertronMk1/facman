@@ -20,7 +20,7 @@
         "symfony/runtime": "7.3.*",
         "symfony/security-bundle": "7.1.*",
         "symfony/twig-bundle": "7.2.*",
-        "symfony/uid": "7.2.*",
+        "symfony/uid": "7.3.*",
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "7.2.*"
     },
