@@ -3,7 +3,7 @@
         "@babel/core": "^7.28.5",
         "@babel/preset-env": "^7.28.5",
         "@symfony/webpack-encore": "^4.7.0",
-        "autoprefixer": "^10.4.22",
+        "autoprefixer": "^10.4.23",
         "core-js": "^3.47.0",
         "css-loader": "^7.1.2",
         "postcss-loader": "^7.3.4",
